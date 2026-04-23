@@ -12,7 +12,7 @@ export const projectRoutes: Routes = [
         component: CreateProject,
       },
       {
-        path: 'project-dashboard',
+        path: 'project-dashboard/:id',
         loadComponent: () =>
           import('./project-dashboard/project-dashboard').then((m) => m.ProjectDashboard),
       },
