@@ -1,6 +1,6 @@
 import type { Routes } from '@angular/router';
-import { CreateProject } from './create-project/create-project';
 import { Project } from './project';
+import { ProjectDashboard } from './project-dashboard/project-dashboard';
 
 export const projectRoutes: Routes = [
   {
@@ -9,7 +9,7 @@ export const projectRoutes: Routes = [
     children: [
       {
         path: '',
-        component: CreateProject,
+        component: ProjectDashboard,
       },
       {
         path: 'project-dashboard/:id',

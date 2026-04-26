@@ -28,10 +28,13 @@ export class InfrastructureService {
       const unsubscribe = onSnapshot(
         this.projectsCollection,
         (snapshot: QuerySnapshot<DocumentData>) => {
-          const projects = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          })) as Project[];
+          const projects = snapshot.docs.map(
+            (doc) =>
+              ({
+                id: doc.id,
+                ...doc.data(),
+              }) as Project,
+          );
 
           subscriber.next(projects);
         },

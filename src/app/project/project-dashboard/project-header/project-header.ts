@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-project-header',
@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './project-header.html',
   styleUrl: './project-header.scss',
 })
-export class ProjectHeader {}
+export class ProjectHeader {
+  projectName = input.required<string>();
+}

@@ -1,7 +1,30 @@
-<div class="p-4 flex flex-col gap-4 w-full">
-  <app-project-header />
-  <app-project-overview />
-  <app-project-metrics />
-  <app-project-tasks-board />
-  <app-project-activity-feed />
-</div>
+@let state = projectsState();
+
+@switch (state.status) {
+  @case ('loading') {
+    <div class="flex flex-col items-center justify-center gap-2 h-full">
+      <mat-spinner></mat-spinner>
+      <p>Fetching your projects...</p>
+    </div>
+  }
+
+  @case ('error') {
+    <p>Failed to load projects.</p>
+  }
+
+  @case ('success') {
+    @if (state.data.length === 0) {
+      <div class="p-4 flex flex-col gap-4 w-full">
+        <p>No projects found. Create a new project to get started!</p>
+      </div>
+    } @else {
+      <div class="p-4 flex flex-col gap-4 w-full">
+        <ul>
+          @for (project of state.data; track project.id) {
+            <li>{{ project.name }}</li>
+          }
+        </ul>
+      </div>
+    }
+  }
+}
