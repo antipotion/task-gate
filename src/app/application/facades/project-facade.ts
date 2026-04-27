@@ -15,6 +15,7 @@ export class ProjectFacade {
   private readonly _projectState = signal<ProjectState>({ status: 'loading' });
 
   readonly state = this._projectState.asReadonly();
+  readonly activeProject = signal<Project | null>(null);
 
   constructor() {
     const projectSubscription = this.loadProjects();
@@ -50,5 +51,16 @@ export class ProjectFacade {
       console.error('Error adding project:', error);
       throw new Error(`Error adding project: ${String(error)}`);
     }
+  }
+
+  getActiveProject(projectId: string): void {
+    this.storeService.getProjectById$(projectId).subscribe((project) => {
+      if (project) {
+        this.activeProject.set(project);
+      } else {
+        console.warn(`Project with ID ${projectId} not found.`);
+        this.activeProject.set(null);
+      }
+    });
   }
 }
