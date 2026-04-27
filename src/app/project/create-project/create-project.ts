@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,6 +19,7 @@ import type { Project } from '../project.types';
     MatButtonModule,
     MatDatepickerModule,
     MatProgressSpinnerModule,
+    MatIconModule,
   ],
   templateUrl: './create-project.html',
   styleUrl: './create-project.scss',
@@ -27,9 +29,6 @@ export class CreateProject {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private projectFacade = inject(ProjectFacade);
-
-  private navigateToProjectDashboard: (id: string) => Promise<boolean> = (id: string) =>
-    this.router.navigate(['project-dashboard', id], { relativeTo: this.route });
 
   isLoading = signal<boolean>(false);
 
@@ -52,7 +51,11 @@ export class CreateProject {
       try {
         // Add the project using the facade and get the generated project ID
         const projectId = await this.projectFacade.addProject(projectData);
-        this.navigateToProjectDashboard(projectId);
+
+        // NOTE: Assumption for the navigation is that the parent is the project dashboard component route.
+        // if this is violated -> change the `relativeTo` to align it
+        // or make the path explicit
+        this.router.navigate([projectId], { relativeTo: this.route.parent });
       } catch (error) {
         console.error('Error creating project:', error);
       } finally {
@@ -61,5 +64,9 @@ export class CreateProject {
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  onBack(): void {
+    this.router.navigate([''], { relativeTo: this.route });
   }
 }

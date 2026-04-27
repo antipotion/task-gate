@@ -21,6 +21,10 @@
     } @else {
       <!-- Projects list -->
       <div class="p-4 flex flex-col gap-4 w-full">
+        <button matButton="filled" class="w-fit" (click)="onAddProject()">
+          <mat-icon fontIcon="add"></mat-icon>
+          Create Project
+        </button>
         <ul class="flex flex-col gap-4">
           @for (project of state.data; track project.id) {
             <li>

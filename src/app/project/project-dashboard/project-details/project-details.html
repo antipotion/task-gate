@@ -1,4 +1,12 @@
 <div class="p-4 flex flex-col gap-4 w-full">
+  <!-- Back button -->
+  <div>
+    <button matIconButton (click)="onBack()">
+      <mat-icon fontIcon="arrow_back"></mat-icon>
+    </button>
+  </div>
+
+  <!-- Contents -->
   <app-project-header [projectName]="project()?.name ?? 'No Project'" />
   <app-project-overview />
   <app-project-metrics />
