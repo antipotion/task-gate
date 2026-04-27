@@ -12,9 +12,15 @@ export const projectRoutes: Routes = [
         component: ProjectDashboard,
       },
       {
-        path: 'project-dashboard/:id',
+        path: 'create',
+        loadComponent: () => import('./create-project/create-project').then((m) => m.CreateProject),
+      },
+      {
+        path: ':id',
         loadComponent: () =>
-          import('./project-dashboard/project-dashboard').then((m) => m.ProjectDashboard),
+          import('./project-dashboard/project-details/project-details').then(
+            (m) => m.ProjectDetails,
+          ),
       },
     ],
   },

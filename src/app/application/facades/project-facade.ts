@@ -1,5 +1,5 @@
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
-import type { Subscription } from 'rxjs';
+import { type Subscription } from 'rxjs';
 import type { Project } from '../../project/project.types';
 import { StoreService } from '../store/store-service';
 
@@ -15,8 +15,6 @@ export class ProjectFacade {
   private readonly _projectState = signal<ProjectState>({ status: 'loading' });
 
   readonly state = this._projectState.asReadonly();
-
-  activeProject = signal<Project | null>(null);
 
   constructor() {
     const projectSubscription = this.loadProjects();
@@ -46,25 +44,11 @@ export class ProjectFacade {
     try {
       const projectId = await this.storeService.addProject(project);
 
-      this.activeProject.set({ id: projectId, ...project });
-      console.log(this.activeProject());
-
       return projectId;
     } catch (error) {
       // TODO: Handle error appropriately, e.g., show a notification to the user
       console.error('Error adding project:', error);
       throw new Error(`Error adding project: ${String(error)}`);
     }
-  }
-
-  getActiveProject(projectId: string): void {
-    this.storeService.getProjectById$(projectId).subscribe((project) => {
-      if (project) {
-        this.activeProject.set(project);
-      } else {
-        console.warn(`Project with ID ${projectId} not found.`);
-        this.activeProject.set(null);
-      }
-    });
   }
 }

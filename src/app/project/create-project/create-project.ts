@@ -47,7 +47,6 @@ export class CreateProject {
         name: formResult.projectName!,
         deadline: formResult.deadline!,
       };
-
       this.isLoading.set(true);
 
       try {

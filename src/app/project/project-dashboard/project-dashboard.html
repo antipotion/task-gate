@@ -13,15 +13,24 @@
   }
 
   @case ('success') {
+    <!-- Empty state -->
     @if (state.data.length === 0) {
       <div class="p-4 flex flex-col gap-4 w-full">
         <p>No projects found. Create a new project to get started!</p>
       </div>
     } @else {
+      <!-- Projects list -->
       <div class="p-4 flex flex-col gap-4 w-full">
-        <ul>
+        <ul class="flex flex-col gap-4">
           @for (project of state.data; track project.id) {
-            <li>{{ project.name }}</li>
+            <li>
+              <div class="cursor-pointer" (click)="onClickProject(project.id)">
+                <mat-card class="p-4">
+                  <mat-card-title>{{ project.name }}</mat-card-title>
+                  <mat-card-subtitle>{{ project.deadline | date }}</mat-card-subtitle>
+                </mat-card>
+              </div>
+            </li>
           }
         </ul>
       </div>

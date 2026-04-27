@@ -33,6 +33,7 @@ export class InfrastructureService {
               ({
                 id: doc.id,
                 ...doc.data(),
+                deadline: doc.data()['deadline']?.toDate(), // Convert Firestore Timestamp to JavaScript Date
               }) as Project,
           );
 
