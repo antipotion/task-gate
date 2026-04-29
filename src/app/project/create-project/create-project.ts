@@ -7,9 +7,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectFacade } from '../../application/facades/project-facade';
 import type { Project } from '../project.types';
+
+type CreateProjectState = 'idle' | 'loading';
+
 @Component({
   selector: 'app-create-project',
   imports: [
@@ -29,13 +33,24 @@ export class CreateProject {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private projectFacade = inject(ProjectFacade);
+  private _snackBar = inject(MatSnackBar);
 
-  isLoading = signal<boolean>(false);
+  createProjectState = signal<CreateProjectState>('idle');
 
   projectForm = new FormGroup({
     projectName: new FormControl('', Validators.required),
     deadline: new FormControl('', Validators.required),
   });
+
+  openSnackBar(message: string): void {
+    const snackbarRef = this._snackBar.open(message, 'Dismiss', {
+      duration: 5000,
+    });
+
+    snackbarRef.onAction().subscribe(() => {
+      snackbarRef.dismiss();
+    });
+  }
 
   async onSubmit(): Promise<void> {
     if (this.projectForm.valid) {
@@ -46,7 +61,7 @@ export class CreateProject {
         name: formResult.projectName!,
         deadline: formResult.deadline!,
       };
-      this.isLoading.set(true);
+      this.createProjectState.set('loading');
 
       try {
         // Add the project using the facade and get the generated project ID
@@ -58,8 +73,8 @@ export class CreateProject {
         this.router.navigate([projectId], { relativeTo: this.route.parent });
       } catch (error) {
         console.error('Error creating project:', error);
-      } finally {
-        this.isLoading.set(false);
+        this.createProjectState.set('idle');
+        this.openSnackBar('Project creation failed');
       }
     } else {
       console.log('Form is invalid');

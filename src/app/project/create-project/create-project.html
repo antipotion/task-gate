@@ -1,47 +1,50 @@
-@if (isLoading()) {
-  <div class="h-full flex flex-col gap-2 items-center justify-center">
-    <mat-spinner [diameter]="24"></mat-spinner>
-    <p>Creating project...</p>
-  </div>
-} @else {
-  <section class="h-full w-full flex flex-col items-center">
-    <div class="w-full">
-      <button matIconButton (click)="onBack()">
-        <mat-icon fontIcon="arrow_back"></mat-icon>
-      </button>
+@switch (createProjectState()) {
+  @case ('loading') {
+    <div class="h-full flex flex-col gap-2 items-center justify-center">
+      <mat-spinner [diameter]="24"></mat-spinner>
+      <p>Creating project...</p>
     </div>
-    <div class="mt-40 flex flex-col items-center gap-4">
-      <p class="w-fit">Create your project</p>
+  }
+  @case ('idle') {
+    <section class="h-full w-full flex flex-col items-center">
+      <div class="w-full">
+        <button matIconButton (click)="onBack()">
+          <mat-icon fontIcon="arrow_back"></mat-icon>
+        </button>
+      </div>
+      <div class="mt-40 flex flex-col items-center gap-4">
+        <p class="w-fit">Create your project</p>
 
-      <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="flex flex-col w-fit h-fit">
-        <mat-form-field [formGroup]="projectForm">
-          <!-- Project Name Input -->
-          <mat-label>Project Name</mat-label>
-          <input matInput placeholder="Enter project name" formControlName="projectName" />
-          @if (projectForm.get('projectName')?.hasError('required')) {
-            <mat-error> Project Name is required </mat-error>
-          }
-        </mat-form-field>
+        <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="flex flex-col w-fit h-fit">
+          <mat-form-field [formGroup]="projectForm">
+            <!-- Project Name Input -->
+            <mat-label>Project Name</mat-label>
+            <input matInput placeholder="Enter project name" formControlName="projectName" />
+            @if (projectForm.get('projectName')?.hasError('required')) {
+              <mat-error> Project Name is required </mat-error>
+            }
+          </mat-form-field>
 
-        <mat-form-field>
-          <!-- Deadline Input -->
-          <mat-label>Deadline</mat-label>
-          <input
-            matInput
-            placeholder="Enter deadline"
-            formControlName="deadline"
-            [matDatepicker]="picker"
-          />
-          <mat-hint>MM/DD/YYYY</mat-hint>
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-          @if (projectForm.get('deadline')?.hasError('required')) {
-            <mat-error> Deadline is required </mat-error>
-          }
-        </mat-form-field>
+          <mat-form-field>
+            <!-- Deadline Input -->
+            <mat-label>Deadline</mat-label>
+            <input
+              matInput
+              placeholder="Enter deadline"
+              formControlName="deadline"
+              [matDatepicker]="picker"
+            />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            @if (projectForm.get('deadline')?.hasError('required')) {
+              <mat-error> Deadline is required </mat-error>
+            }
+          </mat-form-field>
 
-        <button matButton="filled">Create Project</button>
-      </form>
-    </div>
-  </section>
+          <button matButton="filled">Create Project</button>
+        </form>
+      </div>
+    </section>
+  }
 }
