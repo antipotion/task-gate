@@ -67,12 +67,25 @@ export class CreateProject {
         // Add the project using the facade and get the generated project ID
         const projectId = await this.projectFacade.addProject(projectData);
 
+        // Reset the form
+        this.projectForm.setValue({
+          projectName: '',
+          deadline: '',
+        });
+
         // NOTE: Assumption for the navigation is that the parent is the project dashboard component route.
         // if this is violated -> change the `relativeTo` to align it
         // or make the path explicit
         this.router.navigate([projectId], { relativeTo: this.route.parent });
       } catch (error) {
         console.error('Error creating project:', error);
+
+        // Reset the form
+        this.projectForm.setValue({
+          projectName: '',
+          deadline: '',
+        });
+
         this.createProjectState.set('idle');
         this.openSnackBar('Project creation failed');
       }
