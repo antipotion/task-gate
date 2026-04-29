@@ -9,7 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProjectFacade } from '../../application/facades/project-facade';
+import { ProjectFacade } from '../project-facade';
 import type { Project } from '../project.types';
 
 type CreateProjectState = 'idle' | 'loading';

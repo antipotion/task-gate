@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 
-import type { Project } from '../../project/project.types';
-import { StoreService } from '../store/store-service';
+import { StoreService } from '../application/store/store-service';
 import { ProjectFacade } from './project-facade';
+import type { Project } from './project.types';
 
 describe('ProjectFacade', () => {
   let service: ProjectFacade;
@@ -19,8 +19,8 @@ describe('ProjectFacade', () => {
           provide: StoreService,
           useValue: {
             projects$: projectsSubject.asObservable(),
-            addProject: jasmine.createSpy('addProject'),
-            getProjectById$: jasmine.createSpy('getProjectById$'),
+            // addProject: jasmine.createSpy('addProject'),
+            // getProjectById$: jasmine.createSpy('getProjectById$'),
           },
         },
       ],

@@ -2,7 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProjectFacade } from '../../../application/facades/project-facade';
+import { ProjectFacade } from '../../project-facade';
 import type { Project } from '../../project.types';
 import { ProjectActivityFeed } from '../project-activity-feed/project-activity-feed';
 import { ProjectHeader } from '../project-header/project-header';

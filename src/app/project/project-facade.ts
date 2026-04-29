@@ -1,7 +1,7 @@
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { type Subscription } from 'rxjs';
-import type { Project } from '../../project/project.types';
-import { StoreService } from '../store/store-service';
+import { StoreService } from '../application/store/store-service';
+import type { Project } from './project.types';
 
 type ProjectState =
   | { status: 'loading' }

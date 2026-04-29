@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ProjectFacade } from '../application/facades/project-facade';
+import { ProjectFacade } from './project-facade';
 
 @Component({
   selector: 'app-project',

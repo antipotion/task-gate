@@ -13,6 +13,11 @@ describe('ProjectHeader', () => {
 
     fixture = TestBed.createComponent(ProjectHeader);
     component = fixture.componentInstance;
+
+    fixture.componentRef.setInput('projectName', 'project');
+
+    fixture.detectChanges();
+    
     await fixture.whenStable();
   });
 

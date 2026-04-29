@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProjectFacade } from '../../application/facades/project-facade';
+import { ProjectFacade } from '../project-facade';
 
 @Component({
   selector: 'app-project-dashboard',
