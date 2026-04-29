@@ -59,6 +59,11 @@ describe('CreateProject', () => {
     });
 
     expect(router.navigate).toHaveBeenCalledWith(['123'], { relativeTo: route.parent });
+  
+    expect(component.projectForm.value).toEqual({
+      projectName: null,
+      deadline: null,
+    });
   });
 
   // Error Case
@@ -78,6 +83,11 @@ describe('CreateProject', () => {
     });
 
     await component.onSubmit();
+
+    expect(component.projectForm.value).toEqual({
+      projectName: null,
+      deadline: null,
+    });
 
     expect(component.createProjectState()).toBe('idle');
 

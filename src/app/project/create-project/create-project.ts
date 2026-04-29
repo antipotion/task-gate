@@ -68,10 +68,7 @@ export class CreateProject {
         const projectId = await this.projectFacade.addProject(projectData);
 
         // Reset the form
-        this.projectForm.setValue({
-          projectName: '',
-          deadline: '',
-        });
+        this.projectForm.reset();
 
         // NOTE: Assumption for the navigation is that the parent is the project dashboard component route.
         // if this is violated -> change the `relativeTo` to align it
@@ -81,10 +78,7 @@ export class CreateProject {
         console.error('Error creating project:', error);
 
         // Reset the form
-        this.projectForm.setValue({
-          projectName: '',
-          deadline: '',
-        });
+        this.projectForm.reset();
 
         this.createProjectState.set('idle');
         this.openSnackBar('Project creation failed');
