@@ -3,7 +3,7 @@ import { type Subscription } from 'rxjs';
 import { StoreService } from '../application/store/store-service';
 import type { Project } from './project.types';
 
-type ProjectState =
+export type ProjectState =
   | { status: 'loading' }
   | { status: 'success'; data: Project[] }
   | { status: 'error'; error: string };

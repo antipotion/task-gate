@@ -37,7 +37,6 @@ describe('ProjectDetails', () => {
       imports: [ProjectDetails],
       providers: [
         provideRouter([]),
-        ProjectFacade,
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockRoute },
         { provide: ProjectFacade, useValue: mockFacade },
