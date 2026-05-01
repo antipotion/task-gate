@@ -1,8 +1,18 @@
 <mat-dialog-content>
   <form action="" [formGroup]="projectForm" class="flex flex-col items-center">
-    <mat-form-field>
+    <!-- Project name -->
+    <mat-form-field class="w-full">
       <mat-label>Project Name</mat-label>
       <input matInput placeholder="e.g. PaperTowel" formControlName="name" />
+    </mat-form-field>
+
+    <!-- Project deadline -->
+    <mat-form-field>
+      <mat-label>Project Deadline</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="deadline" />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
     <div class="w-full flex justify-end">

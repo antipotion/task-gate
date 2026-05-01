@@ -18,9 +18,11 @@
         <mat-chip><p class="mat-font-label-sm">Start Date: MM/DD/YYYY</p> </mat-chip>
       </div>
 
-      <!-- End Date -->
+      <!-- Deadline -->
       <div>
-        <mat-chip><p class="mat-font-label-sm">Target End Date: MM/DD/YYYY</p> </mat-chip>
+        <mat-chip
+          ><p class="mat-font-label-sm">Deadline: {{ this.deadline() }}</p>
+        </mat-chip>
       </div>
     </div>
   </div>
