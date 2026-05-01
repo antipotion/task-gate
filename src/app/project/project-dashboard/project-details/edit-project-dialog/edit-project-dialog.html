@@ -1,3 +1,4 @@
+<h1 mat-dialog-title>Edit Project Details</h1>
 <mat-dialog-content>
   <form action="" [formGroup]="projectForm" class="flex flex-col items-center">
     <!-- Project name -->
@@ -14,10 +15,9 @@
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-
-    <div class="w-full flex justify-end">
-      <button matButton [mat-dialog-close]="projectForm.getRawValue()">Save</button>
-      <button matButton class="error-btn" (click)="onCancel()">Cancel</button>
-    </div>
   </form>
 </mat-dialog-content>
+<mat-dialog-actions>
+  <button matButton [mat-dialog-close]="projectForm.getRawValue()">Save</button>
+  <button matButton class="error-btn" (click)="onCancel()">Cancel</button>
+</mat-dialog-actions>

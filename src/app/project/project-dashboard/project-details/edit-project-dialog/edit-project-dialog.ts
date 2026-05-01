@@ -3,15 +3,10 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import type { Project } from '../../../project.types';
+import type { Project } from '../../../project.model';
 
 @Component({
   selector: 'app-edit-project-dialog',
@@ -20,9 +15,8 @@ import type { Project } from '../../../project.types';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatDialogContent,
-    MatDialogClose,
     MatDatepickerModule,
+    MatDialogModule,
   ],
   templateUrl: './edit-project-dialog.html',
   styleUrl: './edit-project-dialog.scss',

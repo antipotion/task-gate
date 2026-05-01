@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { map, shareReplay, type Observable } from 'rxjs';
 import { InfrastructureService } from '../../infrastructure/infrastructure-service';
-import type { Project } from '../../project/project.types';
+import type { Project } from '../../project/project.model';
+import type { Task } from '../../project/task/task.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +14,12 @@ export class StoreService {
     .listenToProjectsCollection$()
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-  async addProject(project: Omit<Project, 'id'>): Promise<string> {
+  addProject(project: Omit<Project, 'id'>): Promise<string> {
     return this.infrastructureService.addProjectDocument(project);
+  }
+
+  addTask(task: Omit<Task, 'id'>): Promise<string> {
+    return this.infrastructureService.addTaskDocument(task);
   }
 
   getProjectById$(projectId: string): Observable<Project | undefined> {
@@ -23,7 +28,7 @@ export class StoreService {
     );
   }
 
-  async updateProject(id: string, dto: Partial<Project>): Promise<void> {
-    this.infrastructureService.updateProject(id, dto);
+  updateProject(id: string, dto: Partial<Project>): Promise<void> {
+    return this.infrastructureService.updateProject(id, dto);
   }
 }
