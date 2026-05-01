@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -8,4 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './project-overview.html',
   styleUrl: './project-overview.scss',
 })
-export class ProjectOverview {}
+export class ProjectOverview {
+  deadline = input.required<string>();
+}

@@ -9,7 +9,7 @@
 
   <!-- Contents -->
   <app-project-header [projectName]="project()?.name ?? 'No Project'" />
-  <app-project-overview />
+  <app-project-overview [deadline]="(project()?.deadline | date) ?? 'No Deadline'" />
   <app-project-metrics />
   <app-project-tasks-board />
   <app-project-activity-feed />

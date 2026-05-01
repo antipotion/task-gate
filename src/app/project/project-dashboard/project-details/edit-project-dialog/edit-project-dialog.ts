@@ -1,6 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import {
   MAT_DIALOG_DATA,
   MatDialogClose,
@@ -20,9 +22,12 @@ import type { Project } from '../../../project.types';
     MatButtonModule,
     MatDialogContent,
     MatDialogClose,
+    MatDatepickerModule,
   ],
   templateUrl: './edit-project-dialog.html',
   styleUrl: './edit-project-dialog.scss',
+  providers: [provideNativeDateAdapter()],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditProjectDialog {
   readonly dialogRef = inject(MatDialogRef<EditProjectDialog>);
@@ -30,6 +35,7 @@ export class EditProjectDialog {
 
   projectForm = new FormGroup({
     name: new FormControl(this.data.name, Validators.required),
+    deadline: new FormControl(this.data.deadline, Validators.required),
   });
 
   onCancel(): void {

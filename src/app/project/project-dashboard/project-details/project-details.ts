@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,6 +23,7 @@ import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
     ProjectActivityFeed,
     MatButtonModule,
     MatIconModule,
+    DatePipe,
   ],
   templateUrl: './project-details.html',
   styleUrl: './project-details.scss',
@@ -42,7 +44,7 @@ export class ProjectDetails {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(EditProjectDialog, {
-      data: { name: this.project()?.name },
+      data: { name: this.project()?.name, deadline: this.project()?.deadline },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
