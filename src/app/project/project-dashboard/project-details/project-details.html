@@ -4,7 +4,17 @@
     <button matIconButton (click)="onBack()">
       <mat-icon fontIcon="arrow_back"></mat-icon>
     </button>
-    <button matButton (click)="openDialog()">Edit</button>
+
+    <div>
+      <!-- Edit Project Dialog -->
+      <button matButton (click)="openEditDialog()">Edit</button>
+
+      <!-- Add Task Dialog -->
+      <button matButton="filled" (click)="openAddTaskDialog()">
+        <mat-icon fontIcon="add"></mat-icon>
+        Add Task
+      </button>
+    </div>
   </div>
 
   <!-- Contents -->

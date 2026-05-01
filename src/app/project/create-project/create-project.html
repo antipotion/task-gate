@@ -16,13 +16,19 @@
         <p class="w-fit">Create your project</p>
 
         <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="flex flex-col w-fit h-fit">
-          <mat-form-field [formGroup]="projectForm">
+          <mat-form-field>
             <!-- Project Name Input -->
             <mat-label>Project Name</mat-label>
-            <input matInput placeholder="Enter project name" formControlName="projectName" />
-            @if (projectForm.get('projectName')?.hasError('required')) {
+            <input matInput placeholder="Enter project name" formControlName="name" />
+            @if (projectForm.get('name')?.hasError('required')) {
               <mat-error> Project Name is required </mat-error>
             }
+          </mat-form-field>
+
+          <mat-form-field>
+            <!-- Description -->
+            <mat-label>Project Description</mat-label>
+            <input matInput placeholder="Enter project description" formControlName="description" />
           </mat-form-field>
 
           <mat-form-field>
@@ -42,7 +48,7 @@
             }
           </mat-form-field>
 
-          <button matButton="filled">Create Project</button>
+          <button matButton="filled" [disabled]="projectForm.invalid">Create Project</button>
         </form>
       </div>
     </section>
