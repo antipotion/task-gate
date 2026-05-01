@@ -63,4 +63,40 @@ export class ProjectFacade {
       }
     });
   }
+
+  async updateProject(id: string, dto: Partial<Project>): Promise<void> {
+    const state = this.state();
+
+    if (state.status !== 'success') return;
+
+    const project = state.data.find((project) => project.id === id);
+
+    if (!project) return;
+
+    const changes: Partial<Project> = diff(project, dto);
+
+    // Guard if there are no changes
+    if (Object.keys(changes).length === 0) return;
+
+    try {
+      this.storeService.updateProject(id, changes);
+      console.dir(`Updated succeeded: ${id} - ${changes}`);
+    } catch (error) {
+      console.warn(`Error updating project: ${error}`);
+    }
+  }
+}
+
+function diff<T>(original: T, updated: Partial<T>): Partial<T> {
+  const result: Partial<T> = {};
+
+  for (const key in updated) {
+    const typedKey = key as keyof T;
+
+    if (updated[typedKey] !== original[typedKey]) {
+      result[typedKey] = updated[typedKey];
+    }
+  }
+
+  return result;
 }

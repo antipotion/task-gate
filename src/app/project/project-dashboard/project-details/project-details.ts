@@ -1,5 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectFacade } from '../../project-facade';
@@ -9,6 +10,7 @@ import { ProjectHeader } from '../project-header/project-header';
 import { ProjectMetrics } from '../project-metrics/project-metrics';
 import { ProjectOverview } from '../project-overview/project-overview';
 import { ProjectTasksBoard } from '../project-tasks-board/project-tasks-board';
+import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
 
 @Component({
   selector: 'app-project-details',
@@ -28,6 +30,7 @@ export class ProjectDetails {
   private projectFacade = inject(ProjectFacade);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private readonly dialog = inject(MatDialog);
 
   private projectId = this.route.snapshot.paramMap.get('id') || '';
 
@@ -35,6 +38,17 @@ export class ProjectDetails {
 
   onBack(): void {
     this.router.navigate([''], { relativeTo: this.route.parent });
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(EditProjectDialog, {
+      data: { name: this.project()?.name },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log(result);
+      this.projectFacade.updateProject(this.projectId, result);
+    });
   }
 
   ngOnInit(): void {

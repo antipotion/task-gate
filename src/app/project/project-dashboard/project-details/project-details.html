@@ -1,9 +1,10 @@
 <div class="p-4 flex flex-col gap-4 w-full">
   <!-- Back button -->
-  <div>
+  <div class="flex justify-between">
     <button matIconButton (click)="onBack()">
       <mat-icon fontIcon="arrow_back"></mat-icon>
     </button>
+    <button matButton (click)="openDialog()">Edit</button>
   </div>
 
   <!-- Contents -->
@@ -13,4 +14,3 @@
   <app-project-tasks-board />
   <app-project-activity-feed />
 </div>
-

@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import {
   addDoc,
   collection,
+  doc,
   onSnapshot,
+  updateDoc,
   type DocumentData,
   type Firestore,
   type QuerySnapshot,
@@ -46,5 +48,11 @@ export class InfrastructureService {
 
       return unsubscribe;
     });
+  }
+
+  async updateProject(id: string, dto: Partial<Project>): Promise<void> {
+    const ref = doc(this.projectsCollection, id);
+
+    return updateDoc(ref, { ...dto });
   }
 }

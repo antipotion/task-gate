@@ -1,0 +1,13 @@
+<mat-dialog-content>
+  <form action="" [formGroup]="projectForm" class="flex flex-col items-center">
+    <mat-form-field>
+      <mat-label>Project Name</mat-label>
+      <input matInput placeholder="e.g. PaperTowel" formControlName="name" />
+    </mat-form-field>
+
+    <div class="w-full flex justify-end">
+      <button matButton [mat-dialog-close]="projectForm.getRawValue()">Save</button>
+      <button matButton class="error-btn" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</mat-dialog-content>

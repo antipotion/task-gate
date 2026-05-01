@@ -1,14 +1,13 @@
-import { inject, Injectable, type OnDestroy } from '@angular/core';
-import { map, shareReplay, type Observable, type Subscription } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { map, shareReplay, type Observable } from 'rxjs';
 import { InfrastructureService } from '../../infrastructure/infrastructure-service';
 import type { Project } from '../../project/project.types';
 
 @Injectable({
   providedIn: 'root',
 })
-export class StoreService implements OnDestroy {
+export class StoreService {
   private readonly infrastructureService = inject(InfrastructureService);
-  private projectsCollectionSubscription: Subscription | null = null;
 
   projects$: Observable<Project[]> = this.infrastructureService
     .listenToProjectsCollection$()
@@ -24,8 +23,7 @@ export class StoreService implements OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
-    this.projectsCollectionSubscription?.unsubscribe();
-    this.projectsCollectionSubscription = null;
+  async updateProject(id: string, dto: Partial<Project>): Promise<void> {
+    this.infrastructureService.updateProject(id, dto);
   }
 }
