@@ -61,6 +61,11 @@ p {
 }
 
 // Label
+.mat-font-label-lg {
+  font: var(--mat-sys-label-large);
+  letter-spacing: var(--mat-sys-label-large-tracking);
+}
+
 .mat-font-label-sm {
   font: var(--mat-sys-label-small);
   letter-spacing: var(--mat-sys-label-small-tracking);

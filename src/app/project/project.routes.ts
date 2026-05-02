@@ -21,6 +21,7 @@ export const projectRoutes: Routes = [
           import('./project-dashboard/project-details/project-details').then(
             (m) => m.ProjectDetails,
           ),
+        loadChildren: () => import('./task/task.routes').then((m) => m.TaskRoutes),
       },
     ],
   },
