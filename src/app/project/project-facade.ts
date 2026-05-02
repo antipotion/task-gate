@@ -2,7 +2,7 @@ import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { type Subscription } from 'rxjs';
 import { StoreService } from '../application/store/store-service';
 import type { Project } from './project.model';
-import type { Task } from './task/task.model';
+import type { Task, TaskStatus } from './task/task.model';
 
 export type ProjectState =
   | { status: 'loading' }
@@ -56,7 +56,8 @@ export class ProjectFacade {
 
   async addTask(projectid: string, task: Omit<Task, 'id'>): Promise<string> {
     try {
-      const withProjectIdTask = { projectid, ...task };
+      const status: TaskStatus = 'TODO';
+      const withProjectIdTask = { projectid, ...task, status };
 
       const taskId = await this.storeService.addTask(withProjectIdTask);
 
