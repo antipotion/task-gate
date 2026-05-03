@@ -6,13 +6,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectFacade } from '../../project-facade';
 import type { Project } from '../../project.model';
+import { CreateTask } from '../../task/create-task/create-task';
 import { ProjectActivityFeed } from '../project-activity-feed/project-activity-feed';
 import { ProjectHeader } from '../project-header/project-header';
 import { ProjectMetrics } from '../project-metrics/project-metrics';
 import { ProjectOverview } from '../project-overview/project-overview';
 import { ProjectTasksBoard } from '../project-tasks-board/project-tasks-board';
 import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
-import { CreateTask } from '../../task/create-task/create-task';
 
 @Component({
   selector: 'app-project-details',
@@ -39,6 +39,10 @@ export class ProjectDetails {
 
   project = computed<Project | null>(() => this.projectFacade.activeProject());
 
+  ngOnInit(): void {
+    this.projectFacade.selectProject(this.projectId);
+  }
+
   onBack(): void {
     this.router.navigate([''], { relativeTo: this.route.parent });
   }
@@ -50,20 +54,18 @@ export class ProjectDetails {
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log(result);
+      // TODO: Handle the result of the operation (e.g. Success | Error)
       this.projectFacade.updateProject(this.projectId, result);
     });
   }
 
-  openAddTaskDialog():void {
+  openAddTaskDialog(): void {
     const dialogRef = this.dialog.open(CreateTask, {});
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log(result);
+      // TODO: Handle the result of the operation (e.g. Success | Error)
       this.projectFacade.addTask(this.projectId, result);
     });
-  }
-
-  ngOnInit(): void {
-    this.projectFacade.getActiveProject(this.projectId);
   }
 }

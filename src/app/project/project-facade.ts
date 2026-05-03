@@ -1,8 +1,10 @@
-import { DestroyRef, inject, Injectable, signal } from '@angular/core';
-import { type Subscription } from 'rxjs';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../application/store/store-service';
+import { ProjectUseCase } from './project-use-case';
 import type { Project } from './project.model';
-import type { Task, TaskStatus } from './task/task.model';
+import type { Task } from './task/task.model';
 
 export type ProjectState =
   | { status: 'loading' }
@@ -12,107 +14,53 @@ export type ProjectState =
 @Injectable()
 export class ProjectFacade {
   private storeService = inject(StoreService);
-  private destroyRef = inject(DestroyRef);
-  private readonly _projectState = signal<ProjectState>({ status: 'loading' });
+  private projectUseCase = inject(ProjectUseCase);
 
-  readonly state = this._projectState.asReadonly();
-  readonly activeProject = signal<Project | null>(null);
+  readonly projectState = toSignal(
+    this.storeService.projects$.pipe(
+      map(
+        (projects): ProjectState => ({
+          status: 'success',
+          data: projects,
+        }),
+      ),
+      startWith({ status: 'loading' } as ProjectState),
+      catchError((error) => of({ status: 'error', error: String(error) } as ProjectState)),
+    ),
+    { initialValue: { status: 'loading' } },
+  );
 
-  constructor() {
-    const projectSubscription = this.loadProjects();
+  private readonly selectedProjectId = signal<string | null>(null);
 
-    this.destroyRef.onDestroy(() => {
-      projectSubscription.unsubscribe();
-    });
+  readonly activeProject = computed<Project | null>(() => {
+    const state = this.projectState();
+    const id = this.selectedProjectId();
+
+    if (state.status !== 'success' || !id) return null;
+
+    return state.data.find((p) => p.id === id) ?? null;
+  });
+
+  addProject(project: Omit<Project, 'id'>): Promise<string> {
+    return this.projectUseCase.addProject(project);
   }
 
-  loadProjects(): Subscription {
-    this._projectState.set({ status: 'loading' });
-
-    const subscription = this.storeService.projects$.subscribe({
-      next: (projects) => {
-        this._projectState.set({ status: 'success', data: projects });
-      },
-      error: (error) => {
-        console.error('Error loading projects:', error);
-        this._projectState.set({ status: 'error', error: String(error) });
-      },
-    });
-
-    return subscription;
+  addTask(projectid: string, task: Omit<Task, 'id'>): Promise<string> {
+    return this.projectUseCase.addTask(projectid, task);
   }
 
-  async addProject(project: Omit<Project, 'id'>): Promise<string> {
-    try {
-      const projectId = await this.storeService.addProject(project);
-
-      return projectId;
-    } catch (error) {
-      // TODO: Handle error appropriately, e.g., show a notification to the user
-      console.error('Error adding project:', error);
-      throw new Error(`Error adding project: ${String(error)}`);
-    }
-  }
-
-  async addTask(projectid: string, task: Omit<Task, 'id'>): Promise<string> {
-    try {
-      const status: TaskStatus = 'TODO';
-      const withProjectIdTask = { projectid, ...task, status };
-
-      const taskId = await this.storeService.addTask(withProjectIdTask);
-
-      return taskId;
-    } catch (error) {
-      // TODO: Handle error appropriately, e.g., show a notification to the user
-      console.error(`Error adding project: ${error}`);
-      throw new Error(`Error adding project: ${String(error)}`);
-    }
-  }
-
-  getActiveProject(projectId: string): void {
-    this.storeService.getProjectById$(projectId).subscribe((project) => {
-      if (project) {
-        this.activeProject.set(project);
-      } else {
-        console.warn(`Project with ID ${projectId} not found.`);
-        this.activeProject.set(null);
-      }
-    });
+  selectProject(projectId: string): void {
+    this.selectedProjectId.set(projectId);
   }
 
   async updateProject(id: string, dto: Partial<Project>): Promise<void> {
-    const state = this.state();
+    const state = this.projectState();
 
     if (state.status !== 'success') return;
 
     const project = state.data.find((project) => project.id === id);
-
     if (!project) return;
 
-    const changes: Partial<Project> = diff(project, dto);
-
-    // Guard if there are no changes
-    if (Object.keys(changes).length === 0) return;
-
-    try {
-      this.storeService.updateProject(id, changes);
-      console.dir(`Updated succeeded: ${id} - ${changes}`);
-    } catch (error) {
-      console.warn(`Error updating project: ${error}`);
-    }
+    return await this.projectUseCase.updateProject(id, project, dto);
   }
-}
-
-function diff<T>(original: T, updated: Partial<T>): Partial<T> {
-  const result: Partial<T> = {};
-
-  for (const key in updated) {
-    const typedKey = key as keyof T;
-
-    if (updated[typedKey] !== original[typedKey]) {
-      result[typedKey] = updated[typedKey];
-    }
-  }
-
-  return result;
 }
