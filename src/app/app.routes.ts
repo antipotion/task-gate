@@ -10,4 +10,8 @@ export const routes: Routes = [
     path: 'project',
     loadChildren: () => import('./project/project.routes').then((m) => m.projectRoutes),
   },
+  {
+    path: 'task',
+    loadChildren: () => import('./project/task/task.routes').then((m) => m.TaskRoutes),
+  },
 ];

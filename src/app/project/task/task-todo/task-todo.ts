@@ -1,7 +1,7 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { TaskFacade, TaskState } from '../task-facade';
 import type { Task } from '../task.model';
 
@@ -14,7 +14,6 @@ import type { Task } from '../task.model';
 export class TaskTodo {
   private taskFacade = inject(TaskFacade);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
 
   readonly projectId = input.required<string>();
 
@@ -29,6 +28,6 @@ export class TaskTodo {
   });
 
   onSelectTask(taskId: string): void {
-    this.router.navigate(['task', `${taskId}`], { relativeTo: this.route });
+    this.router.navigate(['task', `${taskId}`]);
   }
 }
