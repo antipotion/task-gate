@@ -1,0 +1,30 @@
+@let state = taskState();
+@let completed = completedTask();
+
+@switch (state.status) {
+  @case ('loading') {
+    <div>
+      <mat-spinner [diameter]="24"></mat-spinner>
+    </div>
+  }
+  @case ('error') {
+    <div>
+      <p>Error: {{ state.error }}</p>
+    </div>
+  }
+  @case ('success') {
+    <div>
+      @if (!completed || completed.length === 0) {
+        <!-- No items with status: 'TODO' -->
+        <p>No task available</p>
+      } @else {
+        @for (task of completed; track task.id) {
+          <div>
+            <p>{{ task.name }}</p>
+          </div>
+        }
+      }
+    </div>
+  }
+}
+

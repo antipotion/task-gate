@@ -49,7 +49,6 @@ export class ProjectDetails {
 
   openEditDialog(): void {
     const dialogRef = this.dialog.open(EditProjectDialog, {
-      data: { name: this.project()?.name, deadline: this.project()?.deadline },
     });
 
     dialogRef.afterClosed().subscribe((result) => {

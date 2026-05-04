@@ -42,6 +42,24 @@ export class FirestoreProjectRepository extends ProjectRepository {
     });
   }
 
+  listenToTasks$(): Observable<Task[]> {
+    return new Observable<Task[]>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        this.tasksCollection,
+        (snapshot) => {
+          const tasks = snapshot.docs.map((doc) => this.mapToTask(doc));
+
+          subscriber.next(tasks);
+        },
+        (error) => {
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
   async addProject(data: Omit<Project, 'id'>): Promise<string> {
     const result = await addDoc(this.projectsCollection, data);
     return result.id;
@@ -66,6 +84,20 @@ export class FirestoreProjectRepository extends ProjectRepository {
       name: data['name'],
       description: data['description'] ?? null,
       deadline: data['deadline']?.toDate() ?? null,
+    };
+  }
+
+  private mapToTask(doc: QueryDocumentSnapshot<DocumentData>): Task {
+    const data = doc.data();
+
+    return {
+      projectId: data['projectId'],
+      id: doc.id,
+      name: data['name'],
+      description: data['description'] ?? null,
+      deadline: data['deadline']?.toDate() ?? null,
+      status: data['status'],
+      currentSubmissionVersion: data['currentSubmissionVersion'],
     };
   }
 }

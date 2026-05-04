@@ -4,6 +4,7 @@ import type { Task } from "../../project/task/task.model";
 
 export abstract class ProjectRepository {
   abstract listenToProjects$(): Observable<Project[]>;
+  abstract listenToTasks$(): Observable<Task[]>;
 
   abstract addProject(data: Omit<Project, 'id'>): Promise<string>;
   abstract addTask(data: Omit<Task, 'id'>): Promise<string>;

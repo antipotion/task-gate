@@ -15,7 +15,8 @@ export class ProjectUseCase {
 
   async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
     const status: TaskStatus = 'TODO';
-    const withProjectIdTask = { ...task, projectId, status };
+    const currentSubmissionVersion: number = 1;
+    const withProjectIdTask = { ...task, projectId, status, currentSubmissionVersion };
 
     const taskId = await this.repo.addTask(withProjectIdTask);
 
