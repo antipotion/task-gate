@@ -1,10 +1,16 @@
 import type { Routes } from '@angular/router';
 import { Task } from './task';
+import { TaskDetails } from './task-details/task-details';
 
 export const TaskRoutes: Routes = [
   {
-    path: 'task/:id',
+    path: ':taskId',
     component: Task,
-    children: [],
+    children: [
+      {
+        path: '',
+        component: TaskDetails,
+      },
+    ],
   },
 ];
