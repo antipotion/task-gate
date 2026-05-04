@@ -9,7 +9,7 @@
     <!-- Task State -->
     <div class="flex flex-col gap-2">
       <p>Current state</p>
-      <mat-chip>In-progress</mat-chip>
+      <mat-chip>{{ taskStatus() | titlecase }}</mat-chip>
       <button matButton="filled">Submit Output</button>
     </div>
   </div>

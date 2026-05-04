@@ -1,8 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { StoreService } from '../../application/store/store-service';
-import { Task } from './task.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
+import { StoreService } from '../../application/store/store-service';
+import { Task } from './task.model';
 
 export type TaskState =
   | { status: 'loading' }
@@ -37,4 +37,8 @@ export class TaskFacade {
 
     return state.data.find((p) => p.id === id) ?? null;
   });
+
+  selectTaskId(taskId: string): void {
+    this.selectedTaskId.set(taskId);
+  }
 }

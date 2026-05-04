@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-task-header',
@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './task-header.html',
   styleUrl: './task-header.scss',
 })
-export class TaskHeader {}
+export class TaskHeader {
+  taskName = input.required<string>();
+}
