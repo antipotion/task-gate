@@ -51,4 +51,8 @@ export class TaskFacade {
   updatetask(taskId: string, original: Task, dto: Partial<Task>): Promise<void> {
     return this.taskUseCase.updateTask(taskId, original, dto);
   }
+
+  deleteTask(taskId: string): Promise<void> {
+    return this.taskUseCase.deleteTask(taskId);
+  }
 }

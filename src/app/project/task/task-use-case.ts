@@ -27,4 +27,8 @@ export class TaskUseCase {
 
     return await this.repo.updateTask(taskId, changes);
   }
+
+  deleteTask(taskId: string): Promise<void> {
+    return this.repo.deleteTask(taskId);
+ }
 }

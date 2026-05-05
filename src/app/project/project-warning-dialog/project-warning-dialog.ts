@@ -43,8 +43,6 @@ export class ProjectWarningDialog {
   onConfirm(): void {
     const { confirmProjectName } = this.confirmDeleteForm.getRawValue();
 
-    if (!confirmProjectName) return;
-
     this.dialogRef.close(confirmProjectName);
   }
 
@@ -53,7 +51,7 @@ export class ProjectWarningDialog {
   }
 }
 
-function matchValueValidator(getExpected: () => string): ValidatorFn {
+export function matchValueValidator(getExpected: () => string): ValidatorFn {
   return (control: AbstractControl<string | null>): ValidationErrors | null => {
     const expected = getExpected();
     const value = control.value;

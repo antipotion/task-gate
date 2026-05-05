@@ -6,10 +6,15 @@
       <mat-icon fontIcon="arrow_back"></mat-icon>
     </button>
 
-    <!-- Task edit button -->
-    <button matButton="filled" (click)=openTaskEditDialog()>Edit</button>
+    <div>
+      <!-- Task edit button -->
+      <button matButton="filled" (click)=openTaskEditDialog()>Edit</button>
+
+      <!-- Task delete button -->
+      <button matButton style="color: var(--mat-sys-error);" (click)="openConfirmDeleteDialog()">Delete</button>
+    </div>
   </div>
-  
+
   <app-task-header [taskName]="activeTask()?.name ?? ''" />
   <app-task-overview [taskDeadline]="activeTask()?.deadline ?? ''" />
   <app-task-status [taskStatus]="activeTask()?.status" />

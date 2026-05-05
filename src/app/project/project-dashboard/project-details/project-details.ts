@@ -88,8 +88,6 @@ export class ProjectDetails {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
-
       if (!result) return;
       this.projectFacade.deleteProject(projectId);
       this.router.navigate(['']);

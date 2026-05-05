@@ -15,6 +15,7 @@ import { TaskStatus } from '../task-status/task-status';
 import { TaskSubtask } from '../task-subtask/task-subtask';
 import { TaskTime } from '../task-time/task-time';
 import { TASK_ROUTE_PARAMS } from '../task.routes';
+import { TaskWarningDialog } from '../task-warning-dialog/task-warning-dialog';
 
 @Component({
   selector: 'app-task-details',
@@ -83,5 +84,20 @@ export class TaskDetails implements OnInit {
     if (!projectId) return;
     
     this.router.navigate(['project', projectId]);
+  }
+
+  openConfirmDeleteDialog(): void {
+    const taskName = this.activeTask()?.name;
+    if (!taskName) return;
+    
+    const dialogRef = this.dialog.open(TaskWarningDialog, {
+      data: taskName,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+      this.taskFacade.deleteTask(this.taskId);
+      this.router.navigate(['']);
+    });
   }
 }
