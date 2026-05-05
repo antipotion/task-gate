@@ -58,4 +58,8 @@ export class ProjectFacade {
 
     return await this.projectUseCase.updateProject(id, project, dto);
   }
+
+  deleteProject(id: string): Promise<void> {
+    return this.projectUseCase.deleteProject(id);
+  }
 }

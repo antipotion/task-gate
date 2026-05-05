@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectFacade } from '../../project-facade';
+import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
 import type { Project } from '../../project.model';
 import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 import { CreateTask } from '../../task/create-task/create-task';
@@ -51,7 +52,9 @@ export class ProjectDetails {
   }
 
   openEditDialog(): void {
-    const dialogRef = this.dialog.open(EditProjectDialog, {});
+    const dialogRef = this.dialog.open(EditProjectDialog, {
+      data: { name: this.project()?.name, deadline: this.project()?.deadline },
+    });
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log(result);
@@ -61,11 +64,35 @@ export class ProjectDetails {
   }
 
   openAddTaskDialog(): void {
-    const dialogRef = this.dialog.open(CreateTask, {});
+    const dialogRef = this.dialog.open(CreateTask);
 
     dialogRef.afterClosed().subscribe((result) => {
       // TODO: Handle the result of the operation (e.g. Success | Error)
       this.taskFacade.addTask(this.projectId, result);
+    });
+  }
+
+  onDelete(): void {
+    const projectId = this.project()?.id;
+    if (!projectId) return;
+
+    this.openConfirmDeleteDialog(projectId);
+  }
+
+  openConfirmDeleteDialog(projectId: string): void {
+    const projectName = this.project()?.name;
+    if (!projectName) return;
+
+    const dialogRef = this.dialog.open(ProjectWarningDialog, {
+      data: projectName,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log(result);
+
+      if (!result) return;
+      this.projectFacade.deleteProject(projectId);
+      this.router.navigate(['']);
     });
   }
 }

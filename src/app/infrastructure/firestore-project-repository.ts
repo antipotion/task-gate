@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   updateDoc,
@@ -12,9 +13,9 @@ import {
 } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { db } from '../../environment/firebase.config';
+import { ProjectRepository } from '../application/repository/project-repository';
 import type { Project } from '../project/project.model';
 import type { Task } from '../project/task/task.model';
-import { ProjectRepository } from '../application/repository/project-repository';
 
 @Injectable({
   providedIn: 'root',
@@ -70,16 +71,28 @@ export class FirestoreProjectRepository extends ProjectRepository {
     return result.id;
   }
 
-  async updateProject(id: string, dto: Partial<Project>): Promise<void> {
-    const ref = doc(this.projectsCollection, id);
+  async updateProject(projectId: string, dto: Partial<Project>): Promise<void> {
+    const ref = doc(this.projectsCollection, projectId);
 
     return updateDoc(ref, { ...dto });
   }
 
-  async updateTask(id: string, dto: Partial<Task>): Promise<void> {
-    const ref = doc(this.tasksCollection, id);
+  async updateTask(taskId: string, dto: Partial<Task>): Promise<void> {
+    const ref = doc(this.tasksCollection, taskId);
 
     return updateDoc(ref, { ...dto });
+  }
+
+  async deleteProject(projectId: string): Promise<void> {
+    const ref = doc(this.projectsCollection, projectId);
+
+    return await deleteDoc(ref);
+  }
+
+  async deleteTask(taskId: string): Promise<void> {
+    const ref = doc(this.tasksCollection, taskId);
+
+    return await deleteDoc(ref);
   }
 
   private mapToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {

@@ -6,10 +6,8 @@ import type { Project } from './project.model';
 export class ProjectUseCase {
   private readonly repo = inject(ProjectRepository);
 
-  async addProject(project: Omit<Project, 'id'>): Promise<string> {
-    const projectId = await this.repo.addProject(project);
-
-    return projectId;
+  addProject(project: Omit<Project, 'id'>): Promise<string> {
+    return this.repo.addProject(project);
   }
 
   async updateProject(id: string, original: Project, dto: Partial<Project>): Promise<void> {
@@ -19,6 +17,10 @@ export class ProjectUseCase {
     if (Object.keys(changes).length === 0) return;
 
     return await this.repo.updateProject(id, changes);
+  }
+
+  deleteProject(id: string): Promise<void> {
+    return this.repo.deleteProject(id);
   }
 }
 

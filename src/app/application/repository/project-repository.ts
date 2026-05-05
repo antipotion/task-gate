@@ -8,5 +8,8 @@ export abstract class ProjectRepository {
 
   abstract addProject(data: Omit<Project, 'id'>): Promise<string>;
   abstract addTask(data: Omit<Task, 'id'>): Promise<string>;
-  abstract updateProject(id: string, dto: Partial<Project>): Promise<void>;
+  abstract updateProject(projectId: string, dto: Partial<Project>): Promise<void>;
+  abstract updateTask(taskId: string, dto: Partial<Task>): Promise<void>;
+  abstract deleteProject(projectId: string): Promise<void>;
+  abstract deleteTask(taskId: string): Promise<void>;
 }
