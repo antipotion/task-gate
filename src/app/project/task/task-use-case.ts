@@ -19,12 +19,12 @@ export class TaskUseCase {
     return taskId;
   }
 
-  async updateTask(id: string, original: Task, dto: Partial<Task>): Promise<void> {
+  async updateTask(taskId: string, original: Task, dto: Partial<Task>): Promise<void> {
     const changes: Partial<Task> = diff(original, dto);
 
     // Guard if there are no changes
     if (Object.keys(changes).length === 0) return;
 
-    return await this.repo.updateTask(id, changes);
+    return await this.repo.updateTask(taskId, changes);
   }
 }

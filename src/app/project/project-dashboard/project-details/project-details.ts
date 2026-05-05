@@ -64,7 +64,6 @@ export class ProjectDetails {
     const dialogRef = this.dialog.open(CreateTask, {});
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       // TODO: Handle the result of the operation (e.g. Success | Error)
       this.taskFacade.addTask(this.projectId, result);
     });
