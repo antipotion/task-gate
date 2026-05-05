@@ -2,6 +2,10 @@ import type { Routes } from '@angular/router';
 import { Project } from './project';
 import { ProjectDashboard } from './project-dashboard/project-dashboard';
 
+export const PROJECT_ROUTE_PARAMS = {
+  PROJECT_ID: 'projectId',
+} as const;
+
 export const projectRoutes: Routes = [
   {
     path: '',

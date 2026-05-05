@@ -9,6 +9,7 @@ import { TaskOverview } from '../task-overview/task-overview';
 import { TaskStatus } from '../task-status/task-status';
 import { TaskSubtask } from '../task-subtask/task-subtask';
 import { TaskTime } from '../task-time/task-time';
+import { TASK_ROUTE_PARAMS } from '../task.routes';
 
 @Component({
   selector: 'app-task-details',
@@ -29,7 +30,7 @@ export class TaskDetails implements OnInit {
   private taskFacade = inject(TaskFacade);
   private router = inject(ActivatedRoute);
 
-  taskId = this.router.snapshot.paramMap.get('taskId') || '';
+  taskId = this.router.snapshot.paramMap.get(TASK_ROUTE_PARAMS.TASK_ID) || '';
 
   activeTask = computed(() => this.taskFacade.activeTask());
 

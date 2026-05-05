@@ -1,0 +1,30 @@
+import { inject, Injectable } from '@angular/core';
+import { FirestoreProjectRepository } from '../../infrastructure/firestore-project-repository';
+import type { Task, TaskStatus } from './task.model';
+import { diff } from '../project-use-case';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class TaskUseCase {
+  private repo = inject(FirestoreProjectRepository);
+
+  async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
+    const status: TaskStatus = 'TODO';
+    const currentSubmissionVersion: number = 1;
+    const withProjectIdTask = { ...task, projectId, status, currentSubmissionVersion };
+
+    const taskId = await this.repo.addTask(withProjectIdTask);
+
+    return taskId;
+  }
+
+  async updateTask(id: string, original: Task, dto: Partial<Task>): Promise<void> {
+    const changes: Partial<Task> = diff(original, dto);
+
+    // Guard if there are no changes
+    if (Object.keys(changes).length === 0) return;
+
+    return await this.repo.updateTask(id, changes);
+  }
+}

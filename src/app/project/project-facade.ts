@@ -1,10 +1,9 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../application/store/store-service';
 import { ProjectUseCase } from './project-use-case';
 import type { Project } from './project.model';
-import type { Task } from './task/task.model';
 
 export type ProjectState =
   | { status: 'loading' }
@@ -43,10 +42,6 @@ export class ProjectFacade {
 
   addProject(project: Omit<Project, 'id'>): Promise<string> {
     return this.projectUseCase.addProject(project);
-  }
-
-  addTask(projectid: string, task: Omit<Task, 'id'>): Promise<string> {
-    return this.projectUseCase.addTask(projectid, task);
   }
 
   selectProject(projectId: string): void {

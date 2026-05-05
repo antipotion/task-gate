@@ -76,6 +76,12 @@ export class FirestoreProjectRepository extends ProjectRepository {
     return updateDoc(ref, { ...dto });
   }
 
+  async updateTask(id: string, dto: Partial<Task>): Promise<void> {
+    const ref = doc(this.tasksCollection, id);
+
+    return updateDoc(ref, { ...dto });
+  }
+
   private mapToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
     const data = doc.data();
 

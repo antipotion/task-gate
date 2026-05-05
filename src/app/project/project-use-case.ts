@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ProjectRepository } from '../application/repository/project-repository';
 import type { Project } from './project.model';
-import type { Task, TaskStatus } from './task/task.model';
 
 @Injectable()
 export class ProjectUseCase {
@@ -11,16 +10,6 @@ export class ProjectUseCase {
     const projectId = await this.repo.addProject(project);
 
     return projectId;
-  }
-
-  async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
-    const status: TaskStatus = 'TODO';
-    const currentSubmissionVersion: number = 1;
-    const withProjectIdTask = { ...task, projectId, status, currentSubmissionVersion };
-
-    const taskId = await this.repo.addTask(withProjectIdTask);
-
-    return taskId;
   }
 
   async updateProject(id: string, original: Project, dto: Partial<Project>): Promise<void> {
@@ -33,7 +22,7 @@ export class ProjectUseCase {
   }
 }
 
-function diff<T>(original: T, updated: Partial<T>): Partial<T> {
+export function diff<T>(original: T, updated: Partial<T>): Partial<T> {
   const result: Partial<T> = {};
 
   for (const key in updated) {

@@ -6,7 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectFacade } from '../../project-facade';
 import type { Project } from '../../project.model';
+import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 import { CreateTask } from '../../task/create-task/create-task';
+import { TaskFacade } from '../../task/task-facade';
 import { ProjectActivityFeed } from '../project-activity-feed/project-activity-feed';
 import { ProjectHeader } from '../project-header/project-header';
 import { ProjectMetrics } from '../project-metrics/project-metrics';
@@ -31,11 +33,12 @@ import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
 })
 export class ProjectDetails {
   private projectFacade = inject(ProjectFacade);
+  private taskFacade = inject(TaskFacade);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private readonly dialog = inject(MatDialog);
 
-  private projectId = this.route.snapshot.paramMap.get('id') || '';
+  private projectId = this.route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.PROJECT_ID) || '';
 
   project = computed<Project | null>(() => this.projectFacade.activeProject());
 
@@ -48,8 +51,7 @@ export class ProjectDetails {
   }
 
   openEditDialog(): void {
-    const dialogRef = this.dialog.open(EditProjectDialog, {
-    });
+    const dialogRef = this.dialog.open(EditProjectDialog, {});
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log(result);
@@ -64,7 +66,7 @@ export class ProjectDetails {
     dialogRef.afterClosed().subscribe((result) => {
       console.log(result);
       // TODO: Handle the result of the operation (e.g. Success | Error)
-      this.projectFacade.addTask(this.projectId, result);
+      this.taskFacade.addTask(this.projectId, result);
     });
   }
 }

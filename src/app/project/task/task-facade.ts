@@ -2,6 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../../application/store/store-service';
+import { TaskUseCase } from './task-use-case';
 import { Task } from './task.model';
 
 export type TaskState =
@@ -12,6 +13,7 @@ export type TaskState =
 @Injectable()
 export class TaskFacade {
   private storeService = inject(StoreService);
+  private taskUseCase = inject(TaskUseCase);
 
   readonly taskState = toSignal(
     this.storeService.tasks$.pipe(
@@ -40,5 +42,9 @@ export class TaskFacade {
 
   selectTaskId(taskId: string): void {
     this.selectedTaskId.set(taskId);
+  }
+
+  addTask(projectid: string, task: Omit<Task, 'id'>): Promise<string> {
+    return this.taskUseCase.addTask(projectid, task);
   }
 }
