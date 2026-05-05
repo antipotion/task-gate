@@ -3,7 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TaskComment } from '../task-comment/task-comment';
 import { TaskDependency } from '../task-dependency/task-dependency';
 import { TaskEdit } from '../task-edit/task-edit';
@@ -35,11 +35,12 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
 })
 export class TaskDetails implements OnInit {
   private taskFacade = inject(TaskFacade);
-  private router = inject(ActivatedRoute);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   readonly dialog = inject(MatDialog);
   private _snackBar = inject(MatSnackBar);
 
-  taskId = this.router.snapshot.paramMap.get(TASK_ROUTE_PARAMS.TASK_ID) || '';
+  taskId = this.route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.TASK_ID) || '';
 
   activeTask = computed(() => this.taskFacade.activeTask());
 
@@ -76,5 +77,11 @@ export class TaskDetails implements OnInit {
     snackBarRef.onAction().subscribe(() => {
       snackBarRef.dismiss();
     });
+  }
+
+  onBack(projectId: string | undefined): void {
+    if (!projectId) return;
+    
+    this.router.navigate(['project', projectId]);
   }
 }

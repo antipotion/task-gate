@@ -2,7 +2,7 @@
   <!-- Navigation and some functions -->
   <div class="flex justify-between">
     <!-- Back button -->
-    <button matIconButton>
+    <button matIconButton (click)="onBack(activeTask()?.projectId)">
       <mat-icon fontIcon="arrow_back"></mat-icon>
     </button>
 
