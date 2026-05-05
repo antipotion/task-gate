@@ -25,6 +25,10 @@ export class TaskEdit {
     deadline: new FormControl(this.data.deadline, Validators.required),
   });
 
+  onSave(): void {
+    this.dialogRef.close(this.taskEditForm.getRawValue());
+  }
+
   onCancel(): void {
     this.dialogRef.close();
   }
