@@ -33,13 +33,15 @@ export class ProjectWarningDialog {
 
   confirmDeleteForm = new FormGroup({
     confirmProjectName: new FormControl('', {
-      validators: [Validators.required, matchValueValidator(this.projectName())],
+      nonNullable: true,
+      validators: [Validators.required, matchValueValidator(() => this.projectName())],
     }),
   });
 
+  readonly confirmProjectNameControl = this.confirmDeleteForm.controls.confirmProjectName;
+
   onConfirm(): void {
-    const confirmProjectName = this.confirmDeleteForm.getRawValue();
-    console.log(confirmProjectName);
+    const { confirmProjectName } = this.confirmDeleteForm.getRawValue();
 
     if (!confirmProjectName) return;
 
@@ -51,8 +53,9 @@ export class ProjectWarningDialog {
   }
 }
 
-function matchValueValidator(expected: string): ValidatorFn {
+function matchValueValidator(getExpected: () => string): ValidatorFn {
   return (control: AbstractControl<string | null>): ValidationErrors | null => {
+    const expected = getExpected();
     const value = control.value;
 
     // Don't validate empty

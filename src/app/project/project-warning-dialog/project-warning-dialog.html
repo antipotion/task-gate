@@ -11,7 +11,11 @@
       <mat-form-field class="w-full">
         <input matInput placeholder="Enter the project name" formControlName="confirmProjectName" />
 
-        @if (confirmDeleteForm.invalid && confirmDeleteForm.dirty) {
+        @if (confirmProjectNameControl.touched && confirmProjectNameControl.hasError('required')) {
+        <mat-error>Input field must not be empty</mat-error>
+        }
+
+        @if (confirmProjectNameControl.hasError('mismatch') && confirmDeleteForm.dirty) {
           <mat-error>Project name does not match</mat-error>
         }
       </mat-form-field>
