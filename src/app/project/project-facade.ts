@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../application/store/store-service';

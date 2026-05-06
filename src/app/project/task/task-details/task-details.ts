@@ -1,4 +1,4 @@
-import { Component, computed, inject, type OnInit } from '@angular/core';
+import { Component, computed, effect, inject, signal, type OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +16,7 @@ import { TaskSubtask } from '../task-subtask/task-subtask';
 import { TaskTime } from '../task-time/task-time';
 import { TASK_ROUTE_PARAMS } from '../task.routes';
 import { TaskWarningDialog } from '../task-warning-dialog/task-warning-dialog';
+import { TaskAction } from '../task.model';
 
 @Component({
   selector: 'app-task-details',
@@ -44,6 +45,17 @@ export class TaskDetails implements OnInit {
   taskId = this.route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.TASK_ID) || '';
 
   activeTask = computed(() => this.taskFacade.activeTask());
+  nextTaskAction = signal<TaskAction | null>(null)
+
+  constructor() {
+    effect(() => {
+      // Getting next task action
+      const activeTask = this.activeTask();
+      if (!activeTask) return;
+      const result = this.taskFacade.nextTaskState(activeTask);
+      this.nextTaskAction.set(result ?? null);
+    });
+  }
 
   ngOnInit(): void {
     this.taskFacade.selectTaskId(this.taskId);
@@ -99,5 +111,12 @@ export class TaskDetails implements OnInit {
       this.taskFacade.deleteTask(this.taskId);
       this.router.navigate(['']);
     });
+  }
+
+  transitionTask(action: TaskAction): void {
+    const task = this.activeTask();
+    if (!task) throw new Error('Task does not exist can\'t transition');
+    
+    this.taskFacade.advanceTaskState(task, action);
   }
 }

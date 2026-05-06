@@ -15,12 +15,16 @@
   @case ('success') {
     <div>
       @if (!completed || completed.length === 0) {
-        <!-- No items with status: 'TODO' -->
+        <!-- No items with status: 'APPROVED' -->
         <p>No task available</p>
       } @else {
         @for (task of completed; track task.id) {
-          <div>
-            <p>{{ task.name }}</p>
+          <div (click)="onSelectTask(task.id)">
+            <mat-card>
+              <mat-card-content>
+                <p>{{ task.name }}</p>
+              </mat-card-content>
+            </mat-card>
           </div>
         }
       }

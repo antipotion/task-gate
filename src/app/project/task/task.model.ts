@@ -5,7 +5,6 @@ export type TaskStatus =
   | 'REVIEWING'
   | 'APPROVED'
   | 'REJECTED'
-  | 'COMPLETED';
 
 export type TaskAction =
   | 'START'

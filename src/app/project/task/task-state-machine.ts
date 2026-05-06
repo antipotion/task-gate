@@ -1,6 +1,6 @@
 import { Task, TaskAction, TaskStatus } from './task.model';
 
-type TransitionDefinition = {
+export type TransitionDefinition = {
   from: TaskStatus;
   action: TaskAction;
   to: TaskStatus;
@@ -39,7 +39,7 @@ const TRANSITIONS: readonly TransitionDefinition[] = [
   },
 ] as const;
 
-function findTransition(status: TaskStatus, action: TaskAction): TransitionDefinition | null {
+export function findTransition(status: TaskStatus, action: TaskAction): TransitionDefinition | null {
   return TRANSITIONS.find((t) => t.from === status && t.action === action) ?? null;
 }
 
@@ -58,7 +58,7 @@ export function transitionTask(task: Task, action: TaskAction): Task {
   if (!transition) {
     throw new InvalidTransitionError(task.status, action);
   }
-  
+
   const next: Task = {
     ...task,
     status: transition.to,
@@ -69,4 +69,8 @@ export function transitionTask(task: Task, action: TaskAction): Task {
   }
 
   return next;
+}
+
+export function getAvailableActions(task: Task): TaskAction | undefined {
+  return TRANSITIONS.find((t) => t.from === task.status)?.action;
 }

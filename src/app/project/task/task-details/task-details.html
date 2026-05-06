@@ -17,7 +17,7 @@
 
   <app-task-header [taskName]="activeTask()?.name ?? ''" />
   <app-task-overview [taskDeadline]="activeTask()?.deadline ?? ''" />
-  <app-task-status [taskStatus]="activeTask()?.status" />
+  <app-task-status [taskStatus]="activeTask()?.status" [taskNextAction]="nextTaskAction()" (nextActionTriggered)="transitionTask($event)" />
   <app-task-dependency />
   <app-task-subtask />
   <app-task-time />

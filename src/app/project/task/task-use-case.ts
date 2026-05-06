@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore-project-repository';
-import type { Task, TaskStatus } from './task.model';
+import type { Task, TaskAction, TaskStatus } from './task.model';
 import { diff } from '../project-use-case';
 
 @Injectable({
@@ -11,8 +11,9 @@ export class TaskUseCase {
 
   async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
     const status: TaskStatus = 'TODO';
+    const action: TaskAction = 'START';
     const currentSubmissionVersion: number = 1;
-    const withProjectIdTask = { ...task, projectId, status, currentSubmissionVersion };
+    const withProjectIdTask = { ...task, projectId, status, action, currentSubmissionVersion };
 
     const taskId = await this.repo.addTask(withProjectIdTask);
 
@@ -30,5 +31,5 @@ export class TaskUseCase {
 
   deleteTask(taskId: string): Promise<void> {
     return this.repo.deleteTask(taskId);
- }
+  }
 }

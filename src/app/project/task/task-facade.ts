@@ -3,7 +3,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../../application/store/store-service';
 import { TaskUseCase } from './task-use-case';
-import { Task } from './task.model';
+import { Task, TaskAction, TaskStatus } from './task.model';
+import { findTransition, getAvailableActions, TransitionDefinition, transitionTask } from './task-state-machine';
 
 export type TaskState =
   | { status: 'loading' }
@@ -54,5 +55,16 @@ export class TaskFacade {
 
   deleteTask(taskId: string): Promise<void> {
     return this.taskUseCase.deleteTask(taskId);
+  }
+
+  nextTaskState(task: Task): TaskAction | undefined {
+    return getAvailableActions(task);
+  }
+
+  advanceTaskState(task: Task, action: TaskAction): void {
+    const taskId = task.id;
+    const advancedTask = transitionTask(task, action);
+
+    this.updatetask(taskId, task, advancedTask);
   }
 }
