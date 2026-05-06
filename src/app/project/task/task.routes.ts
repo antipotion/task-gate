@@ -1,6 +1,5 @@
 import type { Routes } from '@angular/router';
 import { Task } from './task';
-import { TaskDetails } from './task-details/task-details';
 
 export const TASK_ROUTE_PARAMS = {
   TASK_ID: 'taskId',
@@ -8,12 +7,16 @@ export const TASK_ROUTE_PARAMS = {
 
 export const TaskRoutes: Routes = [
   {
-    path: ':taskId',
+    path: '',
     component: Task,
     children: [
       {
         path: '',
-        component: TaskDetails,
+        loadComponent: () => import('./task-dashboard/task-dashboard').then((m) => m.TaskDashboard),
+      },
+      {
+        path: ':taskId',
+        loadComponent: () => import('./task-details/task-details').then((m) => m.TaskDetails),
       },
     ],
   },
