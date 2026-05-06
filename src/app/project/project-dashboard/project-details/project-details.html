@@ -5,7 +5,7 @@
       <mat-icon fontIcon="arrow_back"></mat-icon>
     </button>
 
-    <div>
+    <div class="flex">
       <!-- Edit Project Dialog -->
       <button matButton (click)="openEditDialog()">Edit</button>
 
@@ -13,6 +13,11 @@
       <button matButton="filled" (click)="openAddTaskDialog()">
         <mat-icon fontIcon="add"></mat-icon>
         Add Task
+      </button>
+
+      <!-- Delete button -->
+      <button matIconButton class="delete-btn" (click)="onDelete()">
+        <mat-icon fontIcon="delete"></mat-icon>
       </button>
     </div>
   </div>

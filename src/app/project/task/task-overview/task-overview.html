@@ -20,7 +20,9 @@
 
       <!-- Deadline -->
       <div>
-        <mat-chip><p class="mat-font-label-sm">Deadline: MM/DD/YYYY</p> </mat-chip>
+        <mat-chip
+          ><p class="mat-font-label-sm">Deadline: {{ taskDeadline() | date }}</p>
+        </mat-chip>
       </div>
     </div>
 

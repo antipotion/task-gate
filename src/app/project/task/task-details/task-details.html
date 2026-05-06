@@ -1,7 +1,23 @@
 <div class="p-4 flex flex-col gap-4 w-full">
-  <app-task-header />
-  <app-task-overview />
-  <app-task-status />
+  <!-- Navigation and some functions -->
+  <div class="flex justify-between">
+    <!-- Back button -->
+    <button matIconButton (click)="onBack(activeTask()?.projectId)">
+      <mat-icon fontIcon="arrow_back"></mat-icon>
+    </button>
+
+    <div>
+      <!-- Task edit button -->
+      <button matButton="filled" (click)=openTaskEditDialog()>Edit</button>
+
+      <!-- Task delete button -->
+      <button matButton style="color: var(--mat-sys-error);" (click)="openConfirmDeleteDialog()">Delete</button>
+    </div>
+  </div>
+
+  <app-task-header [taskName]="activeTask()?.name ?? ''" />
+  <app-task-overview [taskDeadline]="activeTask()?.deadline ?? ''" />
+  <app-task-status [taskStatus]="activeTask()?.status" [taskNextAction]="nextTaskAction()" (nextActionTriggered)="transitionTask($event)" />
   <app-task-dependency />
   <app-task-subtask />
   <app-task-time />

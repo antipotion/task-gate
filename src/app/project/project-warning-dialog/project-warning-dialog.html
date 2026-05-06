@@ -1,0 +1,30 @@
+<form [formGroup]="confirmDeleteForm" (ngSubmit)="onConfirm()">
+  <h2 mat-dialog-title>Delete Project?</h2>
+  <mat-dialog-content>
+    <div class="flex flex-col gap-2">
+      <p>Once you delete the project, it will be gone forever</p>
+      <p>
+        Enter " <strong>{{ projectName() }}</strong> " to confirm
+      </p>
+
+      <!-- Confirm delete -->
+      <mat-form-field class="w-full">
+        <input matInput placeholder="Enter the project name" formControlName="confirmProjectName" />
+
+        @if (confirmProjectNameControl.hasError('required') && confirmProjectNameControl.dirty) {
+          <mat-error>Input field must not be empty</mat-error>
+        }
+
+        @if (confirmProjectNameControl.hasError('mismatch') && confirmDeleteForm.dirty) {
+          <mat-error>Project name does not match</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button matButton type="submit" [disabled]="confirmDeleteForm.invalid">Confirm</button>
+    <button matButton type="button" (click)="onCancel()" style="color: var(--mat-sys-error)">
+      Cancel
+    </button>
+  </mat-dialog-actions>
+</form>

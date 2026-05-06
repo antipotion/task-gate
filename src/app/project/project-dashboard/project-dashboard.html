@@ -1,5 +1,4 @@
 @let state = projectsState();
-
 @switch (state.status) {
   @case ('loading') {
     <div class="flex flex-col items-center justify-center gap-2 h-full">
@@ -7,11 +6,9 @@
       <p>Fetching your projects...</p>
     </div>
   }
-
   @case ('error') {
     <p>Failed to load projects.</p>
   }
-
   @case ('success') {
     <!-- Empty state -->
     @if (state.data.length === 0) {

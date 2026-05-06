@@ -5,14 +5,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectFacade } from '../../project-facade';
+import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
 import type { Project } from '../../project.model';
+import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
+import { CreateTask } from '../../task/create-task/create-task';
+import { TaskFacade } from '../../task/task-facade';
 import { ProjectActivityFeed } from '../project-activity-feed/project-activity-feed';
 import { ProjectHeader } from '../project-header/project-header';
 import { ProjectMetrics } from '../project-metrics/project-metrics';
 import { ProjectOverview } from '../project-overview/project-overview';
 import { ProjectTasksBoard } from '../project-tasks-board/project-tasks-board';
 import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
-import { CreateTask } from '../../task/create-task/create-task';
 
 @Component({
   selector: 'app-project-details',
@@ -31,13 +34,18 @@ import { CreateTask } from '../../task/create-task/create-task';
 })
 export class ProjectDetails {
   private projectFacade = inject(ProjectFacade);
+  private taskFacade = inject(TaskFacade);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private readonly dialog = inject(MatDialog);
 
-  private projectId = this.route.snapshot.paramMap.get('id') || '';
+  private projectId = this.route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.PROJECT_ID) || '';
 
   project = computed<Project | null>(() => this.projectFacade.activeProject());
+
+  ngOnInit(): void {
+    this.projectFacade.selectProject(this.projectId);
+  }
 
   onBack(): void {
     this.router.navigate([''], { relativeTo: this.route.parent });
@@ -50,20 +58,39 @@ export class ProjectDetails {
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log(result);
+      // TODO: Handle the result of the operation (e.g. Success | Error)
       this.projectFacade.updateProject(this.projectId, result);
     });
   }
 
-  openAddTaskDialog():void {
-    const dialogRef = this.dialog.open(CreateTask, {});
+  openAddTaskDialog(): void {
+    const dialogRef = this.dialog.open(CreateTask);
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
-      this.projectFacade.addTask(this.projectId, result);
+      // TODO: Handle the result of the operation (e.g. Success | Error)
+      this.taskFacade.addTask(this.projectId, result);
     });
   }
 
-  ngOnInit(): void {
-    this.projectFacade.getActiveProject(this.projectId);
+  onDelete(): void {
+    const projectId = this.project()?.id;
+    if (!projectId) return;
+
+    this.openConfirmDeleteDialog(projectId);
+  }
+
+  openConfirmDeleteDialog(projectId: string): void {
+    const projectName = this.project()?.name;
+    if (!projectName) return;
+
+    const dialogRef = this.dialog.open(ProjectWarningDialog, {
+      data: projectName,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result) return;
+      this.projectFacade.deleteProject(projectId);
+      this.router.navigate(['']);
+    });
   }
 }

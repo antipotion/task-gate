@@ -5,8 +5,15 @@ export type TaskStatus =
   | 'REVIEWING'
   | 'APPROVED'
   | 'REJECTED'
-  | 'COMPLETED';
 
+export type TaskAction =
+  | 'START'
+  | 'SUBMIT'
+  | 'BEGIN_REVIEW'
+  | 'APPROVE'
+  | 'REJECT'
+  | 'RESUME';
+  
 export interface Task {
   projectId: string;
   id: string;
@@ -14,4 +21,5 @@ export interface Task {
   description: string;
   deadline: string;
   status: TaskStatus;
+  currentSubmissionVersion: number;
 }

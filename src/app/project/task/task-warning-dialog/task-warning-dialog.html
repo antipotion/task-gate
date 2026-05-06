@@ -1,0 +1,26 @@
+<form [formGroup]="confirmTaskDeleteForm" (ngSubmit)="onConfirm()">
+  <h2 mat-dialog-title>Delete Task?</h2>
+  <mat-dialog-content>
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2">
+        <p>Once you delete the task, it will be gone forever.</p>
+        <p>Enter " <strong>{{taskName()}}</strong> " to confirm</p>
+      </div>
+      <mat-form-field>
+        <input matInput placeholder="Enter task name" formControlName="confirmTaskName">
+
+        @if (confirmTaskNameControl.touched && confirmTaskNameControl.hasError('required')) {
+        <mat-error>Input field must not be empty</mat-error>
+        }
+
+        @if (confirmTaskNameControl.dirty && confirmTaskNameControl.hasError('mismatch')) {
+        <mat-error>Task name does not match</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button matButton type="submit" [disabled]="confirmTaskNameControl.invalid">Confirm</button>
+    <button matButton type="button" (click)="onCancel()" style="color: var(--mat-sys-error);">Cancel</button>
+  </mat-dialog-actions>
+</form>

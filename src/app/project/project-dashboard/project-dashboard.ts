@@ -18,7 +18,7 @@ export class ProjectDashboard {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  projectsState = computed(() => this.projectFacade.state());
+  projectsState = computed(() => this.projectFacade.projectState());
 
   onClickProject(projectId: string): void {
     this.router.navigate([projectId], { relativeTo: this.route });

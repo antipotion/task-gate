@@ -9,8 +9,10 @@
     <!-- Task State -->
     <div class="flex flex-col gap-2">
       <p>Current state</p>
-      <mat-chip>In-progress</mat-chip>
-      <button matButton="filled">Submit Output</button>
+      <mat-chip>{{ taskStatus() | titlecase }}</mat-chip>
+      @if (taskNextAction(); as action) {
+      <button matButton="filled" (click)="onNextActionTrigger()">{{action | titlecase}}</button>
+      }
     </div>
   </div>
 </section>

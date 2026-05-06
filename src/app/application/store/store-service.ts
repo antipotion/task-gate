@@ -1,26 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import { map, shareReplay, type Observable } from 'rxjs';
-import { InfrastructureService } from '../../infrastructure/infrastructure-service';
 import type { Project } from '../../project/project.model';
-import type { Task } from '../../project/task/task.model';
+import { ProjectRepository } from '../repository/project-repository';
+import { Task } from '../../project/task/task.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StoreService {
-  private readonly infrastructureService = inject(InfrastructureService);
+  private readonly repo = inject(ProjectRepository);
 
-  projects$: Observable<Project[]> = this.infrastructureService
-    .listenToProjectsCollection$()
+  projects$: Observable<Project[]> = this.repo
+    .listenToProjects$()
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
-
-  addProject(project: Omit<Project, 'id'>): Promise<string> {
-    return this.infrastructureService.addProjectDocument(project);
-  }
-
-  addTask(task: Omit<Task, 'id'>): Promise<string> {
-    return this.infrastructureService.addTaskDocument(task);
-  }
 
   getProjectById$(projectId: string): Observable<Project | undefined> {
     return this.projects$.pipe(
@@ -28,7 +20,11 @@ export class StoreService {
     );
   }
 
-  updateProject(id: string, dto: Partial<Project>): Promise<void> {
-    return this.infrastructureService.updateProject(id, dto);
+  tasks$: Observable<Task[]> = this.repo
+    .listenToTasks$()
+    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+  getTaskById$(taskId: string): Observable<Task | undefined> {
+    return this.tasks$.pipe(map((tasks) => tasks.find((task) => task.id === taskId)));
   }
 }

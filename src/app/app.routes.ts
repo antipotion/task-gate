@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { TaskDetails } from './project/task/task-details/task-details';
 
 export const routes: Routes = [
   {
@@ -13,6 +12,6 @@ export const routes: Routes = [
   },
   {
     path: 'task',
-    component: TaskDetails,
+    loadChildren: () => import('./project/task/task.routes').then((m) => m.TaskRoutes),
   },
 ];
