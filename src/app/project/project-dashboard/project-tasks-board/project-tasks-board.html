@@ -15,7 +15,7 @@
 
       <!-- To-do contents -->
       <div>
-        <app-task-todo [projectId]="projectId" />
+        <app-task-sort [projectId]="projectId" projectStatus="TODO" />
       </div>
     </div>
 
@@ -28,7 +28,7 @@
 
       <!-- In Progress contents -->
       <div>
-        <app-task-in-progress />
+        <app-task-sort [projectId]="projectId" projectStatus="IN-PROGRESS" />
       </div>
     </div>
 
@@ -54,7 +54,7 @@
 
       <!-- Done contents -->
       <div>
-        <app-task-completed />
+        <app-task-sort [projectId]="projectId" projectStatus="APPROVED" />
       </div>
     </div>
   </div>
