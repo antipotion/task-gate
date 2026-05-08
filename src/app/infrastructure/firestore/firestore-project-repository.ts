@@ -12,10 +12,12 @@ import {
   type QuerySnapshot,
 } from 'firebase/firestore';
 import { Observable } from 'rxjs';
-import { db } from '../../environment/firebase.config';
-import { ProjectRepository } from '../application/repository/project-repository';
-import type { Project } from '../project/project.model';
-import type { Task } from '../project/task/task.model';
+import { db } from '../../../environment/firebase.config';
+import { ProjectRepository } from '../../application/repository/project-repository';
+import type { Project } from '../../project/project.model';
+import type { Task } from '../../project/task/task.model';
+import { UserModel } from '../../authentication/auth.model';
+import { TeamModel } from '../../authentication/sign-up/team/team.model';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +26,8 @@ export class FirestoreProjectRepository extends ProjectRepository {
   private readonly db: Firestore = db;
   private readonly projectsCollection = collection(this.db, 'projects');
   private readonly tasksCollection = collection(this.db, 'tasks');
+  private readonly usersCollection = collection(this.db, 'users');
+  private readonly teamsCollection = collection(this.db, 'teams');
 
   listenToProjects$(): Observable<Project[]> {
     return new Observable<Project[]>((subscriber) => {
@@ -118,5 +122,44 @@ export class FirestoreProjectRepository extends ProjectRepository {
       status: data['status'],
       currentSubmissionVersion: data['currentSubmissionVersion'],
     };
+  }
+  
+  async addUser(data: Omit<UserModel, 'id'>): Promise<string> {
+    const result = await addDoc(this.usersCollection, data);
+
+    return result.id;
+  }
+
+  async addTeam(data: Omit<TeamModel, 'id'>): Promise<string> {
+    const result = await addDoc(this.teamsCollection, data);
+
+    return result.id;
+  }
+  
+  listenToTeams$(): Observable<TeamModel[]> {
+    return new Observable<TeamModel[]>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        this.teamsCollection,
+        (snapshot) => {
+          const teams = snapshot.docs.map((doc) => this.mapToTeam(doc));
+
+          subscriber.next(teams);
+        },
+        (error) => {
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
+  private mapToTeam(doc: QueryDocumentSnapshot<DocumentData>): TeamModel {
+    const data = doc.data();
+    
+    return {
+     id: doc.id,
+      name: data['name'] ?? null,
+    }
   }
 }

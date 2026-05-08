@@ -1,10 +1,15 @@
 import { Routes } from '@angular/router';
+import { AuthRoutes } from './authentication/auth.routes';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'project',
+    redirectTo: 'auth',
     pathMatch: 'full',
+  },
+  {
+    path: 'auth',
+    children: AuthRoutes,
   },
   {
     path: 'project',

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { FirestoreProjectRepository } from '../../infrastructure/firestore-project-repository';
+import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 import type { Task, TaskAction, TaskStatus } from './task.model';
 import { diff } from '../project-use-case';
 

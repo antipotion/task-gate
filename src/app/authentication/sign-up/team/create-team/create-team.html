@@ -1,0 +1,17 @@
+<form [formGroup]=teamForm class="py-32" (ngSubmit)="onCreateTeam()">
+  <div class="flex flex-col items-center gap-2">
+    <p>Name your team</p>
+
+    <!-- Team name -->
+    <mat-form-field>
+      <mat-label>Team name</mat-label>
+      <input matInput formControlName="teamName">
+
+      @if (teamName.invalid) {
+      <mat-error>Team name is required.</mat-error>
+      }
+    </mat-form-field>
+
+    <button matButton="filled">Create team</button>
+  </div>
+</form>
