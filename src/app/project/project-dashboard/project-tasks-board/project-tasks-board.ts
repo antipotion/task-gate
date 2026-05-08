@@ -10,7 +10,7 @@ import { TaskSort } from '../../task/task-sort/task-sort';
   styleUrl: './project-tasks-board.scss',
 })
 export class ProjectTasksBoard {
-  private route = inject(ActivatedRoute);
+  private readonly _route = inject(ActivatedRoute);
 
-  readonly projectId = this.route.snapshot.paramMap.get('projectId') || '';
+  readonly projectId = this._route.snapshot.paramMap.get('projectId') || '';
 }

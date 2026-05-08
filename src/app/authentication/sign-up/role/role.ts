@@ -11,9 +11,9 @@ import { RoleModel } from '../../auth.model';
   styleUrl: './role.scss',
 })
 export class Role {
-  private _authFacade = inject(AuthFacade);
-  private _router = inject(Router);
-  private _route = inject(ActivatedRoute);
+  private readonly _authFacade = inject(AuthFacade);
+  private readonly _router = inject(Router);
+  private readonly _route = inject(ActivatedRoute);
   
   selectRole(role: RoleModel): void {
     this._authFacade.setUserRole(role);

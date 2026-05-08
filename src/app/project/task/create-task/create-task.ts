@@ -23,7 +23,7 @@ import { MatInputModule } from '@angular/material/input';
   providers: [provideNativeDateAdapter()],
 })
 export class CreateTask {
-  private readonly dialogRef = inject(MatDialogRef<CreateTask>);
+  private readonly _dialogRef = inject(MatDialogRef<CreateTask>);
 
   taskForm = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -32,6 +32,6 @@ export class CreateTask {
   });
 
   onCancel(): void {
-    this.dialogRef.close();
+    this._dialogRef.close();
   }
 }

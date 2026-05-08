@@ -4,10 +4,10 @@ import type { Project } from './project.model';
 
 @Injectable()
 export class ProjectUseCase {
-  private readonly repo = inject(ProjectRepository);
+  private readonly _repo = inject(ProjectRepository);
 
   addProject(project: Omit<Project, 'id'>): Promise<string> {
-    return this.repo.addProject(project);
+    return this._repo.addProject(project);
   }
 
   async updateProject(id: string, original: Project, dto: Partial<Project>): Promise<void> {
@@ -16,11 +16,11 @@ export class ProjectUseCase {
     // Guard if there are no changes
     if (Object.keys(changes).length === 0) return;
 
-    return await this.repo.updateProject(id, changes);
+    return await this._repo.updateProject(id, changes);
   }
 
   deleteProject(id: string): Promise<void> {
-    return this.repo.deleteProject(id);
+    return this._repo.deleteProject(id);
   }
 }
 

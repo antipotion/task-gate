@@ -12,13 +12,13 @@ import type { Task, TaskStatus } from '../task.model';
   styleUrl: './task-sort.scss',
 })
 export class TaskSort {
-  private taskFacade = inject(TaskFacade);
-  private router = inject(Router);
+  private readonly _taskFacade = inject(TaskFacade);
+  private readonly _router = inject(Router);
 
   readonly projectId = input.required<string>();
   readonly projectStatus = input.required<TaskStatus>();
 
-  taskState = computed<TaskState>(() => this.taskFacade.taskState());
+  taskState = computed<TaskState>(() => this._taskFacade.taskState());
   todoTask = computed<Task[] | null>(() => {
     const state = this.taskState();
     if (state.status !== 'success') return null;
@@ -29,6 +29,6 @@ export class TaskSort {
   });
 
   onSelectTask(taskId: string): void {
-    this.router.navigate(['task', `${taskId}`]);
+    this._router.navigate(['task', `${taskId}`]);
   }
 }

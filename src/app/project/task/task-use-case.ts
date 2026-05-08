@@ -7,7 +7,7 @@ import { diff } from '../project-use-case';
   providedIn: 'root',
 })
 export class TaskUseCase {
-  private repo = inject(FirestoreProjectRepository);
+  private readonly _repo = inject(FirestoreProjectRepository);
 
   async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
     const status: TaskStatus = 'TODO';
@@ -15,7 +15,7 @@ export class TaskUseCase {
     const currentSubmissionVersion: number = 1;
     const withProjectIdTask = { ...task, projectId, status, action, currentSubmissionVersion };
 
-    const taskId = await this.repo.addTask(withProjectIdTask);
+    const taskId = await this._repo.addTask(withProjectIdTask);
 
     return taskId;
   }
@@ -26,10 +26,10 @@ export class TaskUseCase {
     // Guard if there are no changes
     if (Object.keys(changes).length === 0) return;
 
-    return await this.repo.updateTask(taskId, changes);
+    return await this._repo.updateTask(taskId, changes);
   }
 
   deleteTask(taskId: string): Promise<void> {
-    return this.repo.deleteTask(taskId);
+    return this._repo.deleteTask(taskId);
   }
 }

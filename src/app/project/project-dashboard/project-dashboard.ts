@@ -14,17 +14,17 @@ import { ProjectFacade } from '../project-facade';
   styleUrl: './project-dashboard.scss',
 })
 export class ProjectDashboard {
-  private projectFacade = inject(ProjectFacade);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private readonly _projectFacade = inject(ProjectFacade);
+  private readonly _router = inject(Router);
+  private readonly _route = inject(ActivatedRoute);
 
-  projectsState = computed(() => this.projectFacade.projectState());
+  readonly projectsState = computed(() => this._projectFacade.projectState());
 
   onClickProject(projectId: string): void {
-    this.router.navigate([projectId], { relativeTo: this.route });
+    this._router.navigate([projectId], { relativeTo: this._route });
   }
 
   onAddProject(): void {
-    this.router.navigate(['create'], { relativeTo: this.route });
+    this._router.navigate(['create'], { relativeTo: this._route });
   }
 }

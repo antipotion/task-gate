@@ -3,14 +3,15 @@ import { map, shareReplay, type Observable } from 'rxjs';
 import type { Project } from '../../project/project.model';
 import { ProjectRepository } from '../repository/project-repository';
 import { Task } from '../../project/task/task.model';
+import { TeamModel } from '../../authentication/sign-up/team/team.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StoreService {
-  private readonly repo = inject(ProjectRepository);
+  private readonly _repo = inject(ProjectRepository);
 
-  projects$: Observable<Project[]> = this.repo
+  readonly projects$: Observable<Project[]> = this._repo
     .listenToProjects$()
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
@@ -20,11 +21,19 @@ export class StoreService {
     );
   }
 
-  tasks$: Observable<Task[]> = this.repo
+  readonly tasks$: Observable<Task[]> = this._repo
     .listenToTasks$()
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
   getTaskById$(taskId: string): Observable<Task | undefined> {
     return this.tasks$.pipe(map((tasks) => tasks.find((task) => task.id === taskId)));
+  }
+  
+  readonly teams$: Observable<TeamModel[]> = this._repo
+    .listenToTeams$()
+    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+
+  getTeamById(teamId: string): Observable<TeamModel | undefined> {
+    return this.teams$.pipe(map((teams) => teams.find((team) => team.id === teamId)));
   }
 }

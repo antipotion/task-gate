@@ -12,9 +12,9 @@ import { TitleCasePipe } from '@angular/common';
   styleUrl: './task-status.scss',
 })
 export class TaskStatus {
-  taskStatus = input.required<TaskStatusModel | undefined>();
-  taskNextAction = input.required<TaskAction | null>();
-  nextActionTriggered = output<TaskAction>();
+  readonly taskStatus = input.required<TaskStatusModel | undefined>();
+  readonly taskNextAction = input.required<TaskAction | null>();
+  readonly nextActionTriggered = output<TaskAction>();
 
   onNextActionTrigger(): void {
     const taskNextAction = this.taskNextAction();

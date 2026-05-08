@@ -16,20 +16,20 @@ import { provideNativeDateAdapter } from '@angular/material/core';
   providers: [provideNativeDateAdapter()],
 })
 export class TaskEdit {
-  readonly dialogRef = inject(MatDialogRef<TaskEdit>);
-  readonly data = inject<Partial<Task>>(MAT_DIALOG_DATA);
+  private readonly _dialogRef = inject(MatDialogRef<TaskEdit>);
+  private readonly _data = inject<Partial<Task>>(MAT_DIALOG_DATA);
 
   taskEditForm = new FormGroup({
-    name: new FormControl(this.data.name, Validators.required),
-    description: new FormControl(this.data.description, Validators.required),
-    deadline: new FormControl(this.data.deadline, Validators.required),
+    name: new FormControl(this._data.name, Validators.required),
+    description: new FormControl(this._data.description, Validators.required),
+    deadline: new FormControl(this._data.deadline, Validators.required),
   });
 
   onSave(): void {
-    this.dialogRef.close(this.taskEditForm.getRawValue());
+    this._dialogRef.close(this.taskEditForm.getRawValue());
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this._dialogRef.close();
   }
 }

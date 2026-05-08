@@ -33,43 +33,43 @@ import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
   styleUrl: './project-details.scss',
 })
 export class ProjectDetails {
-  private projectFacade = inject(ProjectFacade);
-  private taskFacade = inject(TaskFacade);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private readonly dialog = inject(MatDialog);
+  private readonly _projectFacade = inject(ProjectFacade);
+  private readonly _taskFacade = inject(TaskFacade);
+  private readonly _router = inject(Router);
+  private readonly _route = inject(ActivatedRoute);
+  private readonly _dialog = inject(MatDialog);
 
-  private projectId = this.route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.PROJECT_ID) || '';
+  private readonly _projectId = this._route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.PROJECT_ID) || '';
 
-  project = computed<Project | null>(() => this.projectFacade.activeProject());
+  readonly project = computed<Project | null>(() => this._projectFacade.activeProject());
 
   ngOnInit(): void {
-    this.projectFacade.selectProject(this.projectId);
+    this._projectFacade.selectProject(this._projectId);
   }
 
   onBack(): void {
-    this.router.navigate([''], { relativeTo: this.route.parent });
+    this._router.navigate([''], { relativeTo: this._route.parent });
   }
 
   openEditDialog(): void {
-    const dialogRef = this.dialog.open(EditProjectDialog, {
+    const dialogRef = this._dialog.open(EditProjectDialog, {
       data: { name: this.project()?.name, deadline: this.project()?.deadline },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       console.log(result);
       // TODO: Handle the result of the operation (e.g. Success | Error)
-      this.projectFacade.updateProject(this.projectId, result);
+      this._projectFacade.updateProject(this._projectId, result);
     });
   }
 
   openAddTaskDialog(): void {
-    const dialogRef = this.dialog.open(CreateTask);
+    const dialogRef = this._dialog.open(CreateTask);
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
       // TODO: Handle the result of the operation (e.g. Success | Error)
-      this.taskFacade.addTask(this.projectId, result);
+      this._taskFacade.addTask(this._projectId, result);
     });
   }
 
@@ -84,14 +84,14 @@ export class ProjectDetails {
     const projectName = this.project()?.name;
     if (!projectName) return;
 
-    const dialogRef = this.dialog.open(ProjectWarningDialog, {
+    const dialogRef = this._dialog.open(ProjectWarningDialog, {
       data: projectName,
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
-      this.projectFacade.deleteProject(projectId);
-      this.router.navigate(['']);
+      this._projectFacade.deleteProject(projectId);
+      this._router.navigate(['']);
     });
   }
 }

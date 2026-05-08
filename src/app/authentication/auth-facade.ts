@@ -3,12 +3,12 @@ import { RoleModel, UserModel } from './auth.model';
 import { AuthUseCase } from './auth-use-case';
 import { TeamModel } from './sign-up/team/team.model';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AuthStore } from './auth-store';
+import { StoreService } from '../application/store/store-service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
   private readonly _authUseCase = inject(AuthUseCase);
-  private readonly _authStore = inject(AuthStore);
+  private readonly _store = inject(StoreService);
 
   readonly userRole = signal<RoleModel | null>(null);
   readonly userTeamId = computed<string | null>(() => {
@@ -61,7 +61,7 @@ export class AuthFacade {
     this.team.set(result);
   }
 
-  readonly teams = toSignal(this._authStore.teams$, { initialValue: null });
+  readonly teams = toSignal(this._store.teams$, { initialValue: null });
 
   getTeamById(teamId: string): TeamModel | null {
     const result = this.teams()?.find((teams) => teams.id === teamId) ?? null;

@@ -1,37 +1,37 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { auth } from '../../../environment/firebase.config';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, User } from 'firebase/auth';
+import { Auth, createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, User } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirebaseAuth {
-  private readonly _auth = auth;
+  private readonly _auth: Auth = auth;
   private readonly _user = signal<User | null>(null);
 
   readonly user = this._user.asReadonly();
   readonly isAuthenticated = computed(() => this.user() !== null);
 
   constructor() {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(this._auth, (user) => {
       this._user.set(user);
     });
   }
 
   async register(email: string, password: string): Promise<void> {
-    await createUserWithEmailAndPassword(auth, email, password);
+    await createUserWithEmailAndPassword(this._auth, email, password);
   }
 
   async login(email: string, password: string): Promise<void> {
-    await signInWithEmailAndPassword(auth, email, password);
+    await signInWithEmailAndPassword(this._auth, email, password);
   }
 
   async loginWithGoogle(): Promise<void> {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    await signInWithPopup(this._auth, provider);
   }
   
   async logout(): Promise<void> {
-    await signOut(auth);
+    await signOut(this._auth);
   }
 }

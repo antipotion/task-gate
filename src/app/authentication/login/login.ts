@@ -1,4 +1,4 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -19,9 +19,9 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './login.scss',
 })
 export class Login {
-  private _authFacade = inject(AuthFacade);
-  private _router = inject(Router);
-  private _route = inject(ActivatedRoute);
+  private readonly _authFacade = inject(AuthFacade);
+  private readonly _router = inject(Router);
+  private readonly _route = inject(ActivatedRoute);
 
   loginForm = new FormGroup(
     {

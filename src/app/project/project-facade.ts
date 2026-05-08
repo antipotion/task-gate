@@ -12,11 +12,11 @@ export type ProjectState =
 
 @Injectable()
 export class ProjectFacade {
-  private storeService = inject(StoreService);
-  private projectUseCase = inject(ProjectUseCase);
+  private readonly _storeService = inject(StoreService);
+  private readonly _projectUseCase = inject(ProjectUseCase);
 
   readonly projectState = toSignal(
-    this.storeService.projects$.pipe(
+    this._storeService.projects$.pipe(
       map(
         (projects): ProjectState => ({
           status: 'success',
@@ -41,7 +41,7 @@ export class ProjectFacade {
   });
 
   addProject(project: Omit<Project, 'id'>): Promise<string> {
-    return this.projectUseCase.addProject(project);
+    return this._projectUseCase.addProject(project);
   }
 
   selectProject(projectId: string): void {
@@ -56,10 +56,10 @@ export class ProjectFacade {
     const project = state.data.find((project) => project.id === id);
     if (!project) return;
 
-    return await this.projectUseCase.updateProject(id, project, dto);
+    return await this._projectUseCase.updateProject(id, project, dto);
   }
 
   deleteProject(id: string): Promise<void> {
-    return this.projectUseCase.deleteProject(id);
+    return this._projectUseCase.deleteProject(id);
   }
 }

@@ -30,10 +30,10 @@ type CreateProjectState = 'idle' | 'loading';
   providers: [provideNativeDateAdapter()],
 })
 export class CreateProject {
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private projectFacade = inject(ProjectFacade);
-  private _snackBar = inject(MatSnackBar);
+  private readonly _router = inject(Router);
+  private readonly _route = inject(ActivatedRoute);
+  private readonly _projectFacade = inject(ProjectFacade);
+  private readonly _snackBar = inject(MatSnackBar);
 
   createProjectState = signal<CreateProjectState>('idle');
 
@@ -70,7 +70,7 @@ export class CreateProject {
 
       try {
         // Add the project using the facade and get the generated project ID
-        const projectId = await this.projectFacade.addProject(projectData);
+        const projectId = await this._projectFacade.addProject(projectData);
 
         // Reset the form
         this.projectForm.reset();
@@ -78,7 +78,7 @@ export class CreateProject {
         // NOTE: Assumption for the navigation is that the parent is the project dashboard component route.
         // if this is violated -> change the `relativeTo` to align it
         // or make the path explicit
-        this.router.navigate([projectId], { relativeTo: this.route.parent });
+        this._router.navigate([projectId], { relativeTo: this._route.parent });
       } catch (error) {
         console.error('Error creating project:', error);
 
@@ -94,6 +94,6 @@ export class CreateProject {
   }
 
   onBack(): void {
-    this.router.navigate([''], { relativeTo: this.route });
+    this._router.navigate([''], { relativeTo: this._route });
   }
 }

@@ -6,8 +6,8 @@ import { ProjectRepository } from '../application/repository/project-repository'
 
 @Injectable({ providedIn: 'root' })
 export class AuthUseCase {
-  private _auth = inject(FirebaseAuth);
-  private _repo = inject(ProjectRepository);
+  private readonly _auth = inject(FirebaseAuth);
+  private readonly _repo = inject(ProjectRepository);
 
   login(email: string, password: string): void {
     this._auth.login(email, password);
@@ -19,7 +19,7 @@ export class AuthUseCase {
 
   async register(email: string, password: string, role: RoleModel, teamId: string): Promise<UserModel | null> {
     try {
-      this._auth.register(email, password);
+      await this._auth.register(email, password);
     } catch (error) {
       console.error(error);
     }

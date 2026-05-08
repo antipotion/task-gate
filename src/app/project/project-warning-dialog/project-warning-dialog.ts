@@ -26,10 +26,10 @@ import { MatInputModule } from '@angular/material/input';
   styleUrl: './project-warning-dialog.scss',
 })
 export class ProjectWarningDialog {
-  readonly dialogRef = inject(MatDialogRef<ProjectWarningDialog>);
-  private readonly data = inject<string>(MAT_DIALOG_DATA);
+  private readonly _dialogRef = inject(MatDialogRef<ProjectWarningDialog>);
+  private readonly _data = inject<string>(MAT_DIALOG_DATA);
 
-  projectName = computed(() => this.data);
+  readonly projectName = computed(() => this._data);
 
   confirmDeleteForm = new FormGroup({
     confirmProjectName: new FormControl('', {
@@ -43,11 +43,11 @@ export class ProjectWarningDialog {
   onConfirm(): void {
     const { confirmProjectName } = this.confirmDeleteForm.getRawValue();
 
-    this.dialogRef.close(confirmProjectName);
+    this._dialogRef.close(confirmProjectName);
   }
 
   onCancel(): void {
-    this.dialogRef.close();
+    this._dialogRef.close();
   }
 }
 
