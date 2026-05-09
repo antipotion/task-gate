@@ -6,7 +6,7 @@ import type { Project } from './project.model';
 export class ProjectUseCase {
   private readonly _repo = inject(ProjectRepository);
 
-  addProject(project: Omit<Project, 'id'>): Promise<string> {
+  async addProject(project: Omit<Project, 'id'>): Promise<string> {
     return this._repo.addProject(project);
   }
 
@@ -16,10 +16,10 @@ export class ProjectUseCase {
     // Guard if there are no changes
     if (Object.keys(changes).length === 0) return;
 
-    return await this._repo.updateProject(id, changes);
+    return this._repo.updateProject(id, changes);
   }
 
-  deleteProject(id: string): Promise<void> {
+  async deleteProject(id: string): Promise<void> {
     return this._repo.deleteProject(id);
   }
 }

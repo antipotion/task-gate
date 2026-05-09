@@ -14,25 +14,25 @@ import {
 import { Observable } from 'rxjs';
 import { db } from '../../../environment/firebase.config';
 import { ProjectRepository } from '../../application/repository/project-repository';
-import type { Project } from '../../project/project.model';
-import type { Task } from '../../project/task/task.model';
 import { UserModel } from '../../authentication/auth.model';
 import { TeamModel } from '../../authentication/sign-up/team/team.model';
+import type { Project } from '../../project/project.model';
+import type { Task } from '../../project/task/task.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirestoreProjectRepository extends ProjectRepository {
-  private readonly db: Firestore = db;
-  private readonly projectsCollection = collection(this.db, 'projects');
-  private readonly tasksCollection = collection(this.db, 'tasks');
-  private readonly usersCollection = collection(this.db, 'users');
-  private readonly teamsCollection = collection(this.db, 'teams');
+  private readonly _db: Firestore = db;
+  private readonly _projectsCollection = collection(this._db, 'projects');
+  private readonly _tasksCollection = collection(this._db, 'tasks');
+  private readonly _usersCollection = collection(this._db, 'users');
+  private readonly _teamsCollection = collection(this._db, 'teams');
 
   listenToProjects$(): Observable<Project[]> {
     return new Observable<Project[]>((subscriber) => {
       const unsubscribe = onSnapshot(
-        this.projectsCollection,
+        this._projectsCollection,
         (snapshot: QuerySnapshot<DocumentData>) => {
           const projects = snapshot.docs.map((doc) => this.mapToProject(doc));
 
@@ -50,7 +50,7 @@ export class FirestoreProjectRepository extends ProjectRepository {
   listenToTasks$(): Observable<Task[]> {
     return new Observable<Task[]>((subscriber) => {
       const unsubscribe = onSnapshot(
-        this.tasksCollection,
+        this._tasksCollection,
         (snapshot) => {
           const tasks = snapshot.docs.map((doc) => this.mapToTask(doc));
 
@@ -65,38 +65,68 @@ export class FirestoreProjectRepository extends ProjectRepository {
     });
   }
 
+  listenToTeams$(): Observable<TeamModel[]> {
+    return new Observable<TeamModel[]>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        this._teamsCollection,
+        (snapshot) => {
+          const teams = snapshot.docs.map((doc) => this.mapToTeam(doc));
+
+          subscriber.next(teams);
+        },
+        (error) => {
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
   async addProject(data: Omit<Project, 'id'>): Promise<string> {
-    const result = await addDoc(this.projectsCollection, data);
+    const result = await addDoc(this._projectsCollection, data);
     return result.id;
   }
 
   async addTask(data: Omit<Task, 'id'>): Promise<string> {
-    const result = await addDoc(this.tasksCollection, data);
+    const result = await addDoc(this._tasksCollection, data);
+    return result.id;
+  }
+
+  async addUser(data: Omit<UserModel, 'id'>): Promise<string> {
+    const result = await addDoc(this._usersCollection, data);
+
+    return result.id;
+  }
+
+  async addTeam(data: Omit<TeamModel, 'id'>): Promise<string> {
+    const result = await addDoc(this._teamsCollection, data);
+
     return result.id;
   }
 
   async updateProject(projectId: string, dto: Partial<Project>): Promise<void> {
-    const ref = doc(this.projectsCollection, projectId);
+    const ref = doc(this._projectsCollection, projectId);
 
     return updateDoc(ref, { ...dto });
   }
 
   async updateTask(taskId: string, dto: Partial<Task>): Promise<void> {
-    const ref = doc(this.tasksCollection, taskId);
+    const ref = doc(this._tasksCollection, taskId);
 
     return updateDoc(ref, { ...dto });
   }
 
   async deleteProject(projectId: string): Promise<void> {
-    const ref = doc(this.projectsCollection, projectId);
+    const ref = doc(this._projectsCollection, projectId);
 
-    return await deleteDoc(ref);
+    return deleteDoc(ref);
   }
 
   async deleteTask(taskId: string): Promise<void> {
-    const ref = doc(this.tasksCollection, taskId);
+    const ref = doc(this._tasksCollection, taskId);
 
-    return await deleteDoc(ref);
+    return deleteDoc(ref);
   }
 
   private mapToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
@@ -123,43 +153,13 @@ export class FirestoreProjectRepository extends ProjectRepository {
       currentSubmissionVersion: data['currentSubmissionVersion'],
     };
   }
-  
-  async addUser(data: Omit<UserModel, 'id'>): Promise<string> {
-    const result = await addDoc(this.usersCollection, data);
-
-    return result.id;
-  }
-
-  async addTeam(data: Omit<TeamModel, 'id'>): Promise<string> {
-    const result = await addDoc(this.teamsCollection, data);
-
-    return result.id;
-  }
-  
-  listenToTeams$(): Observable<TeamModel[]> {
-    return new Observable<TeamModel[]>((subscriber) => {
-      const unsubscribe = onSnapshot(
-        this.teamsCollection,
-        (snapshot) => {
-          const teams = snapshot.docs.map((doc) => this.mapToTeam(doc));
-
-          subscriber.next(teams);
-        },
-        (error) => {
-          subscriber.error(error);
-        },
-      );
-
-      return () => unsubscribe();
-    });
-  }
 
   private mapToTeam(doc: QueryDocumentSnapshot<DocumentData>): TeamModel {
     const data = doc.data();
-    
+
     return {
-     id: doc.id,
+      id: doc.id,
       name: data['name'] ?? null,
-    }
+    };
   }
 }

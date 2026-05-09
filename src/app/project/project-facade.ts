@@ -54,7 +54,10 @@ export class ProjectFacade {
     if (state.status !== 'success') return;
 
     const project = state.data.find((project) => project.id === id);
-    if (!project) return;
+    if (!project) {
+      console.error('Project not found');
+      return;
+    }
 
     return await this._projectUseCase.updateProject(id, project, dto);
   }

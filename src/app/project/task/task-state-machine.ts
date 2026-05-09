@@ -39,7 +39,10 @@ const TRANSITIONS: readonly TransitionDefinition[] = [
   },
 ] as const;
 
-export function findTransition(status: TaskStatus, action: TaskAction): TransitionDefinition | null {
+export function findTransition(
+  status: TaskStatus,
+  action: TaskAction,
+): TransitionDefinition | null {
   return TRANSITIONS.find((t) => t.from === status && t.action === action) ?? null;
 }
 
@@ -62,7 +65,7 @@ export function transitionTask(task: Task, action: TaskAction): Task {
   const next: Task = {
     ...task,
     status: transition.to,
-  }
+  };
 
   if (action === 'SUBMIT') {
     next.currentSubmissionVersion += 1;

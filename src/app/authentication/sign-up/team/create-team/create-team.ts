@@ -3,8 +3,9 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { AuthFacade } from '../../../auth-facade';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthFacade } from '../../../auth-facade';
+import { AUTH_ROUTE_PARAMS } from '../../../auth.routes';
 
 @Component({
   selector: 'app-create-team',
@@ -29,6 +30,6 @@ export class CreateTeam {
 
     // TODO: Handle error path
     this._authFacade.addTeam(teamName);
-    this._router.navigate(['sign-up'], { relativeTo: this._route.parent?.parent });
+    this._router.navigate([AUTH_ROUTE_PARAMS.signup], { relativeTo: this._route.parent?.parent });
   }
 }

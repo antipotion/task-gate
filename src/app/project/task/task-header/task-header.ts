@@ -7,5 +7,5 @@ import { Component, input } from '@angular/core';
   styleUrl: './task-header.scss',
 })
 export class TaskHeader {
-  taskName = input.required<string>();
+  readonly taskName = input.required<string>();
 }

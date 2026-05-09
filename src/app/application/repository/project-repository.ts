@@ -1,8 +1,8 @@
-import type { Observable } from "rxjs";
-import type { Project } from "../../project/project.model";
-import type { Task } from "../../project/task/task.model";
-import { UserModel } from "../../authentication/auth.model";
-import { TeamModel } from "../../authentication/sign-up/team/team.model";
+import type { Observable } from 'rxjs';
+import { UserModel } from '../../authentication/auth.model';
+import { TeamModel } from '../../authentication/sign-up/team/team.model';
+import type { Project } from '../../project/project.model';
+import type { Task } from '../../project/task/task.model';
 
 export abstract class ProjectRepository {
   abstract listenToProjects$(): Observable<Project[]>;

@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { map, shareReplay, type Observable } from 'rxjs';
-import type { Project } from '../../project/project.model';
-import { ProjectRepository } from '../repository/project-repository';
-import { Task } from '../../project/task/task.model';
 import { TeamModel } from '../../authentication/sign-up/team/team.model';
+import type { Project } from '../../project/project.model';
+import { Task } from '../../project/task/task.model';
+import { ProjectRepository } from '../repository/project-repository';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +32,7 @@ export class StoreService {
   getTaskById$(taskId: string): Observable<Task | undefined> {
     return this.tasks$.pipe(map((tasks) => tasks.find((task) => task.id === taskId)));
   }
-  
+
   getTeamById(teamId: string): Observable<TeamModel | undefined> {
     return this.teams$.pipe(map((teams) => teams.find((team) => team.id === teamId)));
   }

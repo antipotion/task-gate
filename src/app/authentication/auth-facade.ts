@@ -44,12 +44,12 @@ export class AuthFacade {
   }
 
   setUserRole(role: RoleModel): void {
-    this._authUseCase.setUserRole(role);
+    this._signupSessionStorage.saveUserRole(role);
     this.userRole.set(role);
   }
 
   getUserRole(): void {
-    const result = this._authUseCase.getUserRole();
+    const result = this._signupSessionStorage.getUserRole();
     this.userRole.set(result);
   }
 
@@ -60,7 +60,6 @@ export class AuthFacade {
 
   joinTeam(teamId: string): void {
     const result = this.getTeamById(teamId);
-
     this.team.set(result);
   }
 
@@ -74,7 +73,7 @@ export class AuthFacade {
     }
     
     this._signupSessionStorage.saveTeamId(result.id)
-
+    
     return result;
   }
 }

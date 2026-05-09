@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TEAM_ROUTE_PARAMS } from './team.routes';
 
 @Component({
   selector: 'app-team',
@@ -15,10 +16,10 @@ export class Team {
   private _route = inject(ActivatedRoute);
 
   onCreateTeam(): void {
-    this._router.navigate(['create-team'], { relativeTo: this._route });
+    this._router.navigate([TEAM_ROUTE_PARAMS.createTeam], { relativeTo: this._route });
   }
 
   onJoinTeam(): void {
-    this._router.navigate(['join-team'], { relativeTo: this._route });
+    this._router.navigate([TEAM_ROUTE_PARAMS.joinTeam], { relativeTo: this._route });
   }
 }

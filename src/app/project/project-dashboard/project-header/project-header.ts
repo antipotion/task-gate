@@ -7,5 +7,5 @@ import { Component, input } from '@angular/core';
   styleUrl: './project-header.scss',
 })
 export class ProjectHeader {
-  projectName = input.required<string>();
+  readonly projectName = input.required<string>();
 }

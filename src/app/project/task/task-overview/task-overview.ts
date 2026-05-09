@@ -10,5 +10,5 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './task-overview.scss',
 })
 export class TaskOverview {
-  taskDeadline = input.required<string>();
+  readonly taskDeadline = input.required<string>();
 }

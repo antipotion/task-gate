@@ -1,16 +1,11 @@
 import { Component, inject } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { AuthFacade } from '../auth-facade';
 import { ActivatedRoute, Router } from '@angular/router';
-
+import { AuthFacade } from '../auth-facade';
+import { AUTH_ROUTE_PARAMS } from '../auth.routes';
 
 @Component({
   selector: 'app-login',
@@ -23,18 +18,16 @@ export class Login {
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
 
-  loginForm = new FormGroup(
-    {
-      email: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required, Validators.email],
-      }),
-      password: new FormControl('', {
-        nonNullable: true,
-        validators: [Validators.required, Validators.minLength(8)],
-      }),
-    }
-  );
+  loginForm = new FormGroup({
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(8)],
+    }),
+  });
 
   readonly emailControl = this.loginForm.controls.email;
   readonly passwordControl = this.loginForm.controls.password;
@@ -51,6 +44,6 @@ export class Login {
   }
 
   onSignUp(): void {
-    this._router.navigate(['role'], {relativeTo: this._route});
+    this._router.navigate([AUTH_ROUTE_PARAMS.role], { relativeTo: this._route });
   }
 }

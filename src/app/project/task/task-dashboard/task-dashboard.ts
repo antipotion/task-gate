@@ -1,9 +1,9 @@
-import { Component, inject } from '@angular/core';
-import { TaskFacade } from '../task-facade';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatCardModule } from '@angular/material/card';
 import { DatePipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TaskFacade } from '../task-facade';
 
 @Component({
   selector: 'app-task-dashboard',
@@ -20,7 +20,7 @@ export class TaskDashboard {
 
   onClickTask(taskId: string): void {
     if (!taskId) return;
-    
-    this._router.navigate([taskId], {relativeTo: this._route});
+
+    this._router.navigate([taskId], { relativeTo: this._route });
   }
 }

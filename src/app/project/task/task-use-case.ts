@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
-import type { Task, TaskAction, TaskStatus } from './task.model';
 import { diff } from '../project-use-case';
+import type { Task, TaskAction, TaskStatus } from './task.model';
 
 @Injectable({
   providedIn: 'root',
@@ -26,10 +26,10 @@ export class TaskUseCase {
     // Guard if there are no changes
     if (Object.keys(changes).length === 0) return;
 
-    return await this._repo.updateTask(taskId, changes);
+    return this._repo.updateTask(taskId, changes);
   }
 
-  deleteTask(taskId: string): Promise<void> {
+  async deleteTask(taskId: string): Promise<void> {
     return this._repo.deleteTask(taskId);
   }
 }

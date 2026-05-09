@@ -3,6 +3,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthFacade } from '../../auth-facade';
 import { RoleModel } from '../../auth.model';
+import { AUTH_ROUTE_PARAMS } from '../../auth.routes';
+import { TEAM_ROUTE_PARAMS } from '../team/team.routes';
 
 @Component({
   selector: 'app-role',
@@ -14,15 +16,17 @@ export class Role {
   private readonly _authFacade = inject(AuthFacade);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
-  
+
   selectRole(role: RoleModel): void {
     this._authFacade.setUserRole(role);
-    
+
     if (role === 'MEMBER') {
-      this._router.navigate(['team', 'join-team'], { relativeTo: this._route.parent });
+      this._router.navigate([AUTH_ROUTE_PARAMS.team, TEAM_ROUTE_PARAMS.joinTeam], {
+        relativeTo: this._route.parent,
+      });
       return;
     }
-    
-    this._router.navigate(['team'], { relativeTo: this._route.parent });
+
+    this._router.navigate([AUTH_ROUTE_PARAMS.team], { relativeTo: this._route.parent });
   }
 }

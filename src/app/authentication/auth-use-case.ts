@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
+import { ProjectRepository } from '../application/repository/project-repository';
 import { FirebaseAuth } from '../infrastructure/auth/firebase-auth';
 import { RoleModel, UserModel } from './auth.model';
 import { TeamModel } from './sign-up/team/team.model';
-import { ProjectRepository } from '../application/repository/project-repository';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUseCase {
@@ -17,16 +17,21 @@ export class AuthUseCase {
     this._auth.loginWithGoogle();
   }
 
-  async register(email: string, password: string, role: RoleModel, teamId: string): Promise<UserModel | null> {
+  async register(
+    email: string,
+    password: string,
+    role: RoleModel,
+    teamId: string,
+  ): Promise<UserModel | null> {
     try {
       await this._auth.register(email, password);
     } catch (error) {
       console.error(error);
     }
-    
+
     const accountId = this._auth.user()?.uid;
     if (!accountId) return null;
-    
+
     return await this.addUser(accountId, role, teamId);
   }
 
@@ -42,16 +47,6 @@ export class AuthUseCase {
     return { ...data, id };
   }
 
-  setUserRole(role: RoleModel): void {
-    localStorage.setItem('userRole', JSON.stringify(role));
-  }
-
-  getUserRole(): RoleModel | null {
-    const result = localStorage.getItem('userRole');
-
-    return result ? JSON.parse(result) : null;
-  }
-
   async addTeam(teamName: string): Promise<TeamModel> {
     const data = { name: teamName };
 
@@ -59,7 +54,7 @@ export class AuthUseCase {
 
     return {
       id,
-      ...data,
+      name: data.name,
     };
   }
 }

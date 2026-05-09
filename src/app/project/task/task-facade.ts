@@ -2,9 +2,9 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../../application/store/store-service';
+import { getAvailableActions, transitionTask } from './task-state-machine';
 import { TaskUseCase } from './task-use-case';
-import { Task, TaskAction, TaskStatus } from './task.model';
-import { findTransition, getAvailableActions, TransitionDefinition, transitionTask } from './task-state-machine';
+import { Task, TaskAction } from './task.model';
 
 export type TaskState =
   | { status: 'loading' }

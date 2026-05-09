@@ -9,5 +9,5 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './project-overview.scss',
 })
 export class ProjectOverview {
-  deadline = input.required<string>();
+  readonly deadline = input.required<string>();
 }
