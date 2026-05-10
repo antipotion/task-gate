@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectFacade } from '../../project-facade';
 import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
 import type { Project } from '../../project.model';
+import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 import { CreateTask } from '../../task/create-task/create-task';
 import { TaskFacade } from '../../task/task-facade';
 import { ProjectActivityFeed } from '../project-activity-feed/project-activity-feed';
@@ -38,7 +39,8 @@ export class ProjectDetails {
   private readonly _route = inject(ActivatedRoute);
   private readonly _dialog = inject(MatDialog);
 
-  private readonly _projectId = this._route.snapshot.paramMap.get('projectId') || '';
+  private readonly _projectId =
+    this._route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.projectId) || '';
 
   readonly project = computed<Project | null>(() => this._projectFacade.activeProject());
 

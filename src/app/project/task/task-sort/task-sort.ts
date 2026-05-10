@@ -2,6 +2,7 @@ import { Component, computed, inject, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../../app.routes';
 import { TaskFacade, TaskState } from '../task-facade';
 import type { Task, TaskStatus } from '../task.model';
 
@@ -29,6 +30,6 @@ export class TaskSort {
   });
 
   onSelectTask(taskId: string): void {
-    this._router.navigate(['task', `${taskId}`]);
+    this._router.navigate([ROUTES_PARAMS.task, taskId]);
   }
 }

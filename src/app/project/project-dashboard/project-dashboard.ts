@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectFacade } from '../project-facade';
+import { PROJECT_ROUTE_PARAMS } from '../project.routes';
 
 @Component({
   selector: 'app-project-dashboard',
@@ -25,6 +26,6 @@ export class ProjectDashboard {
   }
 
   onAddProject(): void {
-    this._router.navigate(['create'], { relativeTo: this._route });
+    this._router.navigate([PROJECT_ROUTE_PARAMS.create], { relativeTo: this._route });
   }
 }

@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../../app.routes';
 import { TaskComment } from '../task-comment/task-comment';
 import { TaskDependency } from '../task-dependency/task-dependency';
 import { TaskEdit } from '../task-edit/task-edit';
@@ -16,6 +17,7 @@ import { TaskSubtask } from '../task-subtask/task-subtask';
 import { TaskTime } from '../task-time/task-time';
 import { TaskWarningDialog } from '../task-warning-dialog/task-warning-dialog';
 import { TaskAction } from '../task.model';
+import { TASK_ROUTE_PARAMS } from '../task.routes';
 
 @Component({
   selector: 'app-task-details',
@@ -41,7 +43,7 @@ export class TaskDetails implements OnInit {
   private readonly _dialog = inject(MatDialog);
   private readonly _snackBar = inject(MatSnackBar);
 
-  readonly taskId = this._route.snapshot.paramMap.get('taskId') || '';
+  readonly taskId = this._route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.taskId) || '';
 
   readonly activeTask = computed(() => this._taskFacade.activeTask());
   readonly nextTaskAction = signal<TaskAction | null>(null);
@@ -94,7 +96,7 @@ export class TaskDetails implements OnInit {
   onBack(projectId: string | undefined): void {
     if (!projectId) return;
 
-    this._router.navigate(['project', projectId]);
+    this._router.navigate([ROUTES_PARAMS.project, projectId]);
   }
 
   openConfirmDeleteDialog(): void {
