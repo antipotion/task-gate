@@ -20,34 +20,24 @@ export class AuthUseCase {
     this._auth.loginWithGoogle();
   }
 
-  async register(
-    email: string,
-    password: string,
-    role: RoleModel,
-    teamId: string,
-  ): Promise<UserModel | null> {
-    try {
-      await this._auth.register(email, password);
-    } catch (error) {
-      console.error(error);
-    }
+  async register(email: string, password: string, role: RoleModel): Promise<UserModel | null> {
+    await this._auth.register(email, password);
 
     const accountId = this._auth.user()?.uid;
     if (!accountId) return null;
 
-    return await this.addUser(role, teamId);
+    return await this.addUser(role);
   }
 
-  async addUser(role: RoleModel, teamId: string): Promise<UserModel> {
+  async addUser(role: RoleModel): Promise<UserModel> {
     const userId = this._userId();
-    
+
     if (!userId) {
       throw new Error('User id does not exist');
     }
-    
+
     const data: Omit<UserModel, 'id'> = {
       role,
-      teamId,
     };
 
     await this._repo.addUser(data, userId);
@@ -55,14 +45,15 @@ export class AuthUseCase {
     return { ...data, id: userId };
   }
 
-  async addTeam(teamName: string): Promise<TeamModel> {
-    const data = { name: teamName };
+  async addTeam(teamName: string, userId: string): Promise<TeamModel> {
+    const data: Omit<TeamModel, 'id'> = { name: teamName, memberIds: [userId] };
 
     const id = await this._repo.addTeam(data);
 
     return {
       id,
       name: data.name,
+      memberIds: data.memberIds,
     };
   }
 }

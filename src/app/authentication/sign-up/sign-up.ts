@@ -39,12 +39,12 @@ export class SignUp {
   readonly passwordControl = this.signUpForm.controls.password;
   readonly confirmPasswordControl = this.signUpForm.controls.confirmPassword;
 
-  signUpWithEmailAndPassword(): void {
+  async signUpWithEmailAndPassword(): Promise<void> {
     const email: string = this.emailControl.getRawValue();
     const password: string = this.passwordControl.getRawValue();
 
     try {
-      this._authFacade.signUpWithEmailAndPassword(email, password);
+      await this._authFacade.signUpWithEmailAndPassword(email, password);
     } catch (error) {
       console.error(error);
     }

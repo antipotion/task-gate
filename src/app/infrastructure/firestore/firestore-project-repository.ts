@@ -5,9 +5,11 @@ import {
   deleteDoc,
   doc,
   onSnapshot,
+  query,
   QueryDocumentSnapshot,
   setDoc,
   updateDoc,
+  where,
   type DocumentData,
   type Firestore,
   type QuerySnapshot,
@@ -65,10 +67,12 @@ export class FirestoreProjectRepository {
     });
   }
 
-  listenToTeams$(): Observable<TeamModel[]> {
+  listenToTeams$(userId: string): Observable<TeamModel[]> {
+    const teamsQuery = query(this._teamsCollection, where('memberIds', 'array-contains', userId));
+
     return new Observable<TeamModel[]>((subscriber) => {
       const unsubscribe = onSnapshot(
-        this._teamsCollection,
+        teamsQuery,
         (snapshot) => {
           const teams = snapshot.docs.map((doc) => this.mapToTeam(doc));
 
@@ -157,6 +161,7 @@ export class FirestoreProjectRepository {
       id: doc.id,
       name: data['name'],
       userId: data['userId'],
+      teamId: data['teamId'],
       description: data['description'],
       deadline: data['deadline']?.toDate(),
     };
@@ -182,6 +187,7 @@ export class FirestoreProjectRepository {
     return {
       id: doc.id,
       name: data['name'],
+      memberIds: data['memberIds'],
     };
   }
 
@@ -191,7 +197,6 @@ export class FirestoreProjectRepository {
     return {
       id: doc.id,
       role: data['role'],
-      teamId: data['teamId'],
     };
   }
 }

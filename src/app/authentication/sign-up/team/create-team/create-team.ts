@@ -29,7 +29,7 @@ export class CreateTeam {
     if (!teamName) return;
 
     // TODO: Handle error path
-    this._authFacade.addTeam(teamName);
+    this._authFacade.setTeamName(teamName);
     this._router.navigate([AUTH_ROUTE_PARAMS.signup], { relativeTo: this._route.parent?.parent });
   }
 }

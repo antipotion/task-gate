@@ -29,7 +29,7 @@ export class StoreService {
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
   readonly teams$: Observable<TeamModel[]> = this._repo
-    .listenToTeams$()
+    .listenToTeams$(this._authStore.userId() ?? '')
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
   getProjectById$(projectId: string): Observable<Project | undefined> {
