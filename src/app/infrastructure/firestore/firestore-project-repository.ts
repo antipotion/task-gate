@@ -5,15 +5,15 @@ import {
   deleteDoc,
   doc,
   onSnapshot,
+  QueryDocumentSnapshot,
+  setDoc,
   updateDoc,
   type DocumentData,
   type Firestore,
-  type QueryDocumentSnapshot,
   type QuerySnapshot,
 } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { db } from '../../../environment/firebase.config';
-import { ProjectRepository } from '../../application/repository/project-repository';
 import { UserModel } from '../../authentication/auth.model';
 import { TeamModel } from '../../authentication/sign-up/team/team.model';
 import type { Project } from '../../project/project.model';
@@ -22,7 +22,7 @@ import type { Task } from '../../project/task/task.model';
 @Injectable({
   providedIn: 'root',
 })
-export class FirestoreProjectRepository extends ProjectRepository {
+export class FirestoreProjectRepository {
   private readonly _db: Firestore = db;
   private readonly _projectsCollection = collection(this._db, 'projects');
   private readonly _tasksCollection = collection(this._db, 'tasks');
@@ -83,6 +83,28 @@ export class FirestoreProjectRepository extends ProjectRepository {
     });
   }
 
+  listenToUser$(userId: string): Observable<UserModel> {
+    return new Observable<UserModel>((subscriber) => {
+      const userRef = doc(this._usersCollection, userId);
+
+      const unsubscribe = onSnapshot(
+        userRef,
+        (snapshot) => {
+          if (!snapshot.exists()) return;
+
+          const user = this.mapToUser(snapshot);
+
+          subscriber.next(user);
+        },
+        (error) => {
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
   async addProject(data: Omit<Project, 'id'>): Promise<string> {
     const result = await addDoc(this._projectsCollection, data);
     return result.id;
@@ -93,10 +115,9 @@ export class FirestoreProjectRepository extends ProjectRepository {
     return result.id;
   }
 
-  async addUser(data: Omit<UserModel, 'id'>): Promise<string> {
-    const result = await addDoc(this._usersCollection, data);
-
-    return result.id;
+  async addUser(data: Omit<UserModel, 'id'>, userId: string): Promise<void> {
+    const docRef = doc(this._usersCollection, userId);
+    await setDoc(docRef, data);
   }
 
   async addTeam(data: Omit<TeamModel, 'id'>): Promise<string> {
@@ -135,8 +156,9 @@ export class FirestoreProjectRepository extends ProjectRepository {
     return {
       id: doc.id,
       name: data['name'],
-      description: data['description'] ?? null,
-      deadline: data['deadline']?.toDate() ?? null,
+      userId: data['userId'],
+      description: data['description'],
+      deadline: data['deadline']?.toDate(),
     };
   }
 
@@ -148,7 +170,7 @@ export class FirestoreProjectRepository extends ProjectRepository {
       id: doc.id,
       name: data['name'],
       description: data['description'] ?? null,
-      deadline: data['deadline']?.toDate() ?? null,
+      deadline: data['deadline']?.toDate(),
       status: data['status'],
       currentSubmissionVersion: data['currentSubmissionVersion'],
     };
@@ -159,7 +181,17 @@ export class FirestoreProjectRepository extends ProjectRepository {
 
     return {
       id: doc.id,
-      name: data['name'] ?? null,
+      name: data['name'],
+    };
+  }
+
+  private mapToUser(doc: QueryDocumentSnapshot<DocumentData>): UserModel {
+    const data = doc.data();
+
+    return {
+      id: doc.id,
+      role: data['role'],
+      teamId: data['teamId'],
     };
   }
 }

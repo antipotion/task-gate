@@ -16,6 +16,7 @@ import { ProjectMetrics } from '../project-metrics/project-metrics';
 import { ProjectOverview } from '../project-overview/project-overview';
 import { ProjectTasksBoard } from '../project-tasks-board/project-tasks-board';
 import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
+import { ROUTES_PARAMS } from '../../../app.routes';
 
 @Component({
   selector: 'app-project-details',
@@ -49,7 +50,7 @@ export class ProjectDetails {
   }
 
   onBack(): void {
-    this._router.navigate([''], { relativeTo: this._route.parent });
+    this._router.navigate([ROUTES_PARAMS.project]);
   }
 
   openEditDialog(): void {

@@ -12,6 +12,7 @@ type Team = {
 export type Project = {
   id: string;
   name: string;
+  userId: string;
   description: string;
   deadline: string;
 };

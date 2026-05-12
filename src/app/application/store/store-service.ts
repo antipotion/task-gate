@@ -1,19 +1,28 @@
 import { inject, Injectable } from '@angular/core';
 import { map, shareReplay, type Observable } from 'rxjs';
+import { AuthStore } from '../../authentication/auth-store';
 import { TeamModel } from '../../authentication/sign-up/team/team.model';
+import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 import type { Project } from '../../project/project.model';
 import { Task } from '../../project/task/task.model';
-import { ProjectRepository } from '../repository/project-repository';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StoreService {
-  private readonly _repo = inject(ProjectRepository);
+  private readonly _repo = inject(FirestoreProjectRepository);
+  private readonly _authStore = inject(AuthStore);
 
-  readonly projects$: Observable<Project[]> = this._repo
-    .listenToProjects$()
-    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  readonly projects$: Observable<Project[]> = this._repo.listenToProjects$().pipe(
+    map((projects) =>
+      projects.filter((project) => {
+        const userId = this._authStore.userId();
+
+        project.userId === userId;
+      }),
+    ),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
 
   readonly tasks$: Observable<Task[]> = this._repo
     .listenToTasks$()

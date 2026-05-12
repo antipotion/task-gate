@@ -13,6 +13,10 @@
     <!-- Empty state -->
     @if (state.data.length === 0) {
       <div class="p-4 flex flex-col gap-4 w-full">
+        <button matButton="filled" class="w-fit" (click)="onAddProject()">
+          <mat-icon fontIcon="add"></mat-icon>
+          Create Project
+        </button>
         <p>No projects found. Create a new project to get started!</p>
       </div>
     } @else {

@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthFacade } from '../auth-facade';
 import { AUTH_ROUTE_PARAMS } from '../auth.routes';
+import { ROUTES_PARAMS } from '../../app.routes';
 
 @Component({
   selector: 'app-login',
@@ -32,11 +33,13 @@ export class Login {
   readonly emailControl = this.loginForm.controls.email;
   readonly passwordControl = this.loginForm.controls.password;
 
-  loginWithEmailAndPassword(): void {
+  async loginWithEmailAndPassword(): Promise<void> {
     const email: string = this.emailControl.getRawValue();
     const password: string = this.passwordControl.getRawValue();
 
-    this._authFacade.loginWithEmailAndPassword(email, password);
+    await this._authFacade.loginWithEmailAndPassword(email, password);
+
+    this._router.navigate([ROUTES_PARAMS.project]);
   }
 
   loginWithGoogle(): void {

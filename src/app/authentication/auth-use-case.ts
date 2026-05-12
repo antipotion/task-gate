@@ -1,16 +1,19 @@
-import { inject, Injectable } from '@angular/core';
-import { ProjectRepository } from '../application/repository/project-repository';
+import { computed, inject, Injectable } from '@angular/core';
+import { UserCredential } from 'firebase/auth';
 import { FirebaseAuth } from '../infrastructure/auth/firebase-auth';
+import { FirestoreProjectRepository } from '../infrastructure/firestore/firestore-project-repository';
 import { RoleModel, UserModel } from './auth.model';
 import { TeamModel } from './sign-up/team/team.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUseCase {
   private readonly _auth = inject(FirebaseAuth);
-  private readonly _repo = inject(ProjectRepository);
+  private readonly _repo = inject(FirestoreProjectRepository);
 
-  login(email: string, password: string): void {
-    this._auth.login(email, password);
+  private readonly _userId = computed<string | null>(() => this._auth.userId());
+
+  async login(email: string, password: string): Promise<UserCredential> {
+    return this._auth.login(email, password);
   }
 
   loginWithGoogle(): void {
@@ -32,19 +35,24 @@ export class AuthUseCase {
     const accountId = this._auth.user()?.uid;
     if (!accountId) return null;
 
-    return await this.addUser(accountId, role, teamId);
+    return await this.addUser(role, teamId);
   }
 
-  async addUser(accountId: string, role: RoleModel, teamId: string): Promise<UserModel> {
+  async addUser(role: RoleModel, teamId: string): Promise<UserModel> {
+    const userId = this._userId();
+    
+    if (!userId) {
+      throw new Error('User id does not exist');
+    }
+    
     const data: Omit<UserModel, 'id'> = {
-      accountId,
       role,
       teamId,
     };
 
-    const id = await this._repo.addUser(data);
+    await this._repo.addUser(data, userId);
 
-    return { ...data, id };
+    return { ...data, id: userId };
   }
 
   async addTeam(teamName: string): Promise<TeamModel> {

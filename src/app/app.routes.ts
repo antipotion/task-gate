@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { AuthRoutes } from './authentication/auth.routes';
 
 export const ROUTES_PARAMS = {
   auth: 'auth',
@@ -15,7 +14,7 @@ export const routes: Routes = [
   },
   {
     path: ROUTES_PARAMS.auth,
-    children: AuthRoutes,
+    loadChildren: () => import('./authentication/auth.routes').then((m) => m.AuthRoutes),
   },
   {
     path: ROUTES_PARAMS.project,

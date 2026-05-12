@@ -40,7 +40,7 @@ export class ProjectFacade {
     return state.data.find((p) => p.id === id) ?? null;
   });
 
-  addProject(project: Omit<Project, 'id'>): Promise<string> {
+  addProject(project: Omit<Project, 'id' | 'userId'>): Promise<string> {
     return this._projectUseCase.addProject(project);
   }
 

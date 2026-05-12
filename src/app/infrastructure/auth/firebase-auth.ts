@@ -20,6 +20,7 @@ export class FirebaseAuth {
   private readonly _user = signal<User | null>(null);
 
   readonly user = this._user.asReadonly();
+  readonly userId = computed(() => this.user()?.uid ?? null);
   readonly isAuthenticated = computed(() => this.user() !== null);
 
   constructor() {

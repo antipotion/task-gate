@@ -5,6 +5,7 @@ import { AuthStore } from './auth-store';
 import { AuthUseCase } from './auth-use-case';
 import { RoleModel, UserModel } from './auth.model';
 import { TeamModel } from './sign-up/team/team.model';
+import { UserCredential } from 'firebase/auth';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
@@ -21,8 +22,8 @@ export class AuthFacade {
 
   readonly teamsCollection = toSignal(this._store.teams$, { initialValue: null });
 
-  loginWithEmailAndPassword(email: string, password: string): void {
-    this._authUseCase.login(email, password);
+  async loginWithEmailAndPassword(email: string, password: string): Promise<UserCredential> {
+    return this._authUseCase.login(email, password);
   }
 
   loginWithGoogle(): void {

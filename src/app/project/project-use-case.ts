@@ -1,13 +1,25 @@
 import { inject, Injectable } from '@angular/core';
-import { ProjectRepository } from '../application/repository/project-repository';
+import { AuthStore } from '../authentication/auth-store';
+import { FirestoreProjectRepository } from '../infrastructure/firestore/firestore-project-repository';
 import type { Project } from './project.model';
 
 @Injectable()
 export class ProjectUseCase {
-  private readonly _repo = inject(ProjectRepository);
+  private readonly _repo = inject(FirestoreProjectRepository);
+  private readonly _authStore = inject(AuthStore);
 
-  async addProject(project: Omit<Project, 'id'>): Promise<string> {
-    return this._repo.addProject(project);
+  async addProject(project: Omit<Project, 'id' | 'userId'>): Promise<string> {
+    const userId = this._authStore.userId();
+
+    if (!userId) {
+      throw new Error('User id does not exist');
+    }
+
+    const projectWithUserId: Omit<Project, 'id'> = {
+      ...project,
+      userId,
+    };
+    return this._repo.addProject(projectWithUserId);
   }
 
   async updateProject(id: string, original: Project, dto: Partial<Project>): Promise<void> {
