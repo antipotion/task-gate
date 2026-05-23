@@ -4,6 +4,7 @@ export const ROUTES_PARAMS = {
   auth: 'auth',
   project: 'project',
   task: 'task',
+  teams: 'teams',
 } as const;
 
 export const routes: Routes = [
@@ -23,5 +24,10 @@ export const routes: Routes = [
   {
     path: ROUTES_PARAMS.task,
     loadChildren: () => import('./project/task/task.routes').then((m) => m.TaskRoutes),
+  },
+  {
+    path: ROUTES_PARAMS.teams,
+    loadComponent: () =>
+      import('./team/team-dashboard/team-dashboard').then((m) => m.TeamDashboard),
   },
 ];

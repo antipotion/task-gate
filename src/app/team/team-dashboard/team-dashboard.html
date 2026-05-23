@@ -1,0 +1,8 @@
+@let teams = teamsList();
+<section>
+  <app-team-dashboard-header />
+
+  @for (team of teams; track team.id) {
+    <p>{{ team.name }}</p>
+  }
+</section>

@@ -1,5 +1,5 @@
-import { Routes } from "@angular/router";
-import { Team } from "./team";
+import { Routes } from '@angular/router';
+import { Team } from './team';
 
 export const TEAM_ROUTE_PARAMS = {
   createTeam: 'create-team',
