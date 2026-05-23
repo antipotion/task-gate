@@ -1,59 +1,184 @@
-# TaskGate
+# Task Gate
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
+Task Gate is a modern task management web application focused on clean architecture, responsive user experience, and maintainable frontend engineering practices.
 
-## Development server
+Built as a portfolio and engineering showcase project, it demonstrates modern frontend architecture, reactive data handling, role-based workflows, and production deployment practices.
 
-To start a local development server, run:
+## Live Demo
+
+[Live Website](https://task-gate.antipotion.com)
+
+---
+
+# Tech Stack
+
+## Frontend
+
+- Angular 21+
+- TypeScript (Strict Mode)
+- SCSS
+- RxJS
+
+## Backend
+
+- Firebase
+
+## Tooling
+
+- Angular CLI
+- npm
+- ESLint
+- Prettier
+
+## Deployment
+
+- Cloudflare Pages
+
+---
+
+# Features
+
+- Real-time task updates
+- Submission-based progression
+- Team collaboration workflows
+- Role and permission management
+- Reactive data synchronization
+
+---
+
+# Project Goals
+
+This project was built to:
+
+- Practice scalable frontend architecture
+- Improve engineering workflow discipline
+- Explore UI system consistency
+- Simulate production-level application structure
+- Serve as a public portfolio project for recruiters and collaborators
+
+---
+
+# Installation
+
+Clone the repository:
 
 ```bash
-ng serve
+git clone https://github.com/antipotion/task-gate.git
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Navigate into the project:
 
 ```bash
-ng generate component component-name
+cd task-gate
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Install dependencies:
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+Start the development server:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The application will usually run at:
 
-## Running unit tests
+```txt
+http://localhost:4200
+```
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+---
+
+# Production Build
+
+To generate a production build:
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
+Build artifacts will be generated inside the `dist/` directory.
 
-For end-to-end (e2e) testing, run:
+---
 
-```bash
-ng e2e
+# Folder Structure
+
+```txt
+src/
+├── app/
+│   ├── application/
+│   ├── authentication/
+│   ├── infrastructure/
+│   ├── project/
+│   ├── team/
+└── environment/
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+> Folder structure may evolve as the project grows.
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+# Architectural Highlights
+
+- Feature-based modular structure
+- Reactive observable pipelines
+- Centralized domain modeling
+- Strongly typed API contracts
+- Scalable component composition
+
+---
+
+# Architecture Notes
+
+The architecture intentionally prioritizes long-term maintainability, domain separation, and predictable state flow over short-term convenience.
+
+The goal is not only functionality, but also coherence and maintainability as the application evolves.
+
+---
+
+# Current Limitations
+
+Some features and refinements are still in progress, including:
+
+- Additional accessibility improvements
+- Responsive UX refinements
+- Expanded task management capabilities
+- Feature integration
+- Performance optimizations
+- Cross-domain workflow and routing integration
+- Relationship consistency between users, projects, and tasks
+- Ownership and permission flow refinements
+
+---
+
+# Roadmap
+
+Planned future improvements include:
+
+- File submission
+- Interaction and workflow refinements
+- Full implementation of projects and tasks domains
+- Advanced filtering and search
+- Simplified invitation process
+
+---
+
+# License
+
+This project is licensed under the MIT License.
+
+See the [LICENSE](./LICENSE) file for details.
+
+---
+
+# Author
+
+**Antipotion**
+
+- Portfolio: [https://antipotion.com](https://antipotion.com)
+- GitHub: [https://github.com/antipotion](https://github.com/antipotion)
+
+```
