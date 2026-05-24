@@ -19,7 +19,7 @@
         <p>No task available</p>
       } @else {
         @for (task of todos; track task.id) {
-          <div (click)="onSelectTask(task.id)">
+          <div (click)="onSelectTask(task.id)" class="cursor-pointer">
             <mat-card>
               <mat-card-content>
                 <p>{{ task.name }}</p>
