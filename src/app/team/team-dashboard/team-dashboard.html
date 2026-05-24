@@ -2,7 +2,13 @@
 <section>
   <app-team-dashboard-header />
 
-  @for (team of teams; track team.id) {
-    <p>{{ team.name }}</p>
-  }
+  <div class="px-4">
+    @for (team of teams; track team.id) {
+      <mat-card>
+        <mat-card-content>
+          <p>{{ team.name }}</p>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
 </section>

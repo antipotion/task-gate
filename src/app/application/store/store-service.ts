@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { filter, map, shareReplay, switchMap, type Observable } from 'rxjs';
 import { AuthStore } from '../../authentication/auth-store';
-import { TeamModel } from '../../authentication/sign-up/team/team.model';
+import { TeamModel } from '../../team/team.model';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 import type { Project } from '../../project/project.model';
 import { Task } from '../../project/task/task.model';

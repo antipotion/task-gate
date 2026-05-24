@@ -3,7 +3,7 @@ import { UserCredential } from 'firebase/auth';
 import { FirebaseAuth } from '../infrastructure/auth/firebase-auth';
 import { FirestoreProjectRepository } from '../infrastructure/firestore/firestore-project-repository';
 import { RoleModel, UserModel } from './auth.model';
-import { TeamModel } from './sign-up/team/team.model';
+import { TeamModel } from '../team/team.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUseCase {

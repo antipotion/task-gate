@@ -1,31 +1,31 @@
-<form [formGroup]=loginForm class="h-full py-32">
+<form [formGroup]="loginForm" class="h-full py-32">
   <div class="flex flex-col items-center justify-center gap-8">
     <div class="flex flex-col gap-2">
       <!-- Email -->
       <mat-form-field>
         <mat-label>Email</mat-label>
-        <input matInput placeholder="user123@yourdomain.com" formControlName="email">
+        <input matInput placeholder="user123@yourdomain.com" formControlName="email" />
 
         @if (emailControl.hasError('required')) {
-        <mat-error>Email is required.</mat-error>
+          <mat-error>Email is required.</mat-error>
         }
 
         @if (emailControl.hasError('email')) {
-        <mat-error>Invalid email format</mat-error>
+          <mat-error>Invalid email format</mat-error>
         }
       </mat-form-field>
-      
+
       <!-- Password -->
       <mat-form-field>
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password">
+        <input matInput type="password" formControlName="password" />
 
         @if (passwordControl.hasError('required')) {
-        <mat-error>Password is required</mat-error>
+          <mat-error>Password is required</mat-error>
         }
 
         @if (passwordControl.hasError('minlength')) {
-        <mat-error>Must be at least 8 characters</mat-error>
+          <mat-error>Must be at least 8 characters</mat-error>
         }
       </mat-form-field>
 
@@ -33,14 +33,17 @@
       <button matButton="filled" (click)="loginWithEmailAndPassword()">Login</button>
 
       <!-- Google signin -->
-      <button matButton="tonal" (click)=loginWithGoogle()>Login with Google</button>
+      <button matButton="tonal" (click)="loginWithGoogle()">Login with Google</button>
+
+      <!-- Demo account login -->
+      <button matButton (click)="onDemoAccountLogin()">Login with Demo account</button>
     </div>
-  
+
     <div class="flex items-center">
       <p>Don't have an account?</p>
-      
+
       <!-- Signup button -->
-      <button matButton (click)=onSignUp()>Sign up</button>
+      <button matButton (click)="onSignUp()">Sign up</button>
     </div>
   </div>
 </form>

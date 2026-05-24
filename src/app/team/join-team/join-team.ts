@@ -4,8 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthFacade } from '../../../auth-facade';
-import { AUTH_ROUTE_PARAMS } from '../../../auth.routes';
+import { AuthFacade } from '../../authentication/auth-facade';
+import { AUTH_ROUTE_PARAMS } from '../../authentication/auth.routes';
 
 @Component({
   selector: 'app-join-team',

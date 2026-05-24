@@ -16,49 +16,44 @@
       <p>Failed to load projects.</p>
     }
     @case ('success') {
-      <!-- Empty state -->
-      @if (state.data.length === 0) {
-        <div class="p-4 flex flex-col gap-4 w-full">
-          <div class="flex justify-between">
+      <div class="p-4 flex flex-col gap-4 w-full">
+        <div class="flex justify-between">
+          <div class="flex gap-4">
             <button matButton="filled" class="w-fit" (click)="onAddProject()">
               <mat-icon fontIcon="add"></mat-icon>
               Create Project
             </button>
-  
-            <button matButton class="w-fit" (click)="onLogout()" style="color: var(--mat-sys-error)">
-              Sign out
-            </button>
+
+            <button matButton class="w-fit" (click)="onViewTeams()">View Teams</button>
           </div>
-          <p>No projects found. Create a new project to get started!</p>
+
+          <button matButton class="w-fit" (click)="onLogout()" style="color: var(--mat-sys-error)">
+            Sign out
+          </button>
         </div>
-      } @else {
-        <!-- Projects list -->
-        <div class="p-4 flex flex-col gap-4 w-full">
-          <div class="flex justify-between">
-            <button matButton="filled" class="w-fit" (click)="onAddProject()">
-              <mat-icon fontIcon="add"></mat-icon>
-              Create Project
-            </button>
-  
-            <button matButton class="w-fit" (click)="onLogout()" style="color: var(--mat-sys-error)">
-              Sign out
-            </button>
-          </div>
-          <ul class="flex flex-col gap-4">
-            @for (project of state.data; track project.id) {
-              <li>
-                <div class="cursor-pointer" (click)="onClickProject(project.id)">
-                  <mat-card class="p-4">
-                    <mat-card-title>{{ project.name }}</mat-card-title>
-                    <mat-card-subtitle>{{ project.deadline | date }}</mat-card-subtitle>
-                  </mat-card>
-                </div>
-              </li>
-            }
-          </ul>
+
+        <!-- Content -->
+        <div>
+          <!-- Empty state -->
+          @if (state.data.length === 0) {
+            <p>No projects found. Create a new project to get started!</p>
+          } @else {
+            <!-- Projects list -->
+            <ul class="flex flex-col gap-4">
+              @for (project of state.data; track project.id) {
+                <li>
+                  <div class="cursor-pointer" (click)="onClickProject(project.id)">
+                    <mat-card class="p-4">
+                      <mat-card-title>{{ project.name }}</mat-card-title>
+                      <mat-card-subtitle>{{ project.deadline | date }}</mat-card-subtitle>
+                    </mat-card>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
         </div>
-      }
+      </div>
     }
   }
-
 }

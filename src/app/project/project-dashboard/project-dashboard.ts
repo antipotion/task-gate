@@ -5,6 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../app.routes';
+import { TEAM_ROUTE_PARAMS } from '../../team/team.routes';
 import { ProjectFacade } from '../project-facade';
 import { PROJECT_ROUTE_PARAMS } from '../project.routes';
 
@@ -34,6 +36,10 @@ export class ProjectDashboard implements OnDestroy {
     this.logoutLoading.set(true);
     await this._projectFacade.logout();
     this._router.navigate(['']);
+  }
+
+  onViewTeams(): void {
+    this._router.navigate([ROUTES_PARAMS.teams, TEAM_ROUTE_PARAMS.teamDashboard]);
   }
 
   ngOnDestroy(): void {

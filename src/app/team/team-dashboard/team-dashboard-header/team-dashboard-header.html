@@ -1,5 +1,12 @@
-<div class="p-4">
+<div class="flex justify-between items-center p-4">
+  <button matIconButton (click)="onBack()">
+    <mat-icon fontIcon="arrow_back"></mat-icon>
+  </button>
+
   <h1 class="mat-font-title-md">Team Dashboard</h1>
 
-  <button matButton>Add Team</button>
+  <div>
+    <button matButton (click)="onAddTeam()">Add Team</button>
+    <button matButton (click)="onJoinTeam()">Join Team</button>
+  </div>
 </div>

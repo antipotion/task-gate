@@ -17,7 +17,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { db } from '../../../environment/firebase.config';
 import { UserModel } from '../../authentication/auth.model';
-import { TeamModel } from '../../authentication/sign-up/team/team.model';
+import { TeamModel } from '../../team/team.model';
 import type { Project } from '../../project/project.model';
 import type { Task } from '../../project/task/task.model';
 

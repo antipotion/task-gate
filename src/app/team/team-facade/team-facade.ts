@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { StoreService } from '../../application/store/store-service';
-import { TeamModel } from '../../authentication/sign-up/team/team.model';
+import { TeamModel } from '../team.model';
 
 @Injectable({
   providedIn: 'root',

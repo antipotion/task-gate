@@ -4,8 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthFacade } from '../../../auth-facade';
-import { AUTH_ROUTE_PARAMS } from '../../../auth.routes';
+import { AuthFacade } from '../../authentication/auth-facade';
+import { TEAM_ROUTE_PARAMS } from '../team.routes';
 
 @Component({
   selector: 'app-create-team',
@@ -24,12 +24,11 @@ export class CreateTeam {
 
   readonly teamName = this.teamForm.controls.teamName;
 
-  onCreateTeam(): void {
+  async onCreateTeam(): Promise<void> {
     const teamName = this.teamName.getRawValue();
     if (!teamName) return;
 
-    // TODO: Handle error path
-    this._authFacade.setTeamName(teamName);
-    this._router.navigate([AUTH_ROUTE_PARAMS.signup], { relativeTo: this._route.parent?.parent });
+    await this._authFacade.addTeam(teamName);
+    this._router.navigate([TEAM_ROUTE_PARAMS.teamDashboard], { relativeTo: this._route?.parent });
   }
 }

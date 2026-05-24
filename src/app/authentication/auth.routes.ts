@@ -23,7 +23,7 @@ export const AuthRoutes: Routes = [
       },
       {
         path: AUTH_ROUTE_PARAMS.team,
-        loadChildren: () => import('./sign-up/team/team.routes').then((m) => m.TeamRoutes),
+        loadChildren: () => import('../team/team.routes').then((m) => m.TeamRoutes),
       },
       {
         path: AUTH_ROUTE_PARAMS.signup,

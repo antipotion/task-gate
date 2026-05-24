@@ -27,7 +27,7 @@ export const routes: Routes = [
   },
   {
     path: ROUTES_PARAMS.teams,
-    loadComponent: () =>
-      import('./team/team-dashboard/team-dashboard').then((m) => m.TeamDashboard),
+    loadChildren: () =>
+      import('./team/team.routes').then((m) => m.TeamRoutes),
   },
 ];

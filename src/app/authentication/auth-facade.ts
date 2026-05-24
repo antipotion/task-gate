@@ -5,7 +5,7 @@ import { StoreService } from '../application/store/store-service';
 import { AuthStore } from './auth-store';
 import { AuthUseCase } from './auth-use-case';
 import { RoleModel, UserModel } from './auth.model';
-import { TeamModel } from './sign-up/team/team.model';
+import { TeamModel } from '../team/team.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {

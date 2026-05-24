@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthFacade } from '../../auth-facade';
 import { RoleModel } from '../../auth.model';
 import { AUTH_ROUTE_PARAMS } from '../../auth.routes';
-import { TEAM_ROUTE_PARAMS } from '../team/team.routes';
+import { TEAM_ROUTE_PARAMS } from '../../../team/team.routes';
 
 @Component({
   selector: 'app-role',
