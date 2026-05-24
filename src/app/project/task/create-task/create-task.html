@@ -1,45 +1,47 @@
-<h1 mat-dialog-title>Create task</h1>
-<mat-dialog-content>
-  <form action="" [formGroup]="taskForm">
-    <!-- Task name -->
-    <mat-form-field class="w-full">
-      <mat-label>Task Name</mat-label>
-      <input matInput placeholder="Enter task name" formControlName="name" />
-      @if (taskForm.get('name')?.invalid) {
-        <mat-error>Task Name is required</mat-error>
-      }
-    </mat-form-field>
+<div>
+  <h2 mat-dialog-title>Create task</h2>
+  <mat-dialog-content>
+    <form action="" [formGroup]="taskForm">
+      <!-- Task name -->
+      <mat-form-field class="w-full">
+        <mat-label>Task Name</mat-label>
+        <input matInput placeholder="Enter task name" formControlName="name" />
+        @if (taskForm.get('name')?.invalid) {
+          <mat-error>Task Name is required</mat-error>
+        }
+      </mat-form-field>
 
-    <!-- Task description -->
-    <mat-form-field class="w-full">
-      <mat-label>Task Description</mat-label>
-      <input matInput placeholder="Enter task description" formControlName="description" />
-    </mat-form-field>
+      <!-- Task description -->
+      <mat-form-field class="w-full">
+        <mat-label>Task Description</mat-label>
+        <input matInput placeholder="Enter task description" formControlName="description" />
+      </mat-form-field>
 
-    <!-- Task deadline -->
-    <mat-form-field>
-      <mat-label>Task Deadline</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="deadline" />
-      <mat-hint>MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-      @if (taskForm.get('deadline')?.invalid) {
-        <mat-error>Task Deadline is required</mat-error>
-      }
-    </mat-form-field>
+      <!-- Task deadline -->
+      <mat-form-field class="w-full">
+        <mat-label>Task Deadline</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="deadline" />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        @if (taskForm.get('deadline')?.invalid) {
+          <mat-error>Task Deadline is required</mat-error>
+        }
+      </mat-form-field>
 
-    <!-- Assign to -->
-    <mat-form-field>
-      <mat-label>Assign to</mat-label>
-      <mat-select>
-        <mat-option>None</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </form>
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button matButton [mat-dialog-close]="taskForm.getRawValue()" [disabled]="taskForm.invalid">
-    Save
-  </button>
-  <button matButton (click)="onCancel()" class="error-btn">Cancel</button>
-</mat-dialog-actions>
+      <!-- Assign to -->
+      <mat-form-field class="w-full">
+        <mat-label>Assign to</mat-label>
+        <mat-select formControlName="assigneeId">
+          <mat-option value="">None</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button matButton [mat-dialog-close]="taskForm.getRawValue()" [disabled]="taskForm.invalid">
+      Save
+    </button>
+    <button matButton (click)="onCancel()" class="error-btn">Cancel</button>
+  </mat-dialog-actions>
+</div>
