@@ -14,7 +14,7 @@ import {
   type Firestore,
   type QuerySnapshot,
 } from 'firebase/firestore';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { db } from '../../../environment/firebase.config';
 import { UserModel } from '../../authentication/auth.model';
 import { TeamModel } from '../../authentication/sign-up/team/team.model';
@@ -31,10 +31,19 @@ export class FirestoreProjectRepository {
   private readonly _usersCollection = collection(this._db, 'users');
   private readonly _teamsCollection = collection(this._db, 'teams');
 
-  listenToProjects$(): Observable<Project[]> {
+  listenToProjects$(teams: TeamModel[]): Observable<Project[]> {
+    const teamIds = teams.map((team) => team.id);
+
+    // Guard against empty array
+    if (teamIds.length === 0) {
+      return of([]);
+    }
+
+    const projectQuery = query(this._projectsCollection, where('teamId', 'in', teamIds));
+
     return new Observable<Project[]>((subscriber) => {
       const unsubscribe = onSnapshot(
-        this._projectsCollection,
+        projectQuery,
         (snapshot: QuerySnapshot<DocumentData>) => {
           const projects = snapshot.docs.map((doc) => this.mapToProject(doc));
 

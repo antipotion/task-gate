@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { filter, map, shareReplay, switchMap, tap, type Observable } from 'rxjs';
+import { filter, map, shareReplay, switchMap, type Observable } from 'rxjs';
 import { AuthStore } from '../../authentication/auth-store';
 import { TeamModel } from '../../authentication/sign-up/team/team.model';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
@@ -14,17 +14,6 @@ export class StoreService {
   private readonly _repo = inject(FirestoreProjectRepository);
   private readonly _authStore = inject(AuthStore);
 
-  readonly projects$: Observable<Project[]> = this._repo.listenToProjects$().pipe(
-    map((projects) =>
-      projects.filter((project) => {
-        const userId = this._authStore.userId();
-
-        project.creatorId === userId;
-      }),
-    ),
-    shareReplay({ bufferSize: 1, refCount: true }),
-  );
-
   readonly tasks$: Observable<Task[]> = this._repo
     .listenToTasks$()
     .pipe(shareReplay({ bufferSize: 1, refCount: true }));
@@ -34,7 +23,11 @@ export class StoreService {
     switchMap((userId) => {
       return this._repo.listenToTeams$(userId);
     }),
-    tap((teams) => console.log(teams)),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+
+  readonly projects$: Observable<Project[]> = this.teams$.pipe(
+    switchMap((teams) => this._repo.listenToProjects$(teams)),
     shareReplay({ bufferSize: 1, refCount: true }),
   );
 
