@@ -1,7 +1,12 @@
+@let taskName = this.taskName();
+
 <section>
   <!-- Task Header -->
   <div class="flex flex-col gap-2">
-    <h1 class="mat-font-title-lg">{{ taskName() }}</h1>
+    @if (!taskName) {
+      <mat-spinner diameter="22"></mat-spinner>
+    }
+    <h1 class="mat-font-title-lg">{{ taskName }}</h1>
 
     <!-- Badges -->
     <div class="flex gap-2">

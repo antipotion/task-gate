@@ -4,6 +4,7 @@ import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../application/store/store-service';
 import { ProjectUseCase } from './project-use-case';
 import type { Project } from './project.model';
+import { AuthStore } from '../authentication/auth-store';
 
 export type ProjectState =
   | { status: 'loading' }
@@ -14,6 +15,7 @@ export type ProjectState =
 export class ProjectFacade {
   private readonly _storeService = inject(StoreService);
   private readonly _projectUseCase = inject(ProjectUseCase);
+  private readonly _authStore = inject(AuthStore);
 
   readonly projectState = toSignal(
     this._storeService.projects$.pipe(
@@ -64,5 +66,9 @@ export class ProjectFacade {
 
   deleteProject(id: string): Promise<void> {
     return this._projectUseCase.deleteProject(id);
+  }
+
+  async logout(): Promise<void> {
+    return this._authStore.logout();
   }
 }

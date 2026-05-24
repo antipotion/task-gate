@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,12 +14,13 @@ import { PROJECT_ROUTE_PARAMS } from '../project.routes';
   templateUrl: './project-dashboard.html',
   styleUrl: './project-dashboard.scss',
 })
-export class ProjectDashboard {
+export class ProjectDashboard implements OnDestroy {
   private readonly _projectFacade = inject(ProjectFacade);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
 
   readonly projectsState = computed(() => this._projectFacade.projectState());
+  readonly logoutLoading = signal<boolean>(false);
 
   onClickProject(projectId: string): void {
     this._router.navigate([projectId], { relativeTo: this._route });
@@ -27,5 +28,15 @@ export class ProjectDashboard {
 
   onAddProject(): void {
     this._router.navigate([PROJECT_ROUTE_PARAMS.create], { relativeTo: this._route });
+  }
+
+  async onLogout(): Promise<void> {
+    this.logoutLoading.set(true);
+    await this._projectFacade.logout();
+    this._router.navigate(['']);
+  }
+
+  ngOnDestroy(): void {
+    this.logoutLoading.set(false);
   }
 }

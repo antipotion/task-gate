@@ -93,7 +93,8 @@ export class TaskDetails implements OnInit {
     });
   }
 
-  onBack(projectId: string | undefined): void {
+  onBack(): void {
+    const projectId = this.activeTask()?.projectId;
     if (!projectId) return;
 
     this._router.navigate([ROUTES_PARAMS.project, projectId]);
@@ -108,9 +109,12 @@ export class TaskDetails implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
+      const projectId = this.activeTask()?.projectId;
+      if (!projectId) return;
+
       if (!result) return;
       this._taskFacade.deleteTask(this.taskId);
-      this._router.navigate(['']);
+      this._router.navigate([ROUTES_PARAMS.project, projectId]);
     });
   }
 

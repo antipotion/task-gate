@@ -1,44 +1,64 @@
-@let state = projectsState();
-@switch (state.status) {
-  @case ('loading') {
-    <div class="flex flex-col items-center justify-center gap-2 h-full">
-      <mat-spinner></mat-spinner>
-      <p>Fetching your projects...</p>
-    </div>
-  }
-  @case ('error') {
-    <p>Failed to load projects.</p>
-  }
-  @case ('success') {
-    <!-- Empty state -->
-    @if (state.data.length === 0) {
-      <div class="p-4 flex flex-col gap-4 w-full">
-        <button matButton="filled" class="w-fit" (click)="onAddProject()">
-          <mat-icon fontIcon="add"></mat-icon>
-          Create Project
-        </button>
-        <p>No projects found. Create a new project to get started!</p>
-      </div>
-    } @else {
-      <!-- Projects list -->
-      <div class="p-4 flex flex-col gap-4 w-full">
-        <button matButton="filled" class="w-fit" (click)="onAddProject()">
-          <mat-icon fontIcon="add"></mat-icon>
-          Create Project
-        </button>
-        <ul class="flex flex-col gap-4">
-          @for (project of state.data; track project.id) {
-            <li>
-              <div class="cursor-pointer" (click)="onClickProject(project.id)">
-                <mat-card class="p-4">
-                  <mat-card-title>{{ project.name }}</mat-card-title>
-                  <mat-card-subtitle>{{ project.deadline | date }}</mat-card-subtitle>
-                </mat-card>
-              </div>
-            </li>
-          }
-        </ul>
+@if (logoutLoading()) {
+  <div class="h-full flex flex-col items-center justify-center">
+    <mat-spinner></mat-spinner>
+    <p>Logging out...</p>
+  </div>
+} @else {
+  @let state = projectsState();
+  @switch (state.status) {
+    @case ('loading') {
+      <div class="flex flex-col items-center justify-center gap-2 h-full">
+        <mat-spinner></mat-spinner>
+        <p>Fetching your projects...</p>
       </div>
     }
+    @case ('error') {
+      <p>Failed to load projects.</p>
+    }
+    @case ('success') {
+      <!-- Empty state -->
+      @if (state.data.length === 0) {
+        <div class="p-4 flex flex-col gap-4 w-full">
+          <div class="flex justify-between">
+            <button matButton="filled" class="w-fit" (click)="onAddProject()">
+              <mat-icon fontIcon="add"></mat-icon>
+              Create Project
+            </button>
+  
+            <button matButton class="w-fit" (click)="onLogout()" style="color: var(--mat-sys-error)">
+              Sign out
+            </button>
+          </div>
+          <p>No projects found. Create a new project to get started!</p>
+        </div>
+      } @else {
+        <!-- Projects list -->
+        <div class="p-4 flex flex-col gap-4 w-full">
+          <div class="flex justify-between">
+            <button matButton="filled" class="w-fit" (click)="onAddProject()">
+              <mat-icon fontIcon="add"></mat-icon>
+              Create Project
+            </button>
+  
+            <button matButton class="w-fit" (click)="onLogout()" style="color: var(--mat-sys-error)">
+              Sign out
+            </button>
+          </div>
+          <ul class="flex flex-col gap-4">
+            @for (project of state.data; track project.id) {
+              <li>
+                <div class="cursor-pointer" (click)="onClickProject(project.id)">
+                  <mat-card class="p-4">
+                    <mat-card-title>{{ project.name }}</mat-card-title>
+                    <mat-card-subtitle>{{ project.deadline | date }}</mat-card-subtitle>
+                  </mat-card>
+                </div>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    }
   }
+
 }

@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../../app.routes';
 import { ProjectFacade } from '../../project-facade';
 import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
 import type { Project } from '../../project.model';
@@ -16,7 +17,6 @@ import { ProjectMetrics } from '../project-metrics/project-metrics';
 import { ProjectOverview } from '../project-overview/project-overview';
 import { ProjectTasksBoard } from '../project-tasks-board/project-tasks-board';
 import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
-import { ROUTES_PARAMS } from '../../../app.routes';
 
 @Component({
   selector: 'app-project-details',
@@ -93,7 +93,7 @@ export class ProjectDetails {
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
       this._projectFacade.deleteProject(projectId);
-      this._router.navigate(['']);
+      this._router.navigate([ROUTES_PARAMS.project]);
     });
   }
 }

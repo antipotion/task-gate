@@ -44,4 +44,8 @@ export class AuthStore {
   clearSessionKeys(): void {
     this._signupSessionStorage.clearSessionKeys();
   }
+
+  async logout(): Promise<void> {
+    return this._firebaseAuth.logout();
+  }
 }
