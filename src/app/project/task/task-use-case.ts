@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { AuthStore } from '../../authentication/auth-store';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 import { diff } from '../project-use-case';
 import type { Task, TaskAction, TaskStatus } from './task.model';
@@ -8,12 +9,26 @@ import type { Task, TaskAction, TaskStatus } from './task.model';
 })
 export class TaskUseCase {
   private readonly _repo = inject(FirestoreProjectRepository);
+  private readonly _authStore = inject(AuthStore);
 
   async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
     const status: TaskStatus = 'TODO';
     const action: TaskAction = 'START';
+
+    const creatorId: string | null = this._authStore.userId();
+    if (!creatorId) {
+      throw new Error("Can't create task creatorId is missing.");
+    }
+
     const currentSubmissionVersion: number = 1;
-    const withProjectIdTask = { ...task, projectId, status, action, currentSubmissionVersion };
+    const withProjectIdTask = {
+      ...task,
+      projectId,
+      status,
+      action,
+      creatorId,
+      currentSubmissionVersion,
+    };
 
     const taskId = await this._repo.addTask(withProjectIdTask);
 

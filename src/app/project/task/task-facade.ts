@@ -45,8 +45,8 @@ export class TaskFacade {
     this.selectedTaskId.set(taskId);
   }
 
-  addTask(taskId: string, task: Omit<Task, 'id'>): Promise<string> {
-    return this._taskUseCase.addTask(taskId, task);
+  addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
+    return this._taskUseCase.addTask(projectId, task);
   }
 
   updatetask(taskId: string, original: Task, dto: Partial<Task>): Promise<void> {

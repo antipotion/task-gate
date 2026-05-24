@@ -160,7 +160,7 @@ export class FirestoreProjectRepository {
     return {
       id: doc.id,
       name: data['name'],
-      userId: data['userId'],
+      creatorId: data['creatorId'],
       teamId: data['teamId'],
       description: data['description'],
       deadline: data['deadline']?.toDate(),
@@ -174,6 +174,8 @@ export class FirestoreProjectRepository {
       projectId: data['projectId'],
       id: doc.id,
       name: data['name'],
+      creatorId: data['creatorId'],
+      assigneeId: data['assigneeId'],
       description: data['description'] ?? null,
       deadline: data['deadline']?.toDate(),
       status: data['status'],
@@ -187,6 +189,7 @@ export class FirestoreProjectRepository {
     return {
       id: doc.id,
       name: data['name'],
+      creatorId: data['creatorId'],
       memberIds: data['memberIds'],
     };
   }

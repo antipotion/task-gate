@@ -19,7 +19,7 @@ export class StoreService {
       projects.filter((project) => {
         const userId = this._authStore.userId();
 
-        project.userId === userId;
+        project.creatorId === userId;
       }),
     ),
     shareReplay({ bufferSize: 1, refCount: true }),

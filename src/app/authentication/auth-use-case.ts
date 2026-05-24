@@ -46,7 +46,12 @@ export class AuthUseCase {
   }
 
   async addTeam(teamName: string, userId: string): Promise<TeamModel> {
-    const data: Omit<TeamModel, 'id'> = { name: teamName, memberIds: [userId] };
+    const creatorId: string | null = this._userId();
+    if (!creatorId) {
+      throw new Error("Can't add team creatorId is missing");
+    }
+
+    const data: Omit<TeamModel, 'id'> = { name: teamName, memberIds: [userId], creatorId };
 
     const id = await this._repo.addTeam(data);
 
@@ -54,6 +59,7 @@ export class AuthUseCase {
       id,
       name: data.name,
       memberIds: data.memberIds,
+      creatorId,
     };
   }
 }

@@ -6,7 +6,7 @@ type Member = {
 export type Project = {
   id: string;
   name: string;
-  userId: string;
+  creatorId: string;
   teamId: string;
   description: string;
   deadline: string;

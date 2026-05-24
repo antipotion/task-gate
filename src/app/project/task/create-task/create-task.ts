@@ -6,6 +6,7 @@ import { MatDatepickerInput, MatDatepickerModule } from '@angular/material/datep
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-create-task',
@@ -17,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
     MatButtonModule,
     MatDatepickerInput,
     MatDatepickerModule,
+    MatSelectModule,
   ],
   templateUrl: './create-task.html',
   styleUrl: './create-task.scss',
@@ -29,6 +31,7 @@ export class CreateTask {
     name: new FormControl('', Validators.required),
     description: new FormControl(''),
     deadline: new FormControl('', Validators.required),
+    assigneeId: new FormControl(''),
   });
 
   onCancel(): void {

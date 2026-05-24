@@ -8,16 +8,16 @@ export class ProjectUseCase {
   private readonly _repo = inject(FirestoreProjectRepository);
   private readonly _authStore = inject(AuthStore);
 
-  async addProject(project: Omit<Project, 'id' | 'userId'>): Promise<string> {
-    const userId = this._authStore.userId();
+  async addProject(project: Omit<Project, 'id' | 'creatorId'>): Promise<string> {
+    const creatorId = this._authStore.userId();
 
-    if (!userId) {
-      throw new Error('User id does not exist');
+    if (!creatorId) {
+      throw new Error("Can't create project userId does not exist.");
     }
 
     const projectWithUserId: Omit<Project, 'id'> = {
       ...project,
-      userId,
+      creatorId,
     };
     return this._repo.addProject(projectWithUserId);
   }

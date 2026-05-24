@@ -48,6 +48,18 @@
             }
           </mat-form-field>
 
+          <mat-form-field>
+            <!-- Team id -->
+            <mat-select formControlName="teamId">
+              @for (team of teams(); track team.id) {
+                <mat-option [value]="team.id">{{ team.name }}</mat-option>
+              }
+            </mat-select>
+            @if (projectForm.get('teamId')?.hasError('required')) {
+              <mat-error>A team is required</mat-error>
+            }
+          </mat-form-field>
+
           <button matButton="filled" [disabled]="projectForm.invalid">Create Project</button>
         </form>
       </div>
