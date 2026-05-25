@@ -5,10 +5,11 @@ import { TeamFacade } from '../team-facade/team-facade';
 import { TeamModel } from '../team.model';
 import { TeamDashboardHeader } from './team-dashboard-header/team-dashboard-header';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-team-dashboard',
-  imports: [TeamDashboardHeader, MatButtonModule, MatIconModule, MatCardModule],
+  imports: [TeamDashboardHeader, MatButtonModule, MatIconModule, MatCardModule, MatProgressSpinnerModule],
   templateUrl: './team-dashboard.html',
   styleUrl: './team-dashboard.scss',
 })

@@ -2,13 +2,20 @@
 <section>
   <app-team-dashboard-header />
 
-  <div class="px-4">
-    @for (team of teams; track team.id) {
-      <mat-card>
-        <mat-card-content>
-          <p>{{ team.name }}</p>
-        </mat-card-content>
-      </mat-card>
-    }
-  </div>
+  @if (!teams) {
+    <div class="flex flex-col w-full items-center gap-4 mt-4">
+      <mat-spinner></mat-spinner>
+      <p>Fetching teams...</p>
+    </div>
+  } @else {
+    <div class="px-4">
+      @for (team of teams; track team.id) {
+        <mat-card>
+          <mat-card-content>
+            <p>{{ team.name }}</p>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
 </section>

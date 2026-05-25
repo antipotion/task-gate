@@ -6,6 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthFacade } from '../../authentication/auth-facade';
 import { AUTH_ROUTE_PARAMS } from '../../authentication/auth.routes';
+import { ROUTES_PARAMS } from '../../app.routes';
+import { TEAM_ROUTE_PARAMS } from '../team.routes';
 
 @Component({
   selector: 'app-join-team',
@@ -34,6 +36,6 @@ export class JoinTeam {
       console.error(error);
     }
 
-    this._router.navigate([AUTH_ROUTE_PARAMS.signup], { relativeTo: this._route.parent?.parent });
+    this._router.navigate([TEAM_ROUTE_PARAMS.teamDashboard], { relativeTo: this._route.parent });
   }
 }
