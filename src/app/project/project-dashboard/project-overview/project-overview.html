@@ -8,7 +8,11 @@
   <div class="flex flex-col gap-2">
     <!-- Project Description -->
     <div>
-      <p>Project description goes here.</p>
+      @if (description(); as description) {
+        <p>{{ description }}</p>
+      } @else {
+        <mat-spinner diameter="22"></mat-spinner>
+      }
     </div>
 
     <!-- Project Dates -->
@@ -20,8 +24,12 @@
 
       <!-- Deadline -->
       <div>
-        <mat-chip
-          ><p class="mat-font-label-sm">Deadline: {{ this.deadline() }}</p>
+        <mat-chip>
+          @if (deadline(); as deadline) {
+            <p class="mat-font-label-sm">Deadline: {{ deadline }}</p>
+          } @else {
+            <mat-spinner diameter="22"></mat-spinner>
+          }
         </mat-chip>
       </div>
     </div>
