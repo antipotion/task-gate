@@ -3,15 +3,11 @@ type Member = {
   name: string;
 };
 
-type Team = {
-  id: string;
-  name: string;
-  members: Member[];
-};
-
 export type Project = {
   id: string;
   name: string;
+  creatorId: string;
+  teamId: string;
   description: string;
   deadline: string;
 };

@@ -1,3 +1,5 @@
+@let projectData = project();
+
 <div class="p-4 flex flex-col gap-4 w-full">
   <!-- Back button -->
   <div class="flex justify-between">
@@ -23,8 +25,11 @@
   </div>
 
   <!-- Contents -->
-  <app-project-header [projectName]="project()?.name ?? 'No Project'" />
-  <app-project-overview [deadline]="(project()?.deadline | date) ?? 'No Deadline'" />
+  <app-project-header [projectName]="projectData?.name" />
+  <app-project-overview
+    [deadline]="projectData?.deadline | date"
+    [description]="projectData?.description ?? null"
+  />
   <app-project-metrics />
   <app-project-tasks-board />
   <app-project-activity-feed />

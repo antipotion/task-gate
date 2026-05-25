@@ -1,0 +1,11 @@
+<section class="py-32 flex flex-col items-center">
+  <div class="flex flex-col gap-4 items-center w-2xs">
+    <p>Which of the following describe your role?</p>
+
+    <!-- Choices -->
+    <div class="flex flex-col gap-2 w-full">
+      <button matButton="filled" (click)="selectRole('MANAGER')">Manager</button>
+      <button matButton="filled" (click)="selectRole('MEMBER')">Team member</button>
+    </div>
+  </div>
+</section>

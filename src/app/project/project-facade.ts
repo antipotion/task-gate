@@ -1,9 +1,10 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../application/store/store-service';
 import { ProjectUseCase } from './project-use-case';
 import type { Project } from './project.model';
+import { AuthStore } from '../authentication/auth-store';
 
 export type ProjectState =
   | { status: 'loading' }
@@ -12,11 +13,12 @@ export type ProjectState =
 
 @Injectable()
 export class ProjectFacade {
-  private storeService = inject(StoreService);
-  private projectUseCase = inject(ProjectUseCase);
+  private readonly _storeService = inject(StoreService);
+  private readonly _projectUseCase = inject(ProjectUseCase);
+  private readonly _authStore = inject(AuthStore);
 
   readonly projectState = toSignal(
-    this.storeService.projects$.pipe(
+    this._storeService.projects$.pipe(
       map(
         (projects): ProjectState => ({
           status: 'success',
@@ -40,8 +42,8 @@ export class ProjectFacade {
     return state.data.find((p) => p.id === id) ?? null;
   });
 
-  addProject(project: Omit<Project, 'id'>): Promise<string> {
-    return this.projectUseCase.addProject(project);
+  addProject(project: Omit<Project, 'id' | 'creatorId'>): Promise<string> {
+    return this._projectUseCase.addProject(project);
   }
 
   selectProject(projectId: string): void {
@@ -54,12 +56,19 @@ export class ProjectFacade {
     if (state.status !== 'success') return;
 
     const project = state.data.find((project) => project.id === id);
-    if (!project) return;
+    if (!project) {
+      console.error('Project not found');
+      return;
+    }
 
-    return await this.projectUseCase.updateProject(id, project, dto);
+    return await this._projectUseCase.updateProject(id, project, dto);
   }
 
   deleteProject(id: string): Promise<void> {
-    return this.projectUseCase.deleteProject(id);
+    return this._projectUseCase.deleteProject(id);
+  }
+
+  async logout(): Promise<void> {
+    return this._authStore.logout();
   }
 }

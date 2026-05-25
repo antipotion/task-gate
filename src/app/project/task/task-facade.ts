@@ -2,9 +2,9 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../../application/store/store-service';
+import { getAvailableActions, transitionTask } from './task-state-machine';
 import { TaskUseCase } from './task-use-case';
-import { Task, TaskAction, TaskStatus } from './task.model';
-import { findTransition, getAvailableActions, TransitionDefinition, transitionTask } from './task-state-machine';
+import { Task, TaskAction } from './task.model';
 
 export type TaskState =
   | { status: 'loading' }
@@ -13,11 +13,11 @@ export type TaskState =
 
 @Injectable()
 export class TaskFacade {
-  private storeService = inject(StoreService);
-  private taskUseCase = inject(TaskUseCase);
+  private readonly _storeService = inject(StoreService);
+  private readonly _taskUseCase = inject(TaskUseCase);
 
   readonly taskState = toSignal(
-    this.storeService.tasks$.pipe(
+    this._storeService.tasks$.pipe(
       map(
         (tasks): TaskState => ({
           status: 'success',
@@ -45,16 +45,16 @@ export class TaskFacade {
     this.selectedTaskId.set(taskId);
   }
 
-  addTask(taskId: string, task: Omit<Task, 'id'>): Promise<string> {
-    return this.taskUseCase.addTask(taskId, task);
+  addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
+    return this._taskUseCase.addTask(projectId, task);
   }
 
   updatetask(taskId: string, original: Task, dto: Partial<Task>): Promise<void> {
-    return this.taskUseCase.updateTask(taskId, original, dto);
+    return this._taskUseCase.updateTask(taskId, original, dto);
   }
 
   deleteTask(taskId: string): Promise<void> {
-    return this.taskUseCase.deleteTask(taskId);
+    return this._taskUseCase.deleteTask(taskId);
   }
 
   nextTaskState(task: Task): TaskAction | undefined {

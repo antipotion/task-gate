@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../../app.routes';
 import { TaskComment } from '../task-comment/task-comment';
 import { TaskDependency } from '../task-dependency/task-dependency';
 import { TaskEdit } from '../task-edit/task-edit';
@@ -14,9 +15,9 @@ import { TaskOverview } from '../task-overview/task-overview';
 import { TaskStatus } from '../task-status/task-status';
 import { TaskSubtask } from '../task-subtask/task-subtask';
 import { TaskTime } from '../task-time/task-time';
-import { TASK_ROUTE_PARAMS } from '../task.routes';
 import { TaskWarningDialog } from '../task-warning-dialog/task-warning-dialog';
 import { TaskAction } from '../task.model';
+import { TASK_ROUTE_PARAMS } from '../task.routes';
 
 @Component({
   selector: 'app-task-details',
@@ -36,33 +37,33 @@ import { TaskAction } from '../task.model';
   styleUrl: './task-details.scss',
 })
 export class TaskDetails implements OnInit {
-  private taskFacade = inject(TaskFacade);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  readonly dialog = inject(MatDialog);
-  private _snackBar = inject(MatSnackBar);
+  private readonly _taskFacade = inject(TaskFacade);
+  private readonly _router = inject(Router);
+  private readonly _route = inject(ActivatedRoute);
+  private readonly _dialog = inject(MatDialog);
+  private readonly _snackBar = inject(MatSnackBar);
 
-  taskId = this.route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.TASK_ID) || '';
+  readonly taskId = this._route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.taskId) || '';
 
-  activeTask = computed(() => this.taskFacade.activeTask());
-  nextTaskAction = signal<TaskAction | null>(null)
+  readonly activeTask = computed(() => this._taskFacade.activeTask());
+  readonly nextTaskAction = signal<TaskAction | null>(null);
 
   constructor() {
     effect(() => {
       // Getting next task action
       const activeTask = this.activeTask();
       if (!activeTask) return;
-      const result = this.taskFacade.nextTaskState(activeTask);
+      const result = this._taskFacade.nextTaskState(activeTask);
       this.nextTaskAction.set(result ?? null);
     });
   }
 
   ngOnInit(): void {
-    this.taskFacade.selectTaskId(this.taskId);
+    this._taskFacade.selectTaskId(this.taskId);
   }
 
   openTaskEditDialog(): void {
-    const dialogRef = this.dialog.open(TaskEdit, {
+    const dialogRef = this._dialog.open(TaskEdit, {
       data: {
         name: this.activeTask()?.name,
         description: this.activeTask()?.description,
@@ -75,7 +76,7 @@ export class TaskDetails implements OnInit {
       if (!activeTask) return;
 
       try {
-        this.taskFacade.updatetask(this.taskId, activeTask, result);
+        this._taskFacade.updatetask(this.taskId, activeTask, result);
       } catch (error) {
         this.openSnackBar('Task edit failed');
       }
@@ -92,31 +93,35 @@ export class TaskDetails implements OnInit {
     });
   }
 
-  onBack(projectId: string | undefined): void {
+  onBack(): void {
+    const projectId = this.activeTask()?.projectId;
     if (!projectId) return;
-    
-    this.router.navigate(['project', projectId]);
+
+    this._router.navigate([ROUTES_PARAMS.project, projectId]);
   }
 
   openConfirmDeleteDialog(): void {
     const taskName = this.activeTask()?.name;
     if (!taskName) return;
-    
-    const dialogRef = this.dialog.open(TaskWarningDialog, {
+
+    const dialogRef = this._dialog.open(TaskWarningDialog, {
       data: taskName,
     });
 
     dialogRef.afterClosed().subscribe((result) => {
+      const projectId = this.activeTask()?.projectId;
+      if (!projectId) return;
+
       if (!result) return;
-      this.taskFacade.deleteTask(this.taskId);
-      this.router.navigate(['']);
+      this._taskFacade.deleteTask(this.taskId);
+      this._router.navigate([ROUTES_PARAMS.project, projectId]);
     });
   }
 
   transitionTask(action: TaskAction): void {
     const task = this.activeTask();
-    if (!task) throw new Error('Task does not exist can\'t transition');
-    
-    this.taskFacade.advanceTaskState(task, action);
+    if (!task) throw new Error("Task does not exist can't transition");
+
+    this._taskFacade.advanceTaskState(task, action);
   }
 }

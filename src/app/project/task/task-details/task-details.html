@@ -1,23 +1,34 @@
+@let activeTaskData = activeTask();
+
 <div class="p-4 flex flex-col gap-4 w-full">
   <!-- Navigation and some functions -->
   <div class="flex justify-between">
     <!-- Back button -->
-    <button matIconButton (click)="onBack(activeTask()?.projectId)">
+    <button matIconButton (click)="onBack()">
       <mat-icon fontIcon="arrow_back"></mat-icon>
     </button>
 
     <div>
       <!-- Task edit button -->
-      <button matButton="filled" (click)=openTaskEditDialog()>Edit</button>
+      <button matButton="filled" (click)="openTaskEditDialog()">Edit</button>
 
       <!-- Task delete button -->
-      <button matButton style="color: var(--mat-sys-error);" (click)="openConfirmDeleteDialog()">Delete</button>
+      <button matButton style="color: var(--mat-sys-error)" (click)="openConfirmDeleteDialog()">
+        Delete
+      </button>
     </div>
   </div>
 
-  <app-task-header [taskName]="activeTask()?.name ?? ''" />
-  <app-task-overview [taskDeadline]="activeTask()?.deadline ?? ''" />
-  <app-task-status [taskStatus]="activeTask()?.status" [taskNextAction]="nextTaskAction()" (nextActionTriggered)="transitionTask($event)" />
+  <app-task-header [taskName]="activeTaskData?.name" />
+  <app-task-overview
+    [taskDeadline]="activeTaskData?.deadline ?? null"
+    [taskDescription]="activeTaskData?.description ?? null"
+  />
+  <app-task-status
+    [taskStatus]="activeTaskData?.status"
+    [taskNextAction]="nextTaskAction()"
+    (nextActionTriggered)="transitionTask($event)"
+  />
   <app-task-dependency />
   <app-task-subtask />
   <app-task-time />

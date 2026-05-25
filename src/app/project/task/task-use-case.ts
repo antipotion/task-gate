@@ -1,21 +1,36 @@
 import { inject, Injectable } from '@angular/core';
-import { FirestoreProjectRepository } from '../../infrastructure/firestore-project-repository';
-import type { Task, TaskAction, TaskStatus } from './task.model';
+import { AuthStore } from '../../authentication/auth-store';
+import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 import { diff } from '../project-use-case';
+import type { Task, TaskAction, TaskStatus } from './task.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskUseCase {
-  private repo = inject(FirestoreProjectRepository);
+  private readonly _repo = inject(FirestoreProjectRepository);
+  private readonly _authStore = inject(AuthStore);
 
   async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
     const status: TaskStatus = 'TODO';
     const action: TaskAction = 'START';
-    const currentSubmissionVersion: number = 1;
-    const withProjectIdTask = { ...task, projectId, status, action, currentSubmissionVersion };
 
-    const taskId = await this.repo.addTask(withProjectIdTask);
+    const creatorId: string | null = this._authStore.userId();
+    if (!creatorId) {
+      throw new Error("Can't create task creatorId is missing.");
+    }
+
+    const currentSubmissionVersion: number = 1;
+    const withProjectIdTask = {
+      ...task,
+      projectId,
+      status,
+      action,
+      creatorId,
+      currentSubmissionVersion,
+    };
+
+    const taskId = await this._repo.addTask(withProjectIdTask);
 
     return taskId;
   }
@@ -26,10 +41,10 @@ export class TaskUseCase {
     // Guard if there are no changes
     if (Object.keys(changes).length === 0) return;
 
-    return await this.repo.updateTask(taskId, changes);
+    return this._repo.updateTask(taskId, changes);
   }
 
-  deleteTask(taskId: string): Promise<void> {
-    return this.repo.deleteTask(taskId);
+  async deleteTask(taskId: string): Promise<void> {
+    return this._repo.deleteTask(taskId);
   }
 }

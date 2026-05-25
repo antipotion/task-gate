@@ -4,17 +4,18 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { TaskAction, type TaskStatus as TaskStatusModel } from '../task.model';
 import { TitleCasePipe } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-task-status',
-  imports: [MatIconModule, MatChipsModule, MatButtonModule, TitleCasePipe],
+  imports: [MatIconModule, MatChipsModule, MatButtonModule, TitleCasePipe, MatProgressSpinnerModule],
   templateUrl: './task-status.html',
   styleUrl: './task-status.scss',
 })
 export class TaskStatus {
-  taskStatus = input.required<TaskStatusModel | undefined>();
-  taskNextAction = input.required<TaskAction | null>();
-  nextActionTriggered = output<TaskAction>();
+  readonly taskStatus = input.required<TaskStatusModel | undefined>();
+  readonly taskNextAction = input.required<TaskAction | null>();
+  readonly nextActionTriggered = output<TaskAction>();
 
   onNextActionTrigger(): void {
     const taskNextAction = this.taskNextAction();

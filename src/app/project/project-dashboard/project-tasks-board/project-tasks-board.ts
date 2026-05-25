@@ -1,18 +1,17 @@
 import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { TaskTodo } from "../../task/task-todo/task-todo";
-import { TaskInProgress } from "../../task/task-in-progress/task-in-progress";
-import { TaskCompleted } from "../../task/task-completed/task-completed";
 import { ActivatedRoute } from '@angular/router';
+import { TaskSort } from '../../task/task-sort/task-sort';
+import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 
 @Component({
   selector: 'app-project-tasks-board',
-  imports: [MatIconModule, TaskTodo, TaskInProgress, TaskCompleted],
+  imports: [MatIconModule, TaskSort],
   templateUrl: './project-tasks-board.html',
   styleUrl: './project-tasks-board.scss',
 })
 export class ProjectTasksBoard {
-  private route = inject(ActivatedRoute);
+  private readonly _route = inject(ActivatedRoute);
 
-  readonly projectId = this.route.snapshot.paramMap.get('projectId') || '';
+  readonly projectId = this._route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.projectId) || '';
 }

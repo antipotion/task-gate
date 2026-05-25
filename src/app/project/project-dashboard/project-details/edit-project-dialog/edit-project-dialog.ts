@@ -24,7 +24,7 @@ import type { Project } from '../../../project.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditProjectDialog {
-  readonly dialogRef = inject(MatDialogRef<EditProjectDialog>);
+  private readonly _dialogRef = inject(MatDialogRef<EditProjectDialog>);
   readonly data = inject<Partial<Project>>(MAT_DIALOG_DATA);
 
   projectForm = new FormGroup({
@@ -33,6 +33,6 @@ export class EditProjectDialog {
   });
 
   onCancel(): void {
-    this.dialogRef.close();
+    this._dialogRef.close();
   }
 }

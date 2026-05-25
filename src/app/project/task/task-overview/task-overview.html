@@ -8,7 +8,11 @@
   <div class="flex flex-col gap-2">
     <!-- Task Description -->
     <div>
-      <p>Task description goes here.</p>
+      @if (taskDescription(); as description) {
+        <p>{{ description }}</p>
+      } @else {
+        <mat-spinner diameter="22"></mat-spinner>
+      }
     </div>
 
     <!-- Task Dates -->
@@ -20,8 +24,12 @@
 
       <!-- Deadline -->
       <div>
-        <mat-chip
-          ><p class="mat-font-label-sm">Deadline: {{ taskDeadline() | date }}</p>
+        <mat-chip>
+          @if (taskDeadline(); as deadline) {
+            <p class="mat-font-label-sm">Deadline: {{ deadline | date }}</p>
+          } @else {
+            <mat-spinner diameter="22"></mat-spinner>
+          }
         </mat-chip>
       </div>
     </div>

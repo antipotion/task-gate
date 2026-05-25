@@ -9,9 +9,16 @@
     <!-- Task State -->
     <div class="flex flex-col gap-2">
       <p>Current state</p>
-      <mat-chip>{{ taskStatus() | titlecase }}</mat-chip>
+
+      @let taskStatus = this.taskStatus();
+      @if (!taskStatus) {
+        <mat-spinner diameter="22"></mat-spinner>
+      } @else {
+        <mat-chip>{{ taskStatus | titlecase }}</mat-chip>
+      }
+
       @if (taskNextAction(); as action) {
-      <button matButton="filled" (click)="onNextActionTrigger()">{{action | titlecase}}</button>
+        <button matButton="filled" (click)="onNextActionTrigger()">{{ action | titlecase }}</button>
       }
     </div>
   </div>

@@ -18,6 +18,8 @@ export interface Task {
   projectId: string;
   id: string;
   name: string;
+  creatorId: string;
+  assigneeId: string;
   description: string;
   deadline: string;
   status: TaskStatus;

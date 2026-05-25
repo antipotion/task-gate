@@ -1,11 +1,12 @@
 import { Component, input } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-task-header',
-  imports: [],
+  imports: [MatProgressSpinnerModule],
   templateUrl: './task-header.html',
   styleUrl: './task-header.scss',
 })
 export class TaskHeader {
-  taskName = input.required<string>();
+  readonly taskName = input.required<string | undefined>();
 }
