@@ -1,3 +1,5 @@
+@let activeTaskData = activeTask();
+
 <div class="p-4 flex flex-col gap-4 w-full">
   <!-- Navigation and some functions -->
   <div class="flex justify-between">
@@ -17,10 +19,13 @@
     </div>
   </div>
 
-  <app-task-header [taskName]="activeTask()?.name" />
-  <app-task-overview [taskDeadline]="activeTask()?.deadline ?? ''" />
+  <app-task-header [taskName]="activeTaskData?.name" />
+  <app-task-overview
+    [taskDeadline]="activeTaskData?.deadline ?? null"
+    [taskDescription]="activeTaskData?.description ?? null"
+  />
   <app-task-status
-    [taskStatus]="activeTask()?.status"
+    [taskStatus]="activeTaskData?.status"
     [taskNextAction]="nextTaskAction()"
     (nextActionTriggered)="transitionTask($event)"
   />
