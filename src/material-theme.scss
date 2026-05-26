@@ -82,3 +82,12 @@ p {
 .mat-corner-full {
   border-radius: var(--mat-sys-corner-full);
 }
+
+// Colors
+/* SURFACE */
+.mat-bg-inverse-surface {
+  background-color: var(--mat-sys-inverse-surface);
+}
+.mat-text-inverse-on-surface {
+  color: var(--mat-sys-inverse-on-surface);
+}
