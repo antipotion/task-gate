@@ -32,7 +32,7 @@ Built as a portfolio and engineering showcase project, it demonstrates modern fr
 
 ## Deployment
 
-- Cloudflare Pages
+- Firebase Hosting
 
 ---
 
