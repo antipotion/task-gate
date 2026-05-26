@@ -6,7 +6,7 @@ Built as a portfolio and engineering showcase project, it demonstrates modern fr
 
 ## Live Demo
 
-[Live Website](https://task-gate.antipotion.com)
+[Live Website](https://taskgate.antipotion.com)
 
 ---
 
