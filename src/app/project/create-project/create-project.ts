@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -41,10 +41,11 @@ export class CreateProject {
 
   readonly createProjectState = signal<CreateProjectState>('idle');
   readonly teams = computed(() => this._teamStore.teamsList());
-  
+
   projectForm = new FormGroup({
     name: new FormControl('', Validators.required),
     description: new FormControl(''),
+    startDate: new FormControl(''),
     deadline: new FormControl('', Validators.required),
     teamId: new FormControl('', Validators.required),
   });
@@ -70,6 +71,7 @@ export class CreateProject {
     const formResult = this.projectForm.getRawValue();
     const name = formResult.name ?? '';
     const description = formResult.description ?? '';
+    const startDate = formResult.startDate ?? '';
     const deadline = formResult.deadline ?? '';
     const teamId = formResult.teamId ?? '';
 
@@ -77,6 +79,7 @@ export class CreateProject {
     const projectData: Omit<Project, 'id' | 'creatorId'> = {
       name,
       description,
+      startDate,
       deadline,
       teamId,
     };

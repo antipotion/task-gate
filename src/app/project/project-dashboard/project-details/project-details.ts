@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { ProjectFacade } from '../../project-facade';
 import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
-import { ProjectStatusModel, type Project } from '../../project.model';
+import { DeadlinePressureModel, ProjectStatusModel, type Project } from '../../project.model';
 import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 import { CreateTask } from '../../task/create-task/create-task';
 import { TaskFacade } from '../../task/task-facade';
@@ -47,6 +47,11 @@ export class ProjectDetails {
   readonly projectStatus: Signal<ProjectStatusModel | null> = this._projectFacade.getProjectStatus(
     this._projectId,
   );
+  readonly projectDeadlinePressure: Signal<DeadlinePressureModel | null> =
+    this._projectFacade.getProjectDeadlinePressure(
+      this.project()?.startDate ?? '',
+      this.project()?.deadline ?? '',
+    );
 
   ngOnInit(): void {
     this._projectFacade.selectProject(this._projectId);

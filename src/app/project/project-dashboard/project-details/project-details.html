@@ -28,6 +28,7 @@
   <app-project-header
     [projectName]="projectData?.name"
     [projectStatus]="projectStatus()"
+    [projectDeadlinePressure]="projectDeadlinePressure()"
   />
   <app-project-overview
     [deadline]="projectData?.deadline | date"

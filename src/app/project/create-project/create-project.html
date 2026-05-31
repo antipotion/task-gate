@@ -32,6 +32,23 @@
           </mat-form-field>
 
           <mat-form-field>
+            <!-- Start Date Input -->
+            <mat-label>Start Date</mat-label>
+            <input
+              matInput
+              placeholder="Enter start date"
+              formControlName="startDate"
+              [matDatepicker]="startDatePicker"
+            />
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #startDatePicker></mat-datepicker>
+            @if (projectForm.get('startDate')?.hasError('required')) {
+              <mat-error>Enter a valid start date</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
             <!-- Deadline Input -->
             <mat-label>Deadline</mat-label>
             <input
@@ -51,6 +68,7 @@
           <mat-form-field>
             <!-- Team id -->
             <mat-select formControlName="teamId">
+              <mat-option value="">Select team</mat-option>
               @for (team of teams(); track team.id) {
                 <mat-option [value]="team.id">{{ team.name }}</mat-option>
               }

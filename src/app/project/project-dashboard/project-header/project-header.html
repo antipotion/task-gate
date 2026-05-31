@@ -1,5 +1,6 @@
 @let projectName = this.projectName();
 @let projectStatus = this.projectStatus();
+@let projectDeadlinePressure = this.projectDeadlinePressure();
 
 <section>
   <!-- Project Header -->
@@ -25,8 +26,17 @@
       </div>
 
       <!-- Health badge -->
-      <div class="bg-green-500 w-fit px-2 py-1 mat-corner-full">
-        <p class="mat-font-label-sm">Project Health</p>
+      <div
+        class="w-fit px-2 py-1 mat-corner-full"
+        [ngClass]="{
+          'bg-green-200': projectDeadlinePressure === 'healthy',
+          'bg-teal-200': projectDeadlinePressure === 'stable',
+          'bg-amber-200': projectDeadlinePressure === 'warning',
+          'bg-orange-200': projectDeadlinePressure === 'critical',
+          'bg-red-200': projectDeadlinePressure === 'overdue',
+        }"
+      >
+        <p class="mat-font-label-sm">{{ projectDeadlinePressure | titlecase }}</p>
       </div>
     </div>
 

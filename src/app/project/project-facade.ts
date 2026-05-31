@@ -4,8 +4,9 @@ import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../application/store/store-service';
 import { AuthStore } from '../authentication/auth-store';
 import { ProjectUseCase } from './project-use-case';
-import type { Project, ProjectStatusModel } from './project.model';
+import type { DeadlinePressureModel, Project, ProjectStatusModel } from './project.model';
 import { TaskFacade } from './task/task-facade';
+import { getDeadlinePressure } from './utility/deadlinePressureCalculator';
 
 export type ProjectState =
   | { status: 'loading' }
@@ -51,6 +52,7 @@ export class ProjectFacade {
 
       const projectTasks = state.data.filter((task) => task.projectId === projectId);
 
+      // Vacuous truth: returns true if the array is empty
       if (projectTasks.every((task) => task.status === 'TODO')) {
         return 'not started';
       }
@@ -60,6 +62,18 @@ export class ProjectFacade {
       }
 
       return 'in progress';
+    });
+  }
+
+  getProjectDeadlinePressure(
+    projectStartDate: string,
+    projectDeadline: string,
+  ): Signal<DeadlinePressureModel | null> {
+    return computed(() => {
+      const startDate = new Date(projectStartDate);
+      const deadline = new Date(projectDeadline);
+
+      return getDeadlinePressure(startDate, deadline);
     });
   }
 

@@ -1,7 +1,7 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ProjectStatusModel } from '../../project.model';
+import { DeadlinePressureModel, ProjectStatusModel } from '../../project.model';
 
 @Component({
   selector: 'app-project-header',
@@ -12,4 +12,5 @@ import { ProjectStatusModel } from '../../project.model';
 export class ProjectHeader {
   readonly projectName = input.required<string | undefined>();
   readonly projectStatus = input.required<ProjectStatusModel | null>();
+  readonly projectDeadlinePressure = input.required<DeadlinePressureModel | null>();
 }
