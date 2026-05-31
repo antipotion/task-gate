@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { ProjectFacade } from '../../project-facade';
 import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
-import type { Project } from '../../project.model';
+import { ProjectStatusModel, type Project } from '../../project.model';
 import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 import { CreateTask } from '../../task/create-task/create-task';
 import { TaskFacade } from '../../task/task-facade';
@@ -44,6 +44,9 @@ export class ProjectDetails {
     this._route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.projectId) || '';
 
   readonly project = computed<Project | null>(() => this._projectFacade.activeProject());
+  readonly projectStatus: Signal<ProjectStatusModel | null> = this._projectFacade.getProjectStatus(
+    this._projectId,
+  );
 
   ngOnInit(): void {
     this._projectFacade.selectProject(this._projectId);

@@ -1,10 +1,11 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../application/store/store-service';
-import { ProjectUseCase } from './project-use-case';
-import type { Project } from './project.model';
 import { AuthStore } from '../authentication/auth-store';
+import { ProjectUseCase } from './project-use-case';
+import type { Project, ProjectStatusModel } from './project.model';
+import { TaskFacade } from './task/task-facade';
 
 export type ProjectState =
   | { status: 'loading' }
@@ -16,6 +17,7 @@ export class ProjectFacade {
   private readonly _storeService = inject(StoreService);
   private readonly _projectUseCase = inject(ProjectUseCase);
   private readonly _authStore = inject(AuthStore);
+  private readonly _taskFacade = inject(TaskFacade);
 
   readonly projectState = toSignal(
     this._storeService.projects$.pipe(
@@ -41,6 +43,25 @@ export class ProjectFacade {
 
     return state.data.find((p) => p.id === id) ?? null;
   });
+
+  getProjectStatus(projectId: string): Signal<ProjectStatusModel | null> {
+    return computed(() => {
+      const state = this._taskFacade.taskState();
+      if (state.status !== 'success') return null;
+
+      const projectTasks = state.data.filter((task) => task.projectId === projectId);
+
+      if (projectTasks.every((task) => task.status === 'TODO')) {
+        return 'not started';
+      }
+
+      if (projectTasks.every((task) => task.status === 'APPROVED')) {
+        return 'completed';
+      }
+
+      return 'in progress';
+    });
+  }
 
   addProject(project: Omit<Project, 'id' | 'creatorId'>): Promise<string> {
     return this._projectUseCase.addProject(project);

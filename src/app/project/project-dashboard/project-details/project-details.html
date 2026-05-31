@@ -25,7 +25,10 @@
   </div>
 
   <!-- Contents -->
-  <app-project-header [projectName]="projectData?.name" />
+  <app-project-header
+    [projectName]="projectData?.name"
+    [projectStatus]="projectStatus()"
+  />
   <app-project-overview
     [deadline]="projectData?.deadline | date"
     [description]="projectData?.description ?? null"

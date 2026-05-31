@@ -1,3 +1,5 @@
+export type ProjectStatusModel = 'not started' | 'in progress' | 'completed';
+
 type Member = {
   id: string;
   name: string;

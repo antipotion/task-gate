@@ -27,7 +27,6 @@ export const routes: Routes = [
   },
   {
     path: ROUTES_PARAMS.teams,
-    loadChildren: () =>
-      import('./team/team.routes').then((m) => m.TeamRoutes),
+    loadChildren: () => import('./team/team.routes').then((m) => m.TeamRoutes),
   },
 ];
