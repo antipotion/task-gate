@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { ROUTES_PARAMS } from '../../app.routes';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +36,7 @@ export class HistoryService {
     if (previous) {
       this._router.navigateByUrl(previous);
     } else {
-      this._router.navigate(['']);
+      this._router.navigate([ROUTES_PARAMS.project]);
     }
   }
 }
