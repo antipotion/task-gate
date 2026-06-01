@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
+import { HistoryService } from '../application/history/history-service';
 import { StoreService } from '../application/store/store-service';
 import { AuthStore } from '../authentication/auth-store';
 import { ProjectUseCase } from './project-use-case';
@@ -19,6 +20,7 @@ export class ProjectFacade {
   private readonly _projectUseCase = inject(ProjectUseCase);
   private readonly _authStore = inject(AuthStore);
   private readonly _taskFacade = inject(TaskFacade);
+  private readonly _historyService = inject(HistoryService);
 
   readonly projectState = toSignal(
     this._storeService.projects$.pipe(
@@ -51,7 +53,7 @@ export class ProjectFacade {
       if (state.status !== 'success') return null;
 
       const projectTasks = state.data.filter((task) => task.projectId === projectId);
-      
+
       // Vacuous truth: returns true if the array is empty
       if (projectTasks.every((task) => task.status === 'TODO')) {
         return 'not started';
@@ -103,5 +105,9 @@ export class ProjectFacade {
 
   async logout(): Promise<void> {
     return this._authStore.logout();
+  }
+
+  goBack(): void {
+    this._historyService.goBack();
   }
 }

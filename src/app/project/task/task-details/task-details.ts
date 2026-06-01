@@ -94,10 +94,7 @@ export class TaskDetails implements OnInit {
   }
 
   onBack(): void {
-    const projectId = this.activeTask()?.projectId;
-    if (!projectId) return;
-
-    this._router.navigate([ROUTES_PARAMS.project, projectId]);
+    this._taskFacade.goBack();
   }
 
   openConfirmDeleteDialog(): void {

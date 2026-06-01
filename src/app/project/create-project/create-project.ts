@@ -108,6 +108,6 @@ export class CreateProject {
   }
 
   onBack(): void {
-    this._router.navigate([''], { relativeTo: this._route });
+    this._projectFacade.goBack();
   }
 }

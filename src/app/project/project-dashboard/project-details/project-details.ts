@@ -59,7 +59,7 @@ export class ProjectDetails {
   }
 
   onBack(): void {
-    this._router.navigate([ROUTES_PARAMS.project]);
+    this._projectFacade.goBack();
   }
 
   openEditDialog(): void {
