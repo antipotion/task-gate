@@ -171,7 +171,7 @@ export class FirestoreProjectRepository {
       name: data['name'],
       creatorId: data['creatorId'],
       teamId: data['teamId'],
-      description: data['description'],
+      description: data['description'] ?? null,
       startDate: data['startDate']?.toDate() ?? null,
       deadline: data['deadline']?.toDate() ?? null,
     };
@@ -187,7 +187,8 @@ export class FirestoreProjectRepository {
       creatorId: data['creatorId'],
       assigneeId: data['assigneeId'],
       description: data['description'] ?? null,
-      deadline: data['deadline']?.toDate(),
+      startDate: data['startDate']?.toDate() ?? null,
+      deadline: data['deadline']?.toDate() ?? null,
       status: data['status'],
       currentSubmissionVersion: data['currentSubmissionVersion'],
     };

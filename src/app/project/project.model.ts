@@ -18,7 +18,7 @@ export type Project = {
   name: string;
   creatorId: string;
   teamId: string;
-  description: string;
+  description: string | null;
   startDate: Date | null;
   deadline: Date | null;
 };

@@ -21,7 +21,8 @@ export interface Task {
   creatorId: string;
   assigneeId: string;
   description: string;
-  deadline: string;
+  startDate: Date | null;
+  deadline: Date | null;
   status: TaskStatus;
   currentSubmissionVersion: number;
 }
