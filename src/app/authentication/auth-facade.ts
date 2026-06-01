@@ -2,10 +2,10 @@ import { inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UserCredential } from 'firebase/auth';
 import { StoreService } from '../application/store/store-service';
+import { TeamModel } from '../team/team.model';
 import { AuthStore } from './auth-store';
 import { AuthUseCase } from './auth-use-case';
 import { RoleModel, UserModel } from './auth.model';
-import { TeamModel } from '../team/team.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
@@ -28,16 +28,12 @@ export class AuthFacade {
     this._authUseCase.loginWithGoogle();
   }
 
-  async signUpWithEmailAndPassword(email: string, password: string): Promise<void> {
-    const teamName: string | null = this._teamName();
-
-    if (!teamName) {
-      console.error('No teamName');
-      return;
-    }
-
-    await this.addTeam(teamName);
-
+  async signUpWithEmailAndPassword(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+  ): Promise<void> {
     const userRole: RoleModel | null = this.userRole() ?? this._authStore.getUserRole();
 
     if (!userRole) {
@@ -45,7 +41,13 @@ export class AuthFacade {
       return;
     }
 
-    const userData = await this._authUseCase.register(email, password, userRole);
+    const userData = await this._authUseCase.register(
+      email,
+      password,
+      firstName,
+      lastName,
+      userRole,
+    );
 
     this.user.set(userData);
   }
