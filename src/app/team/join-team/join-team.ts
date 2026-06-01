@@ -5,7 +5,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthFacade } from '../../authentication/auth-facade';
 import { TeamFacade } from '../team-facade/team-facade';
 import { TEAM_ROUTE_PARAMS } from '../team.routes';
 
@@ -23,7 +22,6 @@ import { TEAM_ROUTE_PARAMS } from '../team.routes';
   styleUrl: './join-team.scss',
 })
 export class JoinTeam {
-  private readonly _authFacade = inject(AuthFacade);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _teamFacade = inject(TeamFacade);
@@ -39,7 +37,7 @@ export class JoinTeam {
     if (!teamId) return;
 
     try {
-      this._authFacade.joinTeam(teamId);
+      this._teamFacade.joinTeam(teamId);
     } catch (error) {
       console.error(error);
     }
