@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, computed, inject, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,7 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { ProjectFacade } from '../../project-facade';
 import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
-import { DeadlinePressureModel, ProjectStatusModel, type Project } from '../../project.model';
+import { ProjectStatusModel, type Project } from '../../project.model';
 import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 import { CreateTask } from '../../task/create-task/create-task';
 import { TaskFacade } from '../../task/task-facade';
@@ -28,7 +27,6 @@ import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
     ProjectActivityFeed,
     MatButtonModule,
     MatIconModule,
-    DatePipe,
   ],
   templateUrl: './project-details.html',
   styleUrl: './project-details.scss',
@@ -47,11 +45,14 @@ export class ProjectDetails {
   readonly projectStatus: Signal<ProjectStatusModel | null> = this._projectFacade.getProjectStatus(
     this._projectId,
   );
-  readonly projectDeadlinePressure: Signal<DeadlinePressureModel | null> =
-    this._projectFacade.getProjectDeadlinePressure(
-      this.project()?.startDate ?? '',
-      this.project()?.deadline ?? '',
+  readonly projectDeadlinePressure = computed(() => {
+    const project = this.project();
+
+    return this._projectFacade.getProjectDeadlinePressure(
+      project?.startDate ?? null,
+      project?.deadline ?? null,
     );
+  });
 
   ngOnInit(): void {
     this._projectFacade.selectProject(this._projectId);
@@ -62,8 +63,13 @@ export class ProjectDetails {
   }
 
   openEditDialog(): void {
+    const project = this.project();
     const dialogRef = this._dialog.open(EditProjectDialog, {
-      data: { name: this.project()?.name, deadline: this.project()?.deadline },
+      data: {
+        name: this.project()?.name,
+        startDate: project?.startDate,
+        deadline: project?.deadline,
+      },
     });
 
     dialogRef.afterClosed().subscribe((result) => {

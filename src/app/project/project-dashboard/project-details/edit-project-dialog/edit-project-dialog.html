@@ -7,6 +7,15 @@
       <input matInput placeholder="e.g. PaperTowel" formControlName="name" />
     </mat-form-field>
 
+    <!-- Project start date -->
+    <mat-form-field>
+      <mat-label>Project Start Date</mat-label>
+      <input matInput [matDatepicker]="projectStartDatePicker" formControlName="startDate" />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="projectStartDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #projectStartDatePicker></mat-datepicker>
+    </mat-form-field>
+
     <!-- Project deadline -->
     <mat-form-field>
       <mat-label>Project Deadline</mat-label>

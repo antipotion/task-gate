@@ -1,6 +1,12 @@
 export type ProjectStatusModel = 'not started' | 'in progress' | 'completed';
 
-export type DeadlinePressureModel = 'healthy' | 'stable' | 'warning' | 'critical' | 'overdue';
+export type DeadlinePressureModel =
+  | 'unknown'
+  | 'healthy'
+  | 'stable'
+  | 'warning'
+  | 'critical'
+  | 'overdue';
 
 type Member = {
   id: string;
@@ -13,6 +19,6 @@ export type Project = {
   creatorId: string;
   teamId: string;
   description: string;
-  startDate: string;
-  deadline: string;
+  startDate: Date | null;
+  deadline: Date | null;
 };

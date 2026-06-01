@@ -29,7 +29,8 @@ export class EditProjectDialog {
 
   projectForm = new FormGroup({
     name: new FormControl(this.data.name, Validators.required),
-    deadline: new FormControl(this.data.deadline, Validators.required),
+    startDate: new FormControl<Date | null>(this.data.startDate ?? null),
+    deadline: new FormControl<Date | null>(this.data.deadline ?? null),
   });
 
   onCancel(): void {

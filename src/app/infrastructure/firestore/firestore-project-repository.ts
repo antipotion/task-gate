@@ -172,8 +172,8 @@ export class FirestoreProjectRepository {
       creatorId: data['creatorId'],
       teamId: data['teamId'],
       description: data['description'],
-      startDate: data['startDate']?.toDate(),
-      deadline: data['deadline']?.toDate(),
+      startDate: data['startDate']?.toDate() ?? null,
+      deadline: data['deadline']?.toDate() ?? null,
     };
   }
 

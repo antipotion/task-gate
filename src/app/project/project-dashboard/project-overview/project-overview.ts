@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
@@ -5,11 +6,12 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-project-overview',
-  imports: [MatChipsModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [MatChipsModule, MatIconModule, MatProgressSpinnerModule, DatePipe],
   templateUrl: './project-overview.html',
   styleUrl: './project-overview.scss',
 })
 export class ProjectOverview {
-  readonly deadline = input.required<string | null>();
+  readonly startDate = input.required<Date | null>();
+  readonly deadline = input.required<Date | null>();
   readonly description = input.required<string | null>();
 }

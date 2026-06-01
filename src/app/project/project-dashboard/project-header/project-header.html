@@ -17,18 +17,25 @@
       <div
         class="w-fit px-2 py-1 mat-corner-full"
         [ngClass]="{
-          'bg-gray-200': projectStatus === 'not started',
+          'bg-gray-200': projectStatus === 'not started' || !projectStatus,
           'bg-amber-200': projectStatus === 'in progress',
           'bg-green-200': projectStatus === 'completed',
         }"
       >
-        <p class="mat-font-label-sm">{{ projectStatus | titlecase }}</p>
+        <p class="mat-font-label-sm">
+          @if (!projectStatus) {
+            Loading...
+          } @else {
+            {{ projectStatus | titlecase }}
+          }
+        </p>
       </div>
 
       <!-- Health badge -->
       <div
         class="w-fit px-2 py-1 mat-corner-full"
         [ngClass]="{
+          'bg-gray-200': projectDeadlinePressure === 'unknown',
           'bg-green-200': projectDeadlinePressure === 'healthy',
           'bg-teal-200': projectDeadlinePressure === 'stable',
           'bg-amber-200': projectDeadlinePressure === 'warning',

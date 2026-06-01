@@ -31,7 +31,8 @@
     [projectDeadlinePressure]="projectDeadlinePressure()"
   />
   <app-project-overview
-    [deadline]="projectData?.deadline | date"
+    [startDate]="projectData?.startDate ?? null"
+    [deadline]="projectData?.deadline ?? null"
     [description]="projectData?.description ?? null"
   />
   <app-project-metrics />

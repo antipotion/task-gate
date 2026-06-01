@@ -51,7 +51,7 @@ export class ProjectFacade {
       if (state.status !== 'success') return null;
 
       const projectTasks = state.data.filter((task) => task.projectId === projectId);
-
+      
       // Vacuous truth: returns true if the array is empty
       if (projectTasks.every((task) => task.status === 'TODO')) {
         return 'not started';
@@ -66,15 +66,13 @@ export class ProjectFacade {
   }
 
   getProjectDeadlinePressure(
-    projectStartDate: string,
-    projectDeadline: string,
-  ): Signal<DeadlinePressureModel | null> {
-    return computed(() => {
-      const startDate = new Date(projectStartDate);
-      const deadline = new Date(projectDeadline);
+    projectStartDate: Date | null,
+    projectDeadline: Date | null,
+  ): DeadlinePressureModel | null {
+    const startDate = projectStartDate;
+    const deadline = projectDeadline;
 
-      return getDeadlinePressure(startDate, deadline);
-    });
+    return getDeadlinePressure(startDate, deadline);
   }
 
   addProject(project: Omit<Project, 'id' | 'creatorId'>): Promise<string> {

@@ -1,6 +1,13 @@
 import { DeadlinePressureModel } from '../project.model';
 
-export function getDeadlinePressure(startDate: Date, deadline: Date): DeadlinePressureModel {
+export function getDeadlinePressure(
+  startDate: Date | null,
+  deadline: Date | null,
+): DeadlinePressureModel {
+  if (!startDate || !deadline) {
+    return 'unknown';
+  }
+
   const totalDuration = deadline.getTime() - startDate.getTime();
   const elapsedDuration = Date.now() - startDate.getTime();
   const elapsedPercentage = elapsedDuration / totalDuration;
