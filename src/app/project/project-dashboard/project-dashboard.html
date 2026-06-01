@@ -24,7 +24,7 @@
               Create Project
             </button>
 
-            <button matButton class="w-fit" (click)="onViewTeams()">View Teams</button>
+            <button matButton class="w-fit" (click)="onViewTeams()">Teams</button>
           </div>
 
           <button matButton class="w-fit" (click)="onLogout()" style="color: var(--mat-sys-error)">
@@ -36,7 +36,7 @@
         <div>
           <!-- Empty state -->
           @if (state.data.length === 0) {
-            <p>No projects found. Create a new project to get started!</p>
+            <p>No projects found. Create a new project to get started or join a team!</p>
           } @else {
             <!-- Projects list -->
             <ul class="flex flex-col gap-4">
