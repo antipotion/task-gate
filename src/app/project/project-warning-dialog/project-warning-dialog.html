@@ -23,7 +23,7 @@
   </mat-dialog-content>
   <mat-dialog-actions>
     <button matButton type="submit" [disabled]="confirmDeleteForm.invalid">Confirm</button>
-    <button matButton type="button" (click)="onCancel()" style="color: var(--mat-sys-error)">
+    <button matButton type="button" (click)="onCancel()" class="mat-error-state">
       Cancel
     </button>
   </mat-dialog-actions>

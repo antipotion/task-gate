@@ -18,17 +18,29 @@
     @case ('success') {
       <div class="p-4 flex flex-col gap-4 w-full">
         <div class="flex justify-between">
-          <div class="flex gap-4">
-            <button matButton="filled" class="w-fit" (click)="onAddProject()">
+          <!-- Buttons to be shown on medium screen -->
+          <div class="hidden md:flex gap-4">
+            <button matIconButton="filled" class="w-fit" (click)="onAddProject()">
               <mat-icon fontIcon="add"></mat-icon>
               Create Project
             </button>
 
             <button matButton class="w-fit" (click)="onViewTeams()">Teams</button>
           </div>
+          
+          <!-- Buttons to be shown on small screen -->
+          <div class="flex gap-4 md:hidden">
+            <button matIconButton (click)="onAddProject()">
+              <mat-icon fontIcon="add"></mat-icon>
+            </button>
 
-          <button matButton class="w-fit" (click)="onLogout()" style="color: var(--mat-sys-error)">
-            Sign out
+            <button matIconButton (click)="onViewTeams()">
+              <mat-icon fontIcon="group"></mat-icon>
+            </button>
+          </div>
+
+          <button matIconButton (click)="onLogout()" class="mat-error-state">
+            <mat-icon fontIcon="logout"></mat-icon>
           </button>
         </div>
 
