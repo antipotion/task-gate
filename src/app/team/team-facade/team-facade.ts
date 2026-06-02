@@ -32,9 +32,12 @@ export class TeamFacade {
     this.team.set(result);
   }
 
-  joinTeam(teamId: string): void {
-    const result = this.getTeamById(teamId);
-    this.team.set(result);
+  async joinTeam(teamId: string): Promise<void> {
+    return this._teamUseCase.joinTeam(teamId);
+  }
+
+  async leaveTeam(teamId: string): Promise<void> {
+    return this._teamUseCase.leaveTeam(teamId);
   }
 
   getTeamById(teamId: string): TeamModel | null {

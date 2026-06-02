@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {
   addDoc,
+  arrayRemove,
+  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -123,9 +125,33 @@ export class FirestoreProjectRepository {
     return result.id;
   }
 
+  async updateProject(projectId: string, dto: Partial<Project>): Promise<void> {
+    const ref = doc(this._projectsCollection, projectId);
+
+    return updateDoc(ref, { ...dto });
+  }
+
+  async deleteProject(projectId: string): Promise<void> {
+    const ref = doc(this._projectsCollection, projectId);
+
+    return deleteDoc(ref);
+  }
+
   async addTask(data: Omit<Task, 'id'>): Promise<string> {
     const result = await addDoc(this._tasksCollection, data);
     return result.id;
+  }
+
+  async updateTask(taskId: string, dto: Partial<Task>): Promise<void> {
+    const ref = doc(this._tasksCollection, taskId);
+
+    return updateDoc(ref, { ...dto });
+  }
+
+  async deleteTask(taskId: string): Promise<void> {
+    const ref = doc(this._tasksCollection, taskId);
+
+    return deleteDoc(ref);
   }
 
   async addUser(data: Omit<UserModel, 'id'>, userId: string): Promise<void> {
@@ -139,26 +165,20 @@ export class FirestoreProjectRepository {
     return result.id;
   }
 
-  async updateProject(projectId: string, dto: Partial<Project>): Promise<void> {
-    const ref = doc(this._projectsCollection, projectId);
+  async joinTeam(teamId: string, userId: string): Promise<void> {
+    const teamRef = doc(this._teamsCollection, teamId);
 
-    return updateDoc(ref, { ...dto });
+    return updateDoc(teamRef, { memberIds: arrayUnion(userId) });
   }
 
-  async updateTask(taskId: string, dto: Partial<Task>): Promise<void> {
-    const ref = doc(this._tasksCollection, taskId);
+  async leaveTeam(teamId: string, userId: string): Promise<void> {
+    const teamRef = doc(this._teamsCollection, teamId);
 
-    return updateDoc(ref, { ...dto });
+    return updateDoc(teamRef, { memberIds: arrayRemove(userId) });
   }
 
-  async deleteProject(projectId: string): Promise<void> {
-    const ref = doc(this._projectsCollection, projectId);
-
-    return deleteDoc(ref);
-  }
-
-  async deleteTask(taskId: string): Promise<void> {
-    const ref = doc(this._tasksCollection, taskId);
+  async deleteTeam(teamId: string): Promise<void> {
+    const ref = doc(this._teamsCollection, teamId);
 
     return deleteDoc(ref);
   }

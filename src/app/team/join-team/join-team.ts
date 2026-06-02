@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamFacade } from '../team-facade/team-facade';
 import { TEAM_ROUTE_PARAMS } from '../team.routes';
@@ -25,6 +26,7 @@ export class JoinTeam {
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _teamFacade = inject(TeamFacade);
+  private readonly _snackbar = inject(MatSnackBar);
 
   joinTeamForm = new FormGroup({
     teamId: new FormControl('', Validators.required),
@@ -32,14 +34,16 @@ export class JoinTeam {
 
   readonly teamId = this.joinTeamForm.controls.teamId;
 
-  onJoinTeam(): void {
+  async onJoinTeam(): Promise<void> {
     const teamId = this.teamId.getRawValue();
     if (!teamId) return;
 
     try {
-      this._teamFacade.joinTeam(teamId);
+      await this._teamFacade.joinTeam(teamId);
+      this._snackbar.open('You have joined the team', 'Dismiss', { duration: 3000 });
     } catch (error) {
       console.error(error);
+      this._snackbar.open('An error occured while joining the team', 'Dismiss', { duration: 3000 });
     }
 
     this._router.navigate([TEAM_ROUTE_PARAMS.teamDashboard], { relativeTo: this._route.parent });

@@ -29,4 +29,18 @@ export class TeamUsecase {
       creatorId,
     };
   }
+
+  async joinTeam(teamId: string): Promise<void> {
+    const userId = this._auth.userId();
+    if (!userId) return;
+
+    return this._repo.joinTeam(teamId, userId);
+  }
+
+  async leaveTeam(teamId: string): Promise<void> {
+    const userId = this._auth.userId();
+    if (!userId) return;
+
+    return this._repo.leaveTeam(teamId, userId);
+  }
 }
