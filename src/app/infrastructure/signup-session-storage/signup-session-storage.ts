@@ -18,8 +18,8 @@ export class SignupSessionStorage {
     const value = localStorage.getItem(SESSION_STORAGE_KEYS.userRole);
 
     if (!value) return null;
-    
-    return JSON.parse(value) as RoleModel;
+
+    return value as RoleModel;
   }
 
   saveTeamId(teamId: string): void {
@@ -27,7 +27,7 @@ export class SignupSessionStorage {
   }
 
   saveUserRole(userRole: RoleModel): void {
-    localStorage.setItem(SESSION_STORAGE_KEYS.userRole, userRole)
+    localStorage.setItem(SESSION_STORAGE_KEYS.userRole, userRole);
   }
 
   clearSessionKeys(): void {

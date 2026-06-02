@@ -15,6 +15,7 @@ export const AuthRoutes: Routes = [
       {
         path: '',
         component: Login,
+        pathMatch: 'full',
       },
       {
         path: AUTH_ROUTE_PARAMS.role,

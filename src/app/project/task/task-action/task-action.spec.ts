@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskStatus } from './task-status';
+import { TaskStatus } from './task-action';
 
 describe('TaskStatus', () => {
   let component: TaskStatus;

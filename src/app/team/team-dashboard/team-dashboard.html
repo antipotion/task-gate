@@ -8,13 +8,37 @@
       <p>Fetching teams...</p>
     </div>
   } @else {
-    <div class="px-4">
+    <div class="flex flex-col gap-4 px-4">
       @for (team of teams; track team.id) {
-        <mat-card>
+        <mat-card class="gap-4">
           <mat-card-content>
-            <p>{{ team.name }}</p>
+            <h2 class="mat-font-title-md">{{ team.name }}</h2>
           </mat-card-content>
+
+          <!-- More button -->
+          <mat-card-actions align="end" class="gap-2">
+            <button matIconButton [matMenuTriggerFor]="menu">
+              <mat-icon fontIcon="settings"></mat-icon>
+            </button>
+
+            <button matButton="outlined">View team</button>
+          </mat-card-actions>
         </mat-card>
+
+        <mat-menu #menu="matMenu">
+          <button
+            mat-menu-item
+            [cdkCopyToClipboard]="team.id"
+            (cdkCopyToClipboardCopied)="onCopied($event)"
+          >
+            <mat-icon fontIcon="share"></mat-icon>
+            Share
+          </button>
+          <button mat-menu-item (click)="onLeaveTeam(team.id)" class="mat-error-state">
+            <mat-icon fontIcon="logout"></mat-icon>
+            Leave team
+          </button>
+        </mat-menu>
       }
     </div>
   }

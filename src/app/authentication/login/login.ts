@@ -1,11 +1,13 @@
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../app.routes';
+import { Disclaimer } from '../../disclaimer/disclaimer';
 import { AuthFacade } from '../auth-facade';
 import { AUTH_ROUTE_PARAMS } from '../auth.routes';
 
@@ -17,16 +19,18 @@ import { AUTH_ROUTE_PARAMS } from '../auth.routes';
     MatButtonModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login implements OnDestroy {
+export class Login implements AfterViewInit, OnDestroy {
   private readonly _authFacade = inject(AuthFacade);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
+  private readonly _dialog = inject(MatDialog);
 
-  readonly loggingIn = signal<boolean>(false);
+  readonly loggingInLoading = signal<boolean>(false);
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -42,10 +46,15 @@ export class Login implements OnDestroy {
   readonly emailControl = this.loginForm.controls.email;
   readonly passwordControl = this.loginForm.controls.password;
 
+  ngAfterViewInit(): void {
+    this.openDisclaimerDialog();
+  }
+
   async loginWithEmailAndPassword(): Promise<void> {
     const email: string = this.emailControl.getRawValue();
     const password: string = this.passwordControl.getRawValue();
 
+    this.loggingInLoading.set(true);
     await this._authFacade.loginWithEmailAndPassword(email, password);
 
     this._router.navigate([ROUTES_PARAMS.project]);
@@ -65,14 +74,18 @@ export class Login implements OnDestroy {
 
     this.loginForm.patchValue({ email, password });
 
-    this.loggingIn.set(true);
+    this.loggingInLoading.set(true);
 
     await this._authFacade.loginWithEmailAndPassword(email, password);
 
     this._router.navigate([ROUTES_PARAMS.project]);
   }
 
+  openDisclaimerDialog(): void {
+    this._dialog.open(Disclaimer);
+  }
+
   ngOnDestroy(): void {
-    this.loggingIn.set(false);
+    this.loggingInLoading.set(false);
   }
 }

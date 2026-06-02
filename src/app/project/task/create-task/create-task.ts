@@ -30,7 +30,8 @@ export class CreateTask {
   taskForm = new FormGroup({
     name: new FormControl('', Validators.required),
     description: new FormControl(''),
-    deadline: new FormControl('', Validators.required),
+    startDate: new FormControl<Date | null>(null),
+    deadline: new FormControl<Date | null>(null),
     assigneeId: new FormControl(''),
   });
 

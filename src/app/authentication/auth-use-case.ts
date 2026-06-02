@@ -2,8 +2,8 @@ import { computed, inject, Injectable } from '@angular/core';
 import { UserCredential } from 'firebase/auth';
 import { FirebaseAuth } from '../infrastructure/auth/firebase-auth';
 import { FirestoreProjectRepository } from '../infrastructure/firestore/firestore-project-repository';
-import { RoleModel, UserModel } from './auth.model';
 import { TeamModel } from '../team/team.model';
+import { RoleModel, UserModel } from './auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthUseCase {
@@ -20,16 +20,22 @@ export class AuthUseCase {
     this._auth.loginWithGoogle();
   }
 
-  async register(email: string, password: string, role: RoleModel): Promise<UserModel | null> {
+  async register(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    role: RoleModel,
+  ): Promise<UserModel | null> {
     await this._auth.register(email, password);
 
     const accountId = this._auth.user()?.uid;
     if (!accountId) return null;
 
-    return await this.addUser(role);
+    return await this.addUser(firstName, lastName, role);
   }
 
-  async addUser(role: RoleModel): Promise<UserModel> {
+  async addUser(firstName: string, lastName: string, role: RoleModel): Promise<UserModel> {
     const userId = this._userId();
 
     if (!userId) {
@@ -37,29 +43,13 @@ export class AuthUseCase {
     }
 
     const data: Omit<UserModel, 'id'> = {
+      firstName,
+      lastName,
       role,
     };
 
     await this._repo.addUser(data, userId);
 
     return { ...data, id: userId };
-  }
-
-  async addTeam(teamName: string, userId: string): Promise<TeamModel> {
-    const creatorId: string | null = this._userId();
-    if (!creatorId) {
-      throw new Error("Can't add team creatorId is missing");
-    }
-
-    const data: Omit<TeamModel, 'id'> = { name: teamName, memberIds: [userId], creatorId };
-
-    const id = await this._repo.addTeam(data);
-
-    return {
-      id,
-      name: data.name,
-      memberIds: data.memberIds,
-      creatorId,
-    };
   }
 }

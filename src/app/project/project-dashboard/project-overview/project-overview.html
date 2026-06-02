@@ -8,28 +8,40 @@
   <div class="flex flex-col gap-2">
     <!-- Project Description -->
     <div>
-      @if (description(); as description) {
-        <p>{{ description }}</p>
-      } @else {
-        <mat-spinner diameter="22"></mat-spinner>
-      }
+      <p>
+        @if (description(); as description) {
+          {{ description }}
+        } @else {
+          No description
+        }
+      </p>
     </div>
 
     <!-- Project Dates -->
     <div class="flex flex-col gap-1">
       <!-- Start Date -->
       <div>
-        <mat-chip><p class="mat-font-label-sm">Start Date: MM/DD/YYYY</p> </mat-chip>
+        <mat-chip>
+          <p class="mat-font-label-sm">
+            @if (startDate(); as startDate) {
+              Start Date: {{ startDate | date }}
+            } @else {
+              Start Date: No Data
+            }
+          </p>
+        </mat-chip>
       </div>
 
       <!-- Deadline -->
       <div>
         <mat-chip>
-          @if (deadline(); as deadline) {
-            <p class="mat-font-label-sm">Deadline: {{ deadline }}</p>
-          } @else {
-            <mat-spinner diameter="22"></mat-spinner>
-          }
+          <p class="mat-font-label-sm">
+            @if (deadline(); as deadline) {
+              Deadline: {{ deadline | date }}
+            } @else {
+              Deadline: No Data
+            }
+          </p>
         </mat-chip>
       </div>
     </div>

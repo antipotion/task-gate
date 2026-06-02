@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../../app.routes';
+import { TaskAction } from '../task-action/task-action';
 import { TaskComment } from '../task-comment/task-comment';
 import { TaskDependency } from '../task-dependency/task-dependency';
 import { TaskEdit } from '../task-edit/task-edit';
@@ -12,11 +13,10 @@ import { TaskFacade } from '../task-facade';
 import { TaskHeader } from '../task-header/task-header';
 import { TaskHistory } from '../task-history/task-history';
 import { TaskOverview } from '../task-overview/task-overview';
-import { TaskStatus } from '../task-status/task-status';
 import { TaskSubtask } from '../task-subtask/task-subtask';
 import { TaskTime } from '../task-time/task-time';
 import { TaskWarningDialog } from '../task-warning-dialog/task-warning-dialog';
-import { TaskAction } from '../task.model';
+import { TaskActionModel } from '../task.model';
 import { TASK_ROUTE_PARAMS } from '../task.routes';
 
 @Component({
@@ -24,7 +24,7 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
   imports: [
     TaskHeader,
     TaskOverview,
-    TaskStatus,
+    TaskAction,
     TaskDependency,
     TaskSubtask,
     TaskTime,
@@ -46,7 +46,7 @@ export class TaskDetails implements OnInit {
   readonly taskId = this._route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.taskId) || '';
 
   readonly activeTask = computed(() => this._taskFacade.activeTask());
-  readonly nextTaskAction = signal<TaskAction | null>(null);
+  readonly nextTaskAction = signal<TaskActionModel | null>(null);
 
   constructor() {
     effect(() => {
@@ -94,10 +94,7 @@ export class TaskDetails implements OnInit {
   }
 
   onBack(): void {
-    const projectId = this.activeTask()?.projectId;
-    if (!projectId) return;
-
-    this._router.navigate([ROUTES_PARAMS.project, projectId]);
+    this._taskFacade.goBack();
   }
 
   openConfirmDeleteDialog(): void {
@@ -118,7 +115,7 @@ export class TaskDetails implements OnInit {
     });
   }
 
-  transitionTask(action: TaskAction): void {
+  transitionTask(action: TaskActionModel): void {
     const task = this.activeTask();
     if (!task) throw new Error("Task does not exist can't transition");
 

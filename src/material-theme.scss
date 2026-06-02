@@ -91,3 +91,9 @@ p {
 .mat-text-inverse-on-surface {
   color: var(--mat-sys-inverse-on-surface);
 }
+
+.mat-error-state {
+  --mat-icon-button-icon-color: var(--mat-sys-error);
+  --mat-menu-item-icon-color: var(--mat-sys-error);
+  --mat-menu-item-label-text-color: var(--mat-sys-error);
+}

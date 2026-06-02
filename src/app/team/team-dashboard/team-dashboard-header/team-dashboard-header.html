@@ -6,7 +6,23 @@
   <h1 class="mat-font-title-md">Team Dashboard</h1>
 
   <div>
-    <button matButton (click)="onAddTeam()">Add Team</button>
-    <button matButton (click)="onJoinTeam()">Join Team</button>
+    <!-- Buttons to show on small screen -->
+    <div class="flex md:hidden">
+      <!-- Add team button -->
+      <button matIconButton (click)="onAddTeam()">
+        <mat-icon fontIcon="add"></mat-icon>
+      </button>
+      
+      <!-- Join team button -->
+      <button matIconButton (click)="onJoinTeam()">
+        <mat-icon fontIcon="group_add"></mat-icon>
+      </button>
+    </div>
+
+    <!-- Buttons to show on medium screen -->
+    <div class="hidden md:flex">
+      <button matButton (click)="onAddTeam()">Add Team</button>
+      <button matButton (click)="onJoinTeam()">Join Team</button>
+    </div>
   </div>
 </div>

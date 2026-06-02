@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { guestGuard } from './application/guards/guest-guard';
+import { authGuard } from './application/guards/auth-guard';
 
 export const ROUTES_PARAMS = {
   auth: 'auth',
@@ -16,18 +18,21 @@ export const routes: Routes = [
   {
     path: ROUTES_PARAMS.auth,
     loadChildren: () => import('./authentication/auth.routes').then((m) => m.AuthRoutes),
+    canMatch: [guestGuard],
   },
   {
     path: ROUTES_PARAMS.project,
     loadChildren: () => import('./project/project.routes').then((m) => m.projectRoutes),
+    canMatch: [authGuard],
   },
   {
     path: ROUTES_PARAMS.task,
     loadChildren: () => import('./project/task/task.routes').then((m) => m.TaskRoutes),
+    canMatch: [authGuard],
   },
   {
     path: ROUTES_PARAMS.teams,
-    loadChildren: () =>
-      import('./team/team.routes').then((m) => m.TeamRoutes),
+    loadChildren: () => import('./team/team.routes').then((m) => m.TeamRoutes),
+    canMatch: [authGuard],
   },
 ];

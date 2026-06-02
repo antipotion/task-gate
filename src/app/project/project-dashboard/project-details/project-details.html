@@ -25,9 +25,15 @@
   </div>
 
   <!-- Contents -->
-  <app-project-header [projectName]="projectData?.name" />
+  <app-project-header
+    [userFullName]="userFullName()"
+    [projectName]="projectData?.name"
+    [projectStatus]="projectStatus()"
+    [projectDeadlinePressure]="projectDeadlinePressure()"
+  />
   <app-project-overview
-    [deadline]="projectData?.deadline | date"
+    [startDate]="projectData?.startDate ?? null"
+    [deadline]="projectData?.deadline ?? null"
     [description]="projectData?.description ?? null"
   />
   <app-project-metrics />

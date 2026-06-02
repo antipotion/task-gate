@@ -1,4 +1,6 @@
 @let projectName = this.projectName();
+@let projectStatus = this.projectStatus();
+@let projectDeadlinePressure = this.projectDeadlinePressure();
 
 <section>
   <!-- Project Header -->
@@ -12,20 +14,43 @@
     <!-- Badges -->
     <div class="flex gap-2">
       <!-- Status badge -->
-      <div class="bg-amber-500 w-fit px-2 py-1 mat-corner-full">
-        <p class="mat-font-label-sm">Project Status</p>
+      <div
+        class="w-fit px-2 py-1 mat-corner-full"
+        [ngClass]="{
+          'bg-gray-200': projectStatus === 'not started' || !projectStatus,
+          'bg-amber-200': projectStatus === 'in progress',
+          'bg-green-200': projectStatus === 'completed',
+        }"
+      >
+        <p class="mat-font-label-sm">
+          @if (!projectStatus) {
+            Loading...
+          } @else {
+            {{ projectStatus | titlecase }}
+          }
+        </p>
       </div>
 
       <!-- Health badge -->
-      <div class="bg-green-500 w-fit px-2 py-1 mat-corner-full">
-        <p class="mat-font-label-sm">Project Health</p>
+      <div
+        class="w-fit px-2 py-1 mat-corner-full"
+        [ngClass]="{
+          'bg-gray-200': projectDeadlinePressure === 'unknown',
+          'bg-green-200': projectDeadlinePressure === 'healthy',
+          'bg-teal-200': projectDeadlinePressure === 'stable',
+          'bg-amber-200': projectDeadlinePressure === 'warning',
+          'bg-orange-200': projectDeadlinePressure === 'critical',
+          'bg-red-200': projectDeadlinePressure === 'overdue',
+        }"
+      >
+        <p class="mat-font-label-sm">{{ projectDeadlinePressure | titlecase }}</p>
       </div>
     </div>
 
     <!-- Project Owner -->
     <div class="flex gap-2">
       <p>Project Owner:</p>
-      <p>Owner Name</p>
+      <p>{{ userFullName() }}</p>
     </div>
 
     <!-- Project Members -->

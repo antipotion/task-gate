@@ -1,10 +1,10 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Observable, of, shareReplay } from 'rxjs';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { filter, switchMap } from 'rxjs';
 import { FirebaseAuth } from '../infrastructure/auth/firebase-auth';
 import { FirestoreProjectRepository } from '../infrastructure/firestore/firestore-project-repository';
 import { SignupSessionStorage } from '../infrastructure/signup-session-storage/signup-session-storage';
-import { RoleModel, UserModel } from './auth.model';
+import { RoleModel } from './auth.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,15 +15,22 @@ export class AuthStore {
   private readonly _firebaseAuth = inject(FirebaseAuth);
 
   readonly userId = computed<string | null>(() => this._firebaseAuth.userId());
-  readonly userData = toSignal(this.listenToUser$());
+  readonly userData = toSignal(
+    toObservable(this.userId).pipe(
+      filter((userId): userId is string => !!userId),
+      switchMap((userId) => this._repo.listenToUser$(userId)),
+    ),
+    { initialValue: null },
+  );
+  readonly userFullName = computed<string | null>(() => {
+    const userData = this.userData();
+    if (!userData) return null;
 
-  private listenToUser$(): Observable<UserModel | null> {
-    const userId = this.userId();
+    const firstName = userData.firstName;
+    const lastName = userData.lastName;
 
-    if (!userId) return of(null);
-
-    return this._repo.listenToUser$(userId).pipe(shareReplay({ bufferSize: 1, refCount: true }));
-  }
+    return `${firstName} ${lastName}`;
+  });
 
   getTeamId(): string | null {
     return this._signupSessionStorage.getTeamId();
