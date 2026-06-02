@@ -1,4 +1,5 @@
 @let taskName = this.taskName();
+@let taskStatus = this.taskStatus();
 
 <section>
   <!-- Task Header -->
@@ -11,8 +12,18 @@
     <!-- Badges -->
     <div class="flex gap-2">
       <!-- Status badge -->
-      <div class="bg-amber-500 w-fit px-2 py-1 mat-corner-full">
-        <p class="mat-font-label-sm">Task Status</p>
+      <div
+        class="w-fit px-2 py-1 mat-corner-full"
+        [ngClass]="{
+          'bg-slate-200': taskStatus === 'TODO' || !taskStatus,
+          'bg-blue-200': taskStatus === 'IN-PROGRESS',
+          'bg-indigo-200': taskStatus === 'SUBMITTED',
+          'bg-amber-200': taskStatus === 'REVIEWING',
+          'bg-emerald-200': taskStatus === 'APPROVED',
+          'bg-red-200': taskStatus === 'REJECTED',
+        }"
+      >
+        <p class="mat-font-label-sm">{{ taskStatus | titlecase }}</p>
       </div>
 
       <!-- Priority badge -->

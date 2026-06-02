@@ -13,13 +13,11 @@
       <button matButton="filled" (click)="openTaskEditDialog()">Edit</button>
 
       <!-- Task delete button -->
-      <button matButton class="mat-error-state" (click)="openConfirmDeleteDialog()">
-        Delete
-      </button>
+      <button matButton class="mat-error-state" (click)="openConfirmDeleteDialog()">Delete</button>
     </div>
   </div>
 
-  <app-task-header [taskName]="activeTaskData?.name" />
+  <app-task-header [taskName]="activeTaskData?.name" [taskStatus]="activeTaskData?.status" />
   <app-task-overview
     [taskDeadline]="activeTaskData?.deadline ?? null"
     [taskDescription]="activeTaskData?.description ?? null"
