@@ -41,7 +41,7 @@
               [matDatepicker]="startDatePicker"
             />
             <mat-hint>MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #startDatePicker></mat-datepicker>
             @if (projectForm.get('startDate')?.hasError('required')) {
               <mat-error>Enter a valid start date</mat-error>
