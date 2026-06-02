@@ -26,7 +26,7 @@ export class Login implements OnDestroy {
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
 
-  readonly loggingIn = signal<boolean>(false);
+  readonly loggingInLoading = signal<boolean>(false);
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -46,6 +46,7 @@ export class Login implements OnDestroy {
     const email: string = this.emailControl.getRawValue();
     const password: string = this.passwordControl.getRawValue();
 
+    this.loggingInLoading.set(true);
     await this._authFacade.loginWithEmailAndPassword(email, password);
 
     this._router.navigate([ROUTES_PARAMS.project]);
@@ -65,7 +66,7 @@ export class Login implements OnDestroy {
 
     this.loginForm.patchValue({ email, password });
 
-    this.loggingIn.set(true);
+    this.loggingInLoading.set(true);
 
     await this._authFacade.loginWithEmailAndPassword(email, password);
 
@@ -73,6 +74,6 @@ export class Login implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.loggingIn.set(false);
+    this.loggingInLoading.set(false);
   }
 }
