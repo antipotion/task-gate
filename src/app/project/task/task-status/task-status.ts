@@ -1,26 +1,57 @@
-import { Component, input, output } from '@angular/core';
+import { NgClass, TitleCasePipe } from '@angular/common';
+import { Component, ElementRef, input, output, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
-import { TaskAction, type TaskStatus as TaskStatusModel } from '../task.model';
-import { TitleCasePipe } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TaskAction, type TaskStatus as TaskStatusModel } from '../task.model';
 
 @Component({
   selector: 'app-task-status',
-  imports: [MatIconModule, MatChipsModule, MatButtonModule, TitleCasePipe, MatProgressSpinnerModule],
+  imports: [
+    MatIconModule,
+    MatChipsModule,
+    MatButtonModule,
+    TitleCasePipe,
+    MatProgressSpinnerModule,
+    NgClass,
+  ],
   templateUrl: './task-status.html',
   styleUrl: './task-status.scss',
 })
 export class TaskStatus {
+  private readonly _fileInput = viewChild<ElementRef<HTMLInputElement>>('file-input');
+
   readonly taskStatus = input.required<TaskStatusModel | undefined>();
   readonly taskNextAction = input.required<TaskAction | null>();
   readonly nextActionTriggered = output<TaskAction>();
 
+  readonly selectedFileName = signal<string | null>(null);
+
   onNextActionTrigger(): void {
     const taskNextAction = this.taskNextAction();
     if (!taskNextAction) return;
-    
+
     this.nextActionTriggered.emit(taskNextAction);
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) {
+      return;
+    }
+
+    const file = input.files[0];
+    this.selectedFileName.set(file.name);
+  }
+
+  onRemoveFile(): void {
+    const fileInput = this._fileInput();
+
+    this.selectedFileName.set(null);
+
+    if (!fileInput) return;
+    fileInput.nativeElement.value = '';
   }
 }

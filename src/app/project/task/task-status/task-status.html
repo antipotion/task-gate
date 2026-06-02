@@ -1,6 +1,10 @@
+@let taskStatus = this.taskStatus();
+@let taskNextAction = this.taskNextAction();
+@let fileName = selectedFileName();
+
 <section class="flex flex-col gap-4">
   <div class="flex justify-between">
-    <h2 class="mat-font-title-md">Task Status</h2>
+    <h2 class="mat-font-title-md">Task Action</h2>
     <mat-icon fontIcon="expand_more"></mat-icon>
   </div>
 
@@ -8,17 +12,37 @@
   <div class="flex flex-col gap-2">
     <!-- Task State -->
     <div class="flex flex-col gap-2">
-      <p>Current state</p>
+      @if (taskStatus && taskStatus === 'IN-PROGRESS') {
+        <form>
+          <input #fileInput type="file" hidden (change)="onFileSelected($event)" />
+        </form>
 
-      @let taskStatus = this.taskStatus();
-      @if (!taskStatus) {
-        <mat-spinner diameter="22"></mat-spinner>
-      } @else {
-        <mat-chip>{{ taskStatus | titlecase }}</mat-chip>
+        <div class="flex flex-col gap-4">
+          <!-- File view -->
+          <div class="flex gap-8 items-center">
+            <div class="flex gap-4 items-center">
+              <mat-icon fontIcon="file_present"></mat-icon>
+              <p>{{ fileName ?? 'No file selected' }}</p>
+            </div>
+
+            @if (fileName) {
+              <!-- Clear file button -->
+              <button matIconButton class="mat-error-state" (click)="onRemoveFile()">
+                <mat-icon fontIcon="clear"></mat-icon>
+              </button>
+            }
+          </div>
+
+          <button matButton="filled" (click)="fileInput.click()">
+            {{ taskNextAction | titlecase }} a file
+          </button>
+        </div>
       }
 
-      @if (taskNextAction(); as action) {
-        <button matButton="filled" (click)="onNextActionTrigger()">{{ action | titlecase }}</button>
+      @if (taskNextAction && taskNextAction !== 'SUBMIT') {
+        <button matButton="filled" (click)="onNextActionTrigger()">
+          {{ taskNextAction | titlecase }}
+        </button>
       }
     </div>
   </div>
