@@ -146,11 +146,13 @@ Some features and refinements are still in progress, including:
 - Additional accessibility improvements
 - Responsive UX refinements
 - Expanded task management capabilities
-- Feature integration
 - Performance optimizations
-- Cross-domain workflow and routing integration
-- Relationship consistency between users, projects, and tasks
-- Ownership and permission flow refinements
+- Basic business guarantee coverage for relationships of domain and entities but working feature set
+- No file upload system yet
+- No comment system yet
+- No notification system yet
+- No review system yet
+- No view team functionality yet
 
 ---
 
@@ -162,7 +164,10 @@ Planned future improvements include:
 - Interaction and workflow refinements
 - Full implementation of projects and tasks domains
 - Advanced filtering and search
-- Simplified invitation process
+- File upload system
+- Comment system
+- Notification system
+- Review system
 
 ---
 
