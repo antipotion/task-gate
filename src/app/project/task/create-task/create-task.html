@@ -17,6 +17,18 @@
         <input matInput placeholder="Enter task description" formControlName="description" />
       </mat-form-field>
 
+      <!-- Task start date -->
+      <mat-form-field class="w-full">
+        <mat-label>Task Start Date</mat-label>
+        <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" />
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #startDatePicker></mat-datepicker>
+        @if (taskForm.get('startDate')?.invalid) {
+          <mat-error>Enter a valid start date</mat-error>
+        }
+      </mat-form-field>
+
       <!-- Task deadline -->
       <mat-form-field class="w-full">
         <mat-label>Task Deadline</mat-label>
@@ -25,7 +37,7 @@
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
         @if (taskForm.get('deadline')?.invalid) {
-          <mat-error>Task Deadline is required</mat-error>
+          <mat-error>Enter a valid end date</mat-error>
         }
       </mat-form-field>
 
