@@ -4,7 +4,7 @@ import { catchError, map, of, startWith } from 'rxjs';
 import { StoreService } from '../../application/store/store-service';
 import { getAvailableActions, transitionTask } from './task-state-machine';
 import { TaskUseCase } from './task-use-case';
-import { Task, TaskAction } from './task.model';
+import { Task, TaskActionModel } from './task.model';
 import { HistoryService } from '../../application/history/history-service';
 
 export type TaskState =
@@ -59,11 +59,11 @@ export class TaskFacade {
     return this._taskUseCase.deleteTask(taskId);
   }
 
-  nextTaskState(task: Task): TaskAction | undefined {
+  nextTaskState(task: Task): TaskActionModel | undefined {
     return getAvailableActions(task);
   }
 
-  advanceTaskState(task: Task, action: TaskAction): void {
+  advanceTaskState(task: Task, action: TaskActionModel): void {
     const taskId = task.id;
     const advancedTask = transitionTask(task, action);
 

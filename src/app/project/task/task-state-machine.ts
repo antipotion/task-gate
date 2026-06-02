@@ -1,8 +1,8 @@
-import { Task, TaskAction, TaskStatus } from './task.model';
+import { Task, TaskActionModel, TaskStatus } from './task.model';
 
 export type TransitionDefinition = {
   from: TaskStatus;
-  action: TaskAction;
+  action: TaskActionModel;
   to: TaskStatus;
 };
 
@@ -41,7 +41,7 @@ const TRANSITIONS: readonly TransitionDefinition[] = [
 
 export function findTransition(
   status: TaskStatus,
-  action: TaskAction,
+  action: TaskActionModel,
 ): TransitionDefinition | null {
   return TRANSITIONS.find((t) => t.from === status && t.action === action) ?? null;
 }
@@ -49,13 +49,13 @@ export function findTransition(
 class InvalidTransitionError extends Error {
   constructor(
     public readonly from: TaskStatus,
-    public readonly action: TaskAction,
+    public readonly action: TaskActionModel,
   ) {
     super(`Invalid transition: ${from} -> ${action}`);
   }
 }
 
-export function transitionTask(task: Task, action: TaskAction): Task {
+export function transitionTask(task: Task, action: TaskActionModel): Task {
   const transition = findTransition(task.status, action);
 
   if (!transition) {
@@ -74,6 +74,6 @@ export function transitionTask(task: Task, action: TaskAction): Task {
   return next;
 }
 
-export function getAvailableActions(task: Task): TaskAction | undefined {
+export function getAvailableActions(task: Task): TaskActionModel | undefined {
   return TRANSITIONS.find((t) => t.from === task.status)?.action;
 }

@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { AuthStore } from '../../authentication/auth-store';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 import { diff } from '../project-use-case';
-import type { Task, TaskAction, TaskStatus } from './task.model';
+import type { Task, TaskActionModel, TaskStatus } from './task.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,7 @@ export class TaskUseCase {
 
   async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
     const status: TaskStatus = 'TODO';
-    const action: TaskAction = 'START';
+    const action: TaskActionModel = 'START';
 
     const creatorId: string | null = this._authStore.userId();
     if (!creatorId) {

@@ -1,30 +1,29 @@
-import { NgClass, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import { Component, ElementRef, input, output, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TaskAction, type TaskStatus as TaskStatusModel } from '../task.model';
+import { TaskActionModel, type TaskStatus as TaskStatusModel } from '../task.model';
 
 @Component({
-  selector: 'app-task-status',
+  selector: 'app-task-action',
   imports: [
     MatIconModule,
     MatChipsModule,
     MatButtonModule,
     TitleCasePipe,
     MatProgressSpinnerModule,
-    NgClass,
   ],
-  templateUrl: './task-status.html',
-  styleUrl: './task-status.scss',
+  templateUrl: './task-action.html',
+  styleUrl: './task-action.scss',
 })
-export class TaskStatus {
+export class TaskAction {
   private readonly _fileInput = viewChild<ElementRef<HTMLInputElement>>('file-input');
 
   readonly taskStatus = input.required<TaskStatusModel | undefined>();
-  readonly taskNextAction = input.required<TaskAction | null>();
-  readonly nextActionTriggered = output<TaskAction>();
+  readonly taskNextAction = input.required<TaskActionModel | null>();
+  readonly nextActionTriggered = output<TaskActionModel>();
 
   readonly selectedFileName = signal<string | null>(null);
 

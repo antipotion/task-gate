@@ -22,7 +22,7 @@
     [taskDeadline]="activeTaskData?.deadline ?? null"
     [taskDescription]="activeTaskData?.description ?? null"
   />
-  <app-task-status
+  <app-task-action
     [taskStatus]="activeTaskData?.status"
     [taskNextAction]="nextTaskAction()"
     (nextActionTriggered)="transitionTask($event)"

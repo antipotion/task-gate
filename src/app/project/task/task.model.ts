@@ -6,7 +6,7 @@ export type TaskStatus =
   | 'APPROVED'
   | 'REJECTED'
 
-export type TaskAction =
+export type TaskActionModel =
   | 'START'
   | 'SUBMIT'
   | 'BEGIN_REVIEW'
