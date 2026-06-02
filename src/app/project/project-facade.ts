@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { HistoryService } from '../application/history/history-service';
@@ -21,6 +21,8 @@ export class ProjectFacade {
   private readonly _authStore = inject(AuthStore);
   private readonly _taskFacade = inject(TaskFacade);
   private readonly _historyService = inject(HistoryService);
+
+  readonly userFullName = computed<string | null>(() => this._authStore.userFullName());
 
   readonly projectState = toSignal(
     this._storeService.projects$.pipe(
@@ -46,7 +48,7 @@ export class ProjectFacade {
 
     return state.data.find((p) => p.id === id) ?? null;
   });
-
+  
   getProjectStatus(projectId: string): Signal<ProjectStatusModel | null> {
     return computed(() => {
       const state = this._taskFacade.taskState();

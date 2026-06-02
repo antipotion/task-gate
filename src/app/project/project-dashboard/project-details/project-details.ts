@@ -41,6 +41,7 @@ export class ProjectDetails {
   private readonly _projectId =
     this._route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.projectId) || '';
 
+  readonly userFullName = computed<string | null>(() => this._projectFacade.userFullName());
   readonly project = computed<Project | null>(() => this._projectFacade.activeProject());
   readonly projectStatus: Signal<ProjectStatusModel | null> = this._projectFacade.getProjectStatus(
     this._projectId,
