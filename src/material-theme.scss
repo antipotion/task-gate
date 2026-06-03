@@ -105,3 +105,9 @@ p {
   --mat-menu-item-icon-color: var(--mat-sys-error);
   --mat-menu-item-label-text-color: var(--mat-sys-error);
 }
+
+.mat-primary-container-state {
+  --mat-icon-button-icon-color: var(--mat-sys-on-primary-container);
+  --mat-menu-item-icon-color: var(--mat-sys-on-primary-container);
+  --mat-menu-item-label-text-color: var(--mat-sys-on-primary-container);
+}
