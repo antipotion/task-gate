@@ -1,0 +1,27 @@
+<footer class="mat-bg-primary-container mat-text-on-primary-container flex flex-col gap-4 items-center justify-center p-4">
+  <!-- Social icons -->
+  <div>
+    @for (social of socialLinks; track $index) {
+      <a
+        [href]="social.socialLink"
+        target="_blank"
+        matIconButton
+        [ariaLabel]="social.ariaLabel"
+        class="mat-inverse-state"
+      >
+        <fa-icon [icon]="getSocialIcon(social.accountType)"></fa-icon>
+      </a>
+    }
+  </div>
+
+  <!-- Source links -->
+  <div class="flex gap-2">
+    <a [href]="projectSourceLinks.portfolioLink" target="_blank" matButton>View Portfolio</a>
+    <a [href]="projectSourceLinks.sourceLink" target="_blank" matButton>View Source Code</a>
+  </div>
+
+  <!-- Copyright -->
+  <div class="text-center">
+    <p>&copy; {{ getCurrentYear }} Antipotion. Licensed under the MIT License</p>
+  </div>
+</footer>
