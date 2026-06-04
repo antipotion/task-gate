@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.3.0-alpha - 2026-06-05
+### Added
+- Footer component ([10f6597](https://github.com/antipotion/task-gate/commit/10f6597))
+- Loading state for screen transitions ([aa81365](https://github.com/antipotion/task-gate/commit/aa81365))
+- Start date input for `edit-task` ([b551777](https://github.com/antipotion/task-gate/commit/b551777))
+
+### Changed
+- Footer icon color ([5281920](https://github.com/antipotion/task-gate/commit/5281920))
+- Adjust styles for footer ([cc52721](https://github.com/antipotion/task-gate/commit/cc52721))
+
 ## v0.2.0-alpha - 2026-06-03
 ### Added
 - Working reactive project status ([4af3bc2](https://github.com/antipotion/task-gate/commit/4af3bc2))
@@ -43,4 +53,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Firebase Hosting deployment.
 - CI/CD Github Actions pipeline.
 - Angular v21 application structure.
-
