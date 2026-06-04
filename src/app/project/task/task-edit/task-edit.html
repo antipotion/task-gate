@@ -13,6 +13,15 @@
       <input matInput placeholder="Enter task description" formControlName="description" />
     </mat-form-field>
 
+    <!--Task start date -->
+    <mat-form-field class="w-full">
+      <mat-label>Task start date</mat-label>
+      <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+    </mat-form-field>
+
     <!--Task deadline-->
     <mat-form-field class="w-full">
       <mat-label>Task deadline</mat-label>

@@ -84,6 +84,14 @@ p {
 }
 
 // Colors
+/* PRIMARY */
+.mat-bg-primary-container {
+  background-color: var(--mat-sys-primary-container);
+}
+.mat-text-on-primary-container {
+  color: var(--mat-sys-on-primary-container);
+}
+
 /* SURFACE */
 .mat-bg-inverse-surface {
   background-color: var(--mat-sys-inverse-surface);
@@ -96,4 +104,10 @@ p {
   --mat-icon-button-icon-color: var(--mat-sys-error);
   --mat-menu-item-icon-color: var(--mat-sys-error);
   --mat-menu-item-label-text-color: var(--mat-sys-error);
+}
+
+.mat-primary-container-state {
+  --mat-icon-button-icon-color: var(--mat-sys-on-primary-container);
+  --mat-menu-item-icon-color: var(--mat-sys-on-primary-container);
+  --mat-menu-item-label-text-color: var(--mat-sys-on-primary-container);
 }

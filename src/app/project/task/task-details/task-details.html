@@ -1,35 +1,41 @@
 @let activeTaskData = activeTask();
 
-<div class="p-4 flex flex-col gap-4 w-full">
-  <!-- Navigation and some functions -->
-  <div class="flex justify-between">
-    <!-- Back button -->
-    <button matIconButton (click)="onBack()">
-      <mat-icon fontIcon="arrow_back"></mat-icon>
-    </button>
+@if (isLoading()) {
+  <app-loading />
+} @else {
+  <div class="p-4 flex flex-col gap-4 w-full">
+    <!-- Navigation and some functions -->
+    <div class="flex justify-between">
+      <!-- Back button -->
+      <button matIconButton (click)="onBack()">
+        <mat-icon fontIcon="arrow_back"></mat-icon>
+      </button>
 
-    <div>
-      <!-- Task edit button -->
-      <button matButton="filled" (click)="openTaskEditDialog()">Edit</button>
+      <div>
+        <!-- Task edit button -->
+        <button matButton="filled" (click)="openTaskEditDialog()">Edit</button>
 
-      <!-- Task delete button -->
-      <button matButton class="mat-error-state" (click)="openConfirmDeleteDialog()">Delete</button>
+        <!-- Task delete button -->
+        <button matButton class="mat-error-state" (click)="openConfirmDeleteDialog()">
+          Delete
+        </button>
+      </div>
     </div>
-  </div>
 
-  <app-task-header [taskName]="activeTaskData?.name" [taskStatus]="activeTaskData?.status" />
-  <app-task-overview
-    [taskDeadline]="activeTaskData?.deadline ?? null"
-    [taskDescription]="activeTaskData?.description ?? null"
-  />
-  <app-task-action
-    [taskStatus]="activeTaskData?.status"
-    [taskNextAction]="nextTaskAction()"
-    (nextActionTriggered)="transitionTask($event)"
-  />
-  <app-task-dependency />
-  <app-task-subtask />
-  <app-task-time />
-  <app-task-comment />
-  <app-task-history />
-</div>
+    <app-task-header [taskName]="activeTaskData?.name" [taskStatus]="activeTaskData?.status" />
+    <app-task-overview
+      [taskDeadline]="activeTaskData?.deadline ?? null"
+      [taskDescription]="activeTaskData?.description ?? null"
+    />
+    <app-task-action
+      [taskStatus]="activeTaskData?.status"
+      [taskNextAction]="nextTaskAction()"
+      (nextActionTriggered)="transitionTask($event)"
+    />
+    <app-task-dependency />
+    <app-task-subtask />
+    <app-task-time />
+    <app-task-comment />
+    <app-task-history />
+  </div>
+}

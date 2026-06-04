@@ -29,7 +29,8 @@ export class TaskEdit {
   taskEditForm = new FormGroup({
     name: new FormControl(this._data.name, Validators.required),
     description: new FormControl(this._data.description, Validators.required),
-    deadline: new FormControl(this._data.deadline, Validators.required),
+    startDate: new FormControl(this._data.startDate),
+    deadline: new FormControl(this._data.deadline),
   });
 
   onSave(): void {

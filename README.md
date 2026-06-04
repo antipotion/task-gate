@@ -55,6 +55,7 @@ This project was built to:
 - Explore UI system consistency
 - Simulate production-level application structure
 - Serve as a public portfolio project for recruiters and collaborators
+- Build application from idea to MVP
 
 ---
 
@@ -148,7 +149,6 @@ Some features and refinements are still in progress, including:
 - Expanded task management capabilities
 - Performance optimizations
 - Basic business guarantee coverage for relationships of domain and entities but working feature set
-- No file upload system yet
 - No comment system yet
 - No notification system yet
 - No review system yet
@@ -160,11 +160,9 @@ Some features and refinements are still in progress, including:
 
 Planned future improvements include:
 
-- File submission
 - Interaction and workflow refinements
 - Full implementation of projects and tasks domains
 - Advanced filtering and search
-- File upload system
 - Comment system
 - Notification system
 - Review system
