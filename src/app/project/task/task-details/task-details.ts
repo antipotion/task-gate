@@ -70,6 +70,7 @@ export class TaskDetails implements OnInit {
       data: {
         name: this.activeTask()?.name,
         description: this.activeTask()?.description,
+        startDate: this.activeTask()?.startDate,
         deadline: this.activeTask()?.deadline,
       },
     });
