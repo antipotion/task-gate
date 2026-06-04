@@ -1,42 +1,46 @@
 @let projectData = project();
 
-<div class="p-4 flex flex-col gap-4 w-full">
-  <!-- Back button -->
-  <div class="flex justify-between">
-    <button matIconButton (click)="onBack()">
-      <mat-icon fontIcon="arrow_back"></mat-icon>
-    </button>
-
-    <div class="flex">
-      <!-- Edit Project Dialog -->
-      <button matButton (click)="openEditDialog()">Edit</button>
-
-      <!-- Add Task Dialog -->
-      <button matButton="filled" (click)="openAddTaskDialog()">
-        <mat-icon fontIcon="add"></mat-icon>
-        Add Task
+@if (isLoading()) {
+  <app-loading />
+} @else {
+  <div class="p-4 flex flex-col gap-4 w-full">
+    <!-- Back button -->
+    <div class="flex justify-between">
+      <button matIconButton (click)="onBack()">
+        <mat-icon fontIcon="arrow_back"></mat-icon>
       </button>
 
-      <!-- Delete button -->
-      <button matIconButton class="delete-btn" (click)="onDelete()">
-        <mat-icon fontIcon="delete"></mat-icon>
-      </button>
+      <div class="flex">
+        <!-- Edit Project Dialog -->
+        <button matButton (click)="openEditDialog()">Edit</button>
+
+        <!-- Add Task Dialog -->
+        <button matButton="filled" (click)="openAddTaskDialog()">
+          <mat-icon fontIcon="add"></mat-icon>
+          Add Task
+        </button>
+
+        <!-- Delete button -->
+        <button matIconButton class="delete-btn" (click)="onDelete()">
+          <mat-icon fontIcon="delete"></mat-icon>
+        </button>
+      </div>
     </div>
-  </div>
 
-  <!-- Contents -->
-  <app-project-header
-    [userFullName]="userFullName()"
-    [projectName]="projectData?.name"
-    [projectStatus]="projectStatus()"
-    [projectDeadlinePressure]="projectDeadlinePressure()"
-  />
-  <app-project-overview
-    [startDate]="projectData?.startDate ?? null"
-    [deadline]="projectData?.deadline ?? null"
-    [description]="projectData?.description ?? null"
-  />
-  <app-project-metrics />
-  <app-project-tasks-board />
-  <app-project-activity-feed />
-</div>
+    <!-- Contents -->
+    <app-project-header
+      [userFullName]="userFullName()"
+      [projectName]="projectData?.name"
+      [projectStatus]="projectStatus()"
+      [projectDeadlinePressure]="projectDeadlinePressure()"
+    />
+    <app-project-overview
+      [startDate]="projectData?.startDate ?? null"
+      [deadline]="projectData?.deadline ?? null"
+      [description]="projectData?.description ?? null"
+    />
+    <app-project-metrics />
+    <app-project-tasks-board />
+    <app-project-activity-feed />
+  </div>
+}

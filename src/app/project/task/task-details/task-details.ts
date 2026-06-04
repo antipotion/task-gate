@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../../app.routes';
+import { Loading } from '../../../loading/loading';
 import { TaskAction } from '../task-action/task-action';
 import { TaskComment } from '../task-comment/task-comment';
 import { TaskDependency } from '../task-dependency/task-dependency';
@@ -32,6 +33,7 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
     TaskHistory,
     MatIconModule,
     MatButtonModule,
+    Loading,
   ],
   templateUrl: './task-details.html',
   styleUrl: './task-details.scss',
@@ -47,6 +49,7 @@ export class TaskDetails implements OnInit {
 
   readonly activeTask = computed(() => this._taskFacade.activeTask());
   readonly nextTaskAction = signal<TaskActionModel | null>(null);
+  readonly isLoading = signal<boolean>(false);
 
   constructor() {
     effect(() => {
@@ -94,7 +97,15 @@ export class TaskDetails implements OnInit {
   }
 
   onBack(): void {
-    this._taskFacade.goBack();
+    const projectId = this.activeTask()?.projectId;
+    if (!projectId) return;
+
+    this.isLoading.set(true);
+    // Remove current page from history stack
+    this._taskFacade.historyPop();
+
+    this._router.navigate([ROUTES_PARAMS.project, projectId]);
+    this.isLoading.set(false);
   }
 
   openConfirmDeleteDialog(): void {

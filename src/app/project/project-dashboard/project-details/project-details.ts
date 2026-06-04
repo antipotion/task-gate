@@ -1,9 +1,11 @@
-import { Component, computed, inject, Signal } from '@angular/core';
+import { Component, computed, inject, signal, Signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../../app.routes';
+import { Loading } from '../../../loading/loading';
 import { ProjectFacade } from '../../project-facade';
 import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
 import { ProjectStatusModel, type Project } from '../../project.model';
@@ -27,6 +29,8 @@ import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
     ProjectActivityFeed,
     MatButtonModule,
     MatIconModule,
+    MatProgressSpinnerModule,
+    Loading,
   ],
   templateUrl: './project-details.html',
   styleUrl: './project-details.scss',
@@ -54,13 +58,19 @@ export class ProjectDetails {
       project?.deadline ?? null,
     );
   });
+  readonly isLoading = signal<boolean>(false);
 
   ngOnInit(): void {
     this._projectFacade.selectProject(this._projectId);
   }
 
   onBack(): void {
-    this._projectFacade.goBack();
+    this.isLoading.set(true);
+    // Remove current page from the history stack
+    this._projectFacade.historyPop();
+
+    this._router.navigate([ROUTES_PARAMS.project]);
+    this.isLoading.set(false);
   }
 
   openEditDialog(): void {
@@ -74,7 +84,6 @@ export class ProjectDetails {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(result);
       // TODO: Handle the result of the operation (e.g. Success | Error)
       this._projectFacade.updateProject(this._projectId, result);
     });
@@ -105,10 +114,13 @@ export class ProjectDetails {
       data: projectName,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       if (!result) return;
-      this._projectFacade.deleteProject(projectId);
+
+      this.isLoading.set(true);
+      await this._projectFacade.deleteProject(projectId);
       this._router.navigate([ROUTES_PARAMS.project]);
+      this.isLoading.set(false);
     });
   }
 }

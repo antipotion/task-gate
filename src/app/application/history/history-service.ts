@@ -23,15 +23,15 @@ export class HistoryService {
     this._historyStack.push(url);
   }
 
-  private _historyStackPop(): string | undefined {
+  historyStackPop(): string | undefined {
     return this._historyStack.pop();
   }
 
   goBack(): void {
     // Remove current page
-    this._historyStackPop();
+    this.historyStackPop();
 
-    const previous = this._historyStackPop();
+    const previous = this.historyStackPop();
 
     if (previous) {
       this._router.navigateByUrl(previous);

@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { HistoryService } from '../application/history/history-service';
@@ -48,7 +48,7 @@ export class ProjectFacade {
 
     return state.data.find((p) => p.id === id) ?? null;
   });
-  
+
   getProjectStatus(projectId: string): Signal<ProjectStatusModel | null> {
     return computed(() => {
       const state = this._taskFacade.taskState();
@@ -101,7 +101,7 @@ export class ProjectFacade {
     return await this._projectUseCase.updateProject(id, project, dto);
   }
 
-  deleteProject(id: string): Promise<void> {
+  async deleteProject(id: string): Promise<void> {
     return this._projectUseCase.deleteProject(id);
   }
 
@@ -111,5 +111,9 @@ export class ProjectFacade {
 
   goBack(): void {
     this._historyService.goBack();
+  }
+
+  historyPop(): void {
+    this._historyService.historyStackPop();
   }
 }
