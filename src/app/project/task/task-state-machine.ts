@@ -15,11 +15,6 @@ const TRANSITIONS: readonly TransitionDefinition[] = [
   {
     from: 'IN-PROGRESS',
     action: 'SUBMIT',
-    to: 'SUBMITTED',
-  },
-  {
-    from: 'SUBMITTED',
-    action: 'BEGIN_REVIEW',
     to: 'REVIEWING',
   },
   {

@@ -1,7 +1,6 @@
 export type TaskStatus =
   | 'TODO'
   | 'IN-PROGRESS'
-  | 'SUBMITTED'
   | 'REVIEWING'
   | 'APPROVED'
   | 'REJECTED'
@@ -9,7 +8,6 @@ export type TaskStatus =
 export type TaskActionModel =
   | 'START'
   | 'SUBMIT'
-  | 'BEGIN_REVIEW'
   | 'APPROVE'
   | 'REJECT'
   | 'RESUME';
