@@ -1,6 +1,6 @@
 @let taskStatus = this.taskStatus();
 @let taskNextAction = this.taskNextAction();
-@let fileName = selectedFileName();
+@let urlLinkSubmitted = this.urlLinkSubmitted();
 
 <section class="flex flex-col gap-4">
   <div class="flex justify-between">
@@ -13,30 +13,60 @@
     <!-- Task State -->
     <div class="flex flex-col gap-2">
       @if (taskStatus && taskStatus === 'IN-PROGRESS') {
-        <form>
-          <input #fileInput type="file" hidden (change)="onFileSelected($event)" />
-        </form>
+        <div>
+          <p>Submit your progress</p>
+        </div>
 
-        <div class="flex flex-col gap-4">
-          <!-- File view -->
-          <div class="flex gap-8 items-center">
-            <div class="flex gap-4 items-center">
-              <mat-icon fontIcon="file_present"></mat-icon>
-              <p>{{ fileName ?? 'No file selected' }}</p>
-            </div>
+        @for (url of urlLinkSubmitted; track $index) {
+          <div class="flex flex-col gap-4">
+            <!-- Url view -->
+            <div class="flex gap-8 items-center">
+              <div class="flex gap-4 items-center">
+                <mat-icon fontIcon="add_link"></mat-icon>
+                <p>{{ url }}</p>
+              </div>
 
-            @if (fileName) {
               <!-- Clear file button -->
-              <button matIconButton class="mat-error-state" (click)="onRemoveFile()">
+              <button matIconButton class="mat-error-state" (click)="onRemoveUrl(url)">
                 <mat-icon fontIcon="clear"></mat-icon>
               </button>
-            }
+            </div>
           </div>
+        }
 
-          <button matButton="filled" (click)="fileInput.click()">
-            {{ taskNextAction | titlecase }} a file
-          </button>
-        </div>
+        <form [formGroup]="urlForm" (ngSubmit)="onSubmitUrl()" class="flex gap-2">
+          <mat-form-field class="w-full">
+            <mat-label>Attach URL</mat-label>
+            <input
+              matInput
+              placeholder="https://your@url.com"
+              formControlName="urlLink"
+              type="url"
+            />
+
+            @if (urlForm.controls.urlLink.hasError('required')) {
+              <mat-error>You must submit a valid url to progress</mat-error>
+            }
+
+            @if (urlForm.controls.urlLink.hasError('duplicate')) {
+              <mat-error>Cannot contain duplicates</mat-error>
+            }
+
+            @if (urlForm.controls.urlLink.hasError('pattern')) {
+              <mat-error>Must start with 'https://'</mat-error>
+            }
+          </mat-form-field>
+
+          <button matButton class="mt-2" type="submit">Add</button>
+        </form>
+
+        <button
+          matButton="filled"
+          (click)="onSubmitProgress()"
+          [disabled]="!urlLinkSubmitted || urlLinkSubmitted.length === 0"
+        >
+          {{ taskNextAction | titlecase }} progress
+        </button>
       }
 
       @if (taskNextAction && taskNextAction !== 'SUBMIT') {
