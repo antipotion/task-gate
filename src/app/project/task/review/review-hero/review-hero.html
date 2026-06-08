@@ -1,0 +1,44 @@
+<!-- INVARIANT: If 'closeStatus' is null then it is on review -->
+@let closeStatus = this.closeStatus();
+
+<div>
+  <h1 class="mat-font-title-lg">Review</h1>
+
+  <!-- Review status -->
+  <div
+    class="w-fit px-2 py-1 mat-corner-full"
+    [ngClass]="{
+      'bg-amber-200': !closeStatus,
+      'bg-emerald-200': closeStatus === 'APPROVED',
+      'bg-red-200': closeStatus === 'REJECTED',
+    }"
+  >
+    <p>
+      @if (!closeStatus) {
+        Reviewing
+      } @else {
+        {{ closeStatus | titlecase }}
+      }
+    </p>
+  </div>
+
+  <!-- Names -->
+  <div>
+    <!-- Submitted by -->
+    <p>
+      Submitted by:
+      <span>
+        {{ submittedBy() }}
+      </span>
+    </p>
+
+    
+    <!-- Reviewed by -->
+    <p>
+      Reviewer:
+      <span>
+        {{ reviewer() }}
+      </span>
+    </p>
+  </div>
+</div>

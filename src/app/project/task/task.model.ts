@@ -22,5 +22,4 @@ export interface Task {
   startDate: Date | null;
   deadline: Date | null;
   status: TaskStatus;
-  currentSubmissionVersion: number;
 }

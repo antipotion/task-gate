@@ -1,13 +1,13 @@
-import { Routes } from "@angular/router";
-import { ReviewDetail } from "./review-detail/review-detail";
+import { Routes } from '@angular/router';
 
 export const REVIEW_ROUTE_PARAMS = {
+  review: 'review',
   reviewId: 'reviewId',
-}
+};
 
 export const reviewRoutes: Routes = [
   {
     path: `:${REVIEW_ROUTE_PARAMS.reviewId}`,
-    component: ReviewDetail,
+    loadComponent: () => import('./review-detail/review-detail').then((m) => m.ReviewDetail),
   },
 ];

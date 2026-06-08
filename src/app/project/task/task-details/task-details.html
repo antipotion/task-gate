@@ -28,12 +28,15 @@
       [taskDescription]="activeTaskData?.description ?? null"
     />
     <app-task-action
+      [taskId]="activeTaskData?.id"
       [taskStatus]="activeTaskData?.status"
       [taskNextAction]="nextTaskAction()"
+      [reviews]="reviews()"
       (nextActionTriggered)="transitionTask($event)"
     />
     <app-task-dependency />
     <app-task-subtask />
+    <app-task-review-list [reviewList]="reviews()" />
     <app-task-time />
     <app-task-comment />
     <app-task-history />

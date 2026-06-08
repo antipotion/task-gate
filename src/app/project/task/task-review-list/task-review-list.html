@@ -1,0 +1,28 @@
+@let reviewList = this.reviewList();
+
+<section class="flex flex-col gap-4">
+  <div class="flex justify-between">
+    <h2 class="mat-font-title-md">Review list</h2>
+    <mat-icon fontIcon="expand_more"></mat-icon>
+  </div>
+
+  <!-- Contents -->
+  <div class="flex flex-col">
+    @if (!reviewList) {
+      <p>No reviews for this task yet.</p>
+    }
+
+    @for (review of reviewList; track $index) {
+      <mat-card>
+        <mat-card-content>
+          <p>{{ review.id }}</p>
+        </mat-card-content>
+        @if (!review.closedDate) {
+          <mat-card-actions>
+            <button matButton (click)="onViewReview(review.id)">View Review</button>
+          </mat-card-actions>
+        }
+      </mat-card>
+    }
+  </div>
+</section>

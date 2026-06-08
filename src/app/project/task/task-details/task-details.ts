@@ -14,6 +14,7 @@ import { TaskFacade } from '../task-facade';
 import { TaskHeader } from '../task-header/task-header';
 import { TaskHistory } from '../task-history/task-history';
 import { TaskOverview } from '../task-overview/task-overview';
+import { TaskReviewList } from '../task-review-list/task-review-list';
 import { TaskSubtask } from '../task-subtask/task-subtask';
 import { TaskTime } from '../task-time/task-time';
 import { TaskWarningDialog } from '../task-warning-dialog/task-warning-dialog';
@@ -34,6 +35,7 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
     MatIconModule,
     MatButtonModule,
     Loading,
+    TaskReviewList,
   ],
   templateUrl: './task-details.html',
   styleUrl: './task-details.scss',
@@ -50,6 +52,7 @@ export class TaskDetails implements OnInit {
   readonly activeTask = computed(() => this._taskFacade.activeTask());
   readonly nextTaskAction = signal<TaskActionModel | null>(null);
   readonly isLoading = signal<boolean>(false);
+  readonly reviews = this._taskFacade.reviewDataList();
 
   constructor() {
     effect(() => {
@@ -59,6 +62,8 @@ export class TaskDetails implements OnInit {
       const result = this._taskFacade.nextTaskState(activeTask);
       this.nextTaskAction.set(result ?? null);
     });
+
+    this._taskFacade.setTaskId(this.taskId);
   }
 
   ngOnInit(): void {

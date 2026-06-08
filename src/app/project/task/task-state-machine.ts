@@ -62,10 +62,6 @@ export function transitionTask(task: Task, action: TaskActionModel): Task {
     status: transition.to,
   };
 
-  if (action === 'SUBMIT') {
-    next.currentSubmissionVersion += 1;
-  }
-
   return next;
 }
 

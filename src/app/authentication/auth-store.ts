@@ -4,7 +4,7 @@ import { filter, switchMap } from 'rxjs';
 import { FirebaseAuth } from '../infrastructure/auth/firebase-auth';
 import { FirestoreProjectRepository } from '../infrastructure/firestore/firestore-project-repository';
 import { SignupSessionStorage } from '../infrastructure/signup-session-storage/signup-session-storage';
-import { RoleModel } from './auth.model';
+import { RoleModel, UserModel } from './auth.model';
 
 @Injectable({
   providedIn: 'root',
@@ -54,5 +54,9 @@ export class AuthStore {
 
   async logout(): Promise<void> {
     return this._firebaseAuth.logout();
+  }
+
+  async getUserById(userId: string): Promise<UserModel | null> {
+    return this._repo.getUserById(userId);
   }
 }

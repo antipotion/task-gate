@@ -1,1 +1,9 @@
-<p>review-detail works!</p>
+@let currentReviewData = this.currentReviewData();
+
+<section>
+  <app-review-hero
+    [closeStatus]="currentReviewData?.closeStatus ?? null"
+    [submittedBy]="submittedBy()"
+    [reviewer]="reviewer()"
+  />
+</section>
