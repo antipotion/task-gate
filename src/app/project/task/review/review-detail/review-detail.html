@@ -1,9 +1,11 @@
 @let currentReviewData = this.currentReviewData();
 
-<section>
+<section class="flex flex-col gap-8 p-4">
   <app-review-hero
     [closeStatus]="currentReviewData?.closeStatus ?? null"
     [submittedBy]="submittedBy()"
     [reviewer]="reviewer()"
+    (backEvent)="onBack()"
   />
+  <app-review-resource [proofUrls]="currentReviewData?.proofUrls" />
 </section>

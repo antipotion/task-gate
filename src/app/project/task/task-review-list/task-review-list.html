@@ -15,13 +15,19 @@
     @for (review of reviewList; track $index) {
       <mat-card>
         <mat-card-content>
-          <p>{{ review.id }}</p>
+          <div class="flex gap-4 items-center">
+            <p>
+              Review <span>{{ $index + 1 }}</span>
+            </p>
+
+            @if (!review.closedDate) {
+              <!-- Current tag -->
+              <div class="bg-amber-200 px-2 py-1 w-fit mat-corner-full">
+                <p class="mat-font-label-sm">Current</p>
+              </div>
+            }
+          </div>
         </mat-card-content>
-        @if (!review.closedDate) {
-          <mat-card-actions>
-            <button matButton (click)="onViewReview(review.id)">View Review</button>
-          </mat-card-actions>
-        }
       </mat-card>
     }
   </div>

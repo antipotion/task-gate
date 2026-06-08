@@ -1,6 +1,8 @@
 import { Component, effect, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../../../app.routes';
 import { UserModel } from '../../../../authentication/auth.model';
+import { ReviewResource } from '../../../review/review-resource/review-resource';
 import { TASK_ROUTE_PARAMS } from '../../task.routes';
 import { ReviewFacade } from '../review-facade/review-facade';
 import { ReviewHero } from '../review-hero/review-hero';
@@ -8,13 +10,14 @@ import { REVIEW_ROUTE_PARAMS } from '../review.routes';
 
 @Component({
   selector: 'app-review-detail',
-  imports: [ReviewHero],
+  imports: [ReviewHero, ReviewResource],
   templateUrl: './review-detail.html',
   styleUrl: './review-detail.scss',
 })
 export class ReviewDetail {
   private readonly _reviewFacade = inject(ReviewFacade);
   private readonly _route = inject(ActivatedRoute);
+  private readonly _router = inject(Router);
 
   private readonly _taskId = this._route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.taskId);
   private readonly _reviewId = this._route.snapshot.paramMap.get(REVIEW_ROUTE_PARAMS.reviewId);
@@ -57,5 +60,12 @@ export class ReviewDetail {
     if (!userId) return Promise.resolve(null);
 
     return this._reviewFacade.getUserById(userId);
+  }
+
+  onBack(): void {
+    const taskid = this.currentReviewData()?.taskId;
+    if (!taskid) return;
+
+    this._router.navigate([ROUTES_PARAMS.task, taskid]);
   }
 }

@@ -69,10 +69,19 @@
         </button>
       }
 
-      @if (taskNextAction && taskNextAction !== 'SUBMIT') {
+      @if (
+        taskNextAction &&
+        taskNextAction !== 'SUBMIT' &&
+        taskNextAction !== 'APPROVE' &&
+        taskNextAction !== 'REJECT'
+      ) {
         <button matButton="filled" (click)="onNextActionTrigger()">
           {{ taskNextAction | titlecase }}
         </button>
+      }
+
+      @if (taskNextAction && taskNextAction === 'APPROVE') {
+        <button matButton="filled" (click)="onViewCurrentReview()">View Review</button>
       }
     </div>
   </div>

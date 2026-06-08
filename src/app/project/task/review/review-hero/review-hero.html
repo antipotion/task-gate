@@ -1,8 +1,13 @@
 <!-- INVARIANT: If 'closeStatus' is null then it is on review -->
 @let closeStatus = this.closeStatus();
 
-<div>
-  <h1 class="mat-font-title-lg">Review</h1>
+<div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-4">
+    <button matIconButton (click)="onBack()">
+      <mat-icon fontIcon="arrow_back"></mat-icon>
+    </button>
+    <h1 class="mat-font-title-lg">Review</h1>
+  </div>
 
   <!-- Review status -->
   <div

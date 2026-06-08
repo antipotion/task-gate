@@ -1,5 +1,5 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
@@ -38,6 +38,7 @@ export class TaskAction {
   readonly taskNextAction = input.required<TaskActionModel | null>();
   readonly reviews = input.required<ReviewModel[] | null>();
   readonly nextActionTriggered = output<TaskActionModel>();
+  readonly currentReview = computed(() => this.reviews()?.find((review) => !review.closedDate));
 
   readonly urlLinkSubmitted = signal<string[]>([]);
 
@@ -89,5 +90,16 @@ export class TaskAction {
     this.onNextActionTrigger();
 
     this._router.navigate([REVIEW_ROUTE_PARAMS.review, reviewId], { relativeTo: this._route });
+  }
+
+  onViewCurrentReview(): void {
+    const currentReview = this.currentReview();
+    if (!currentReview) return;
+
+    const currentReviewId: string = currentReview.id;
+
+    this._router.navigate([REVIEW_ROUTE_PARAMS.review, currentReviewId], {
+      relativeTo: this._route,
+    });
   }
 }
