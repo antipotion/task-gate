@@ -8,7 +8,7 @@
 
   <!-- Contents -->
   <div class="flex flex-col">
-    @if (!reviewList) {
+    @if (!reviewList || reviewList.length === 0) {
       <p>No reviews for this task yet.</p>
     }
 
@@ -28,6 +28,9 @@
             }
           </div>
         </mat-card-content>
+        <mat-card-actions align="end">
+          <button matButton (click)="onViewReview(review.id)">View Review</button>
+        </mat-card-actions>
       </mat-card>
     }
   </div>
