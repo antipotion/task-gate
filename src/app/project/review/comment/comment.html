@@ -1,0 +1,42 @@
+<section class="flex flex-col gap-4">
+  <div class="flex justify-between">
+    <h2 class="mat-font-title-md">Comments</h2>
+    <mat-icon fontIcon="expand_more"></mat-icon>
+  </div>
+
+  <!-- Contents -->
+  <div class="flex flex-col gap-8">
+    <div class="flex flex-col gap-4">
+      @for (comment of comments(); track comment.id) {
+        <mat-card [id]="comment.id">
+          <mat-card-content>
+            <div class="flex flex-col gap-4">
+              @let commentAuthor = this.commentAuthors().get(comment.authorId);
+              @if (commentAuthor) {
+                <div class="flex gap-2 items-center">
+                  <mat-icon fontIcon="account_circle"></mat-icon>
+                  <p class="mat-font-label-md">{{ commentAuthor }}</p>
+                </div>
+              }
+              <p>{{ comment.content }}</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+
+    @if (!closedDate()) {
+      <form [formGroup]="commentForm" (ngSubmit)="addComment()">
+        <mat-form-field>
+          <textarea matInput formControlName="commentContent"></textarea>
+  
+          @if (commentControl.hasError('required')) {
+            <mat-error>Leave a comment to send</mat-error>
+          }
+        </mat-form-field>
+  
+        <button matButton type="submit" [disabled]="commentControl.invalid">Send</button>
+      </form>
+    }
+  </div>
+</section>

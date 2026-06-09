@@ -3,7 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { StoreService } from '../../../../application/store/store-service';
 import { AuthStore } from '../../../../authentication/auth-store';
 import { FirestoreProjectRepository } from '../../../../infrastructure/firestore/firestore-project-repository';
-import { Task } from '../../task.model';
+import { Task, TaskActionModel, TaskStatus } from '../../task.model';
 import { ReviewModel } from '../review.model';
 
 @Injectable({
@@ -33,5 +33,32 @@ export class ReviewUsecase {
     };
 
     return this._repo.addReview(completeData);
+  }
+
+  async closeReview(
+    reviewId: string,
+    action: Extract<TaskActionModel, 'APPROVE' | 'REJECT'>,
+  ): Promise<void> {
+    let status: Extract<TaskStatus, 'APPROVED' | 'REJECTED'> | null = null;
+    
+    switch (action) {
+      case 'APPROVE':
+        status = 'APPROVED';
+        break;
+      case 'REJECT':
+        status = 'REJECTED';
+        break;
+      default:
+        const _exhaustiveCheck: never = action;
+        return _exhaustiveCheck;
+    }
+
+    if (!status) {
+      throw new Error('Status is missing cannot close review');
+    }
+
+    const data: Pick<ReviewModel, 'closeStatus'> = { closeStatus: status };
+
+    return this._repo.closeReview(reviewId, data);
   }
 }

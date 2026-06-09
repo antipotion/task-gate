@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { HistoryService } from '../../application/history/history-service';

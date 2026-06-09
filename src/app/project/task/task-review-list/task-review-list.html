@@ -7,23 +7,38 @@
   </div>
 
   <!-- Contents -->
-  <div class="flex flex-col">
+  <div class="flex flex-col gap-4">
     @if (!reviewList || reviewList.length === 0) {
       <p>No reviews for this task yet.</p>
     }
 
-    @for (review of reviewList; track $index) {
+    @for (review of reviewList; track review.id) {
       <mat-card>
         <mat-card-content>
           <div class="flex gap-4 items-center">
             <p>
-              Review <span>{{ $index + 1 }}</span>
+              {{ review.id }}
             </p>
 
             @if (!review.closedDate) {
               <!-- Current tag -->
               <div class="bg-amber-200 px-2 py-1 w-fit mat-corner-full">
                 <p class="mat-font-label-sm">Current</p>
+              </div>
+            }
+
+            @if (review.closeStatus) {
+              <!-- Review closed status tag -->
+              <div
+                class="px-2 py-1 w-fit mat-corner-full"
+                [ngClass]="{
+                  'bg-emerald-200': review.closeStatus === 'APPROVED',
+                  'bg-red-200': review.closeStatus === 'REJECTED',
+                }"
+              >
+                <p class="mat-font-label-sm">
+                  {{ review.closeStatus | titlecase }}
+                </p>
               </div>
             }
           </div>

@@ -8,4 +8,12 @@
     (backEvent)="onBack()"
   />
   <app-review-resource [proofUrls]="currentReviewData?.proofUrls" />
+  <app-comment [closedDate]="currentReviewData?.closedDate ?? null" />
+
+  @if (!currentReviewData?.closedDate) {
+    <div class="flex gap-2">
+      <button matButton="filled" (click)="onJudgement('APPROVE')">Approve</button>
+      <button matButton class="mat-error-state" (click)="onJudgement('REJECT')">Reject</button>
+    </div>
+  }
 </section>

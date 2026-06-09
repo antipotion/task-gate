@@ -1,3 +1,4 @@
+import { NgClass, TitleCasePipe } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,7 +9,7 @@ import { REVIEW_ROUTE_PARAMS } from '../review/review.routes';
 
 @Component({
   selector: 'app-task-review-list',
-  imports: [MatIconModule, MatCardModule, MatButtonModule],
+  imports: [MatIconModule, MatCardModule, MatButtonModule, NgClass, TitleCasePipe],
   templateUrl: './task-review-list.html',
   styleUrl: './task-review-list.scss',
 })

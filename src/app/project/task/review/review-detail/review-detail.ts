@@ -1,8 +1,11 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../../../app.routes';
 import { UserModel } from '../../../../authentication/auth.model';
+import { Comment } from '../../../review/comment/comment';
 import { ReviewResource } from '../../../review/review-resource/review-resource';
+import { TaskActionModel } from '../../task.model';
 import { TASK_ROUTE_PARAMS } from '../../task.routes';
 import { ReviewFacade } from '../review-facade/review-facade';
 import { ReviewHero } from '../review-hero/review-hero';
@@ -10,11 +13,11 @@ import { REVIEW_ROUTE_PARAMS } from '../review.routes';
 
 @Component({
   selector: 'app-review-detail',
-  imports: [ReviewHero, ReviewResource],
+  imports: [ReviewHero, ReviewResource, Comment, MatButtonModule],
   templateUrl: './review-detail.html',
   styleUrl: './review-detail.scss',
 })
-export class ReviewDetail {
+export class ReviewDetail implements OnInit {
   private readonly _reviewFacade = inject(ReviewFacade);
   private readonly _route = inject(ActivatedRoute);
   private readonly _router = inject(Router);
@@ -56,6 +59,13 @@ export class ReviewDetail {
     });
   }
 
+  ngOnInit(): void {
+    const taskId = this._taskId;
+    if (!taskId) return;
+
+    this._reviewFacade.selectTaskId(taskId);
+  }
+
   getUserById(userId: string | undefined): Promise<UserModel | null> {
     if (!userId) return Promise.resolve(null);
 
@@ -67,5 +77,18 @@ export class ReviewDetail {
     if (!taskid) return;
 
     this._router.navigate([ROUTES_PARAMS.task, taskid]);
+  }
+
+  async onJudgement(action: Extract<TaskActionModel, 'APPROVE' | 'REJECT'>): Promise<void> {
+    const taskId = this._taskId;
+    const reviewId = this._reviewId;
+    if (!taskId || !reviewId) {
+      throw new Error('taskId or reviewId is missing cannot process review judgement');
+    }
+
+    await this._reviewFacade.closeReview(reviewId, action);
+
+    this._reviewFacade.advanceTaskState(action);
+    this._router.navigate([ROUTES_PARAMS.task, taskId]);
   }
 }
