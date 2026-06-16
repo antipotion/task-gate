@@ -4,9 +4,16 @@
   </div>
 
   <!-- Tasks Board Content -->
-  <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+  <ul
+    cdkListbox
+    cdkListboxMultiple
+    cdkListboxUseActiveDescendant
+    class="grid grid-cols-2 gap-x-4 gap-y-2"
+  >
     @for (category of taskCategories; track $index) {
-      <app-project-task-board-card [taskStatus]="category" />
+      <li [cdkOption]="category" class="w-full h-full focus:outline-2 hover:cursor-pointer">
+        <app-project-task-board-card [taskStatus]="category" />
+      </li>
     }
-  </div>
+  </ul>
 </section>
