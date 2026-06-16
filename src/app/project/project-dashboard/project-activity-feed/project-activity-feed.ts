@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-project-activity-feed',
-  imports: [MatIconModule],
+  imports: [],
   templateUrl: './project-activity-feed.html',
   styleUrl: './project-activity-feed.scss',
 })
