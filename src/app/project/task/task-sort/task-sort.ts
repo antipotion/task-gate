@@ -3,7 +3,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../../app.routes';
-import { TaskFacade, TaskState } from '../task-facade';
+import { TaskFacade } from '../task-facade';
 import type { Task, TaskStatus } from '../task.model';
 
 @Component({
@@ -19,12 +19,12 @@ export class TaskSort {
   readonly projectId = input.required<string>();
   readonly projectStatus = input.required<TaskStatus>();
 
-  readonly taskState = computed<TaskState>(() => this._taskFacade.taskState());
+  readonly taskState = computed<Task[] | null>(() => this._taskFacade.taskState());
   readonly todoTask = computed<Task[] | null>(() => {
-    const state = this.taskState();
-    if (state.status !== 'success') return null;
+    const tasks = this.taskState();
+    if (!tasks) return null;
 
-    return state.data.filter(
+    return tasks.filter(
       (task) => task.projectId === this.projectId() && task.status === this.projectStatus(),
     );
   });

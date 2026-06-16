@@ -52,10 +52,10 @@ export class ProjectFacade {
 
   getProjectStatus(projectId: string): Signal<ProjectStatusModel | null> {
     return computed(() => {
-      const state = this._taskFacade.taskState();
-      if (state.status !== 'success') return null;
+      const tasks = this._taskFacade.taskState();
+      if (!tasks) return null;
 
-      const projectTasks = state.data.filter((task) => task.projectId === projectId);
+      const projectTasks = tasks.filter((task) => task.projectId === projectId);
 
       // Vacuous truth: returns true if the array is empty
       if (projectTasks.every((task) => task.status === 'TODO')) {

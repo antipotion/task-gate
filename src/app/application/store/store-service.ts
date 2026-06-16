@@ -1,5 +1,5 @@
-import { inject, Injectable } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, shareReplay, switchMap, type Observable } from 'rxjs';
 import { AuthStore } from '../../authentication/auth-store';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
@@ -14,9 +14,14 @@ export class StoreService {
   private readonly _repo = inject(FirestoreProjectRepository);
   private readonly _authStore = inject(AuthStore);
 
-  readonly tasks$: Observable<Task[]> = this._repo
-    .listenToTasks$()
-    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  private readonly projectId = signal<string | null>(null);
+  readonly tasks = toSignal(
+    toObservable(this.projectId).pipe(
+      filter((projectId): projectId is string => !!projectId),
+      switchMap((projectId) => this._repo.listenToTasks$(projectId)),
+    ),
+    { initialValue: null },
+  );
 
   readonly teams$ = toObservable(this._authStore.userId).pipe(
     filter((userId): userId is string => !!userId),
@@ -37,8 +42,17 @@ export class StoreService {
     );
   }
 
-  getTaskById$(taskId: string): Observable<Task | undefined> {
-    return this.tasks$.pipe(map((tasks) => tasks.find((task) => task.id === taskId)));
+  getTaskById(taskId: string): Signal<Task | undefined> {
+    return computed(() => {
+      const tasks = this.tasks();
+      if (!tasks) return;
+
+      return tasks.find((task) => task.id === taskId);
+    });
+  }
+
+  setProjectId(projectId: string): void {
+    this.projectId.set(projectId);
   }
 
   getTeamById(teamId: string): Promise<TeamModel | null> {

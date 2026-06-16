@@ -1,6 +1,4 @@
-import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of, startWith } from 'rxjs';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
 import { StoreService } from '../../application/store/store-service';
 import { ReviewStore } from './review/review-store/review-store';
@@ -23,29 +21,15 @@ export class TaskFacade {
   private readonly _reviewUseCase = inject(ReviewUsecase);
   private readonly _reviewStore = inject(ReviewStore);
 
-  readonly taskState = toSignal(
-    this._storeService.tasks$.pipe(
-      map(
-        (tasks): TaskState => ({
-          status: 'success',
-          data: tasks,
-        }),
-      ),
-      startWith({ status: 'loading' } as TaskState),
-      catchError((error) => of({ status: 'error', error: String(error) } as TaskState)),
-    ),
-    { initialValue: { status: 'loading' } },
-  );
+  readonly taskState = computed<Task[] | null>(() => this._storeService.tasks());
 
   private readonly selectedTaskId = signal<string | null>(null);
 
-  readonly activeTask = computed<Task | null>(() => {
-    const state = this.taskState();
-    const id = this.selectedTaskId();
+  readonly activeTask = computed<Task | undefined>(() => {
+    const taskId = this.selectedTaskId();
+    if (!taskId) return;
 
-    if (state.status !== 'success' || !id) return null;
-
-    return state.data.find((p) => p.id === id) ?? null;
+    return this._storeService.getTaskById(taskId)();
   });
 
   selectTaskId(taskId: string): void {

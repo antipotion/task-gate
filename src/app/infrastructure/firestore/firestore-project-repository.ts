@@ -66,10 +66,12 @@ export class FirestoreProjectRepository {
     });
   }
 
-  listenToTasks$(): Observable<Task[]> {
+  listenToTasks$(projectId: string): Observable<Task[]> {
+    const taskQuery = query(this._tasksCollection, where('projectId', '==', projectId));
+
     return new Observable<Task[]>((subscriber) => {
       const unsubscribe = onSnapshot(
-        this._tasksCollection,
+        taskQuery,
         (snapshot) => {
           const tasks = snapshot.docs.map((doc) => this._mapToTask(doc));
 

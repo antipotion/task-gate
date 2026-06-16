@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
 import { StoreService } from '../../../../application/store/store-service';
 import { AuthStore } from '../../../../authentication/auth-store';
 import { FirestoreProjectRepository } from '../../../../infrastructure/firestore/firestore-project-repository';
@@ -18,9 +17,7 @@ export class ReviewUsecase {
     const userId = this._authStore.userId();
     if (!userId) throw new Error('UserId does not exists');
 
-    const activeTask: Task | undefined = await firstValueFrom(
-      this._store.getTaskById$(data.taskId),
-    );
+    const activeTask: Task | undefined = this._store.getTaskById(data.taskId)();
     if (!activeTask) throw new Error('Task does not exists');
 
     const completeData: Omit<ReviewModel, 'id' | 'submittedAt'> = {
@@ -32,7 +29,7 @@ export class ReviewUsecase {
       closeStatus: null,
     };
 
-    return this._repo.addReview(completeData);
+    return await this._repo.addReview(completeData);
   }
 
   async closeReview(
@@ -40,7 +37,7 @@ export class ReviewUsecase {
     action: Extract<TaskActionModel, 'APPROVE' | 'REJECT'>,
   ): Promise<void> {
     let status: Extract<TaskStatus, 'APPROVED' | 'REJECTED'> | null = null;
-    
+
     switch (action) {
       case 'APPROVE':
         status = 'APPROVED';
