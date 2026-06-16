@@ -1,87 +1,12 @@
 <section class="flex flex-col gap-4">
   <div class="flex justify-between">
     <h2 class="mat-font-title-md">Tasks Board</h2>
-    <mat-icon fontIcon="expand_more"></mat-icon>
   </div>
 
   <!-- Tasks Board Content -->
-  <div class="flex flex-col gap-2">
-    <!-- To-do -->
-    <div class="flex flex-col gap-1">
-      <div class="flex justify-between">
-        <h3 class="mat-font-title-sm">Todo</h3>
-        <mat-icon fontIcon="expand_more"></mat-icon>
-      </div>
-
-      <!-- To-do contents -->
-      <div>
-        <app-task-sort [projectId]="projectId" projectStatus="TODO" />
-      </div>
-    </div>
-
-    <!-- In Progress -->
-    <div class="flex flex-col gap-1">
-      <div class="flex justify-between">
-        <h3 class="mat-font-title-sm">In Progress</h3>
-        <mat-icon fontIcon="expand_more"></mat-icon>
-      </div>
-
-      <!-- In Progress contents -->
-      <div>
-        <app-task-sort [projectId]="projectId" projectStatus="IN-PROGRESS" />
-      </div>
-    </div>
-
-    <!-- Blocked -->
-    <div class="flex flex-col gap-1">
-      <div class="flex justify-between">
-        <h3 class="mat-font-title-sm">Blocked</h3>
-        <mat-icon fontIcon="expand_more"></mat-icon>
-      </div>
-
-      <!-- Blocked contents -->
-      <div>
-        <p>Task name</p>
-      </div>
-    </div>
-
-    <!-- Reviewing -->
-    <div class="flex flex-col gap-1">
-      <div class="flex justify-between">
-        <h3 class="mat-font-title-sm">Reviewing</h3>
-        <mat-icon fontIcon="expand_more"></mat-icon>
-      </div>
-
-      <!-- Reviewing contents -->
-      <div>
-        <app-task-sort [projectId]="projectId" projectStatus="REVIEWING" />
-      </div>
-    </div>
-
-    <!-- Rejected -->
-    <div class="flex flex-col gap-1">
-      <div class="flex justify-between">
-        <h3 class="mat-font-title-sm">Rejected</h3>
-        <mat-icon fontIcon="expand_more"></mat-icon>
-      </div>
-
-      <!-- Rejected contents -->
-      <div>
-        <app-task-sort [projectId]="projectId" projectStatus="REJECTED" />
-      </div>
-    </div>
-
-    <!-- Done -->
-    <div class="flex flex-col gap-1">
-      <div class="flex justify-between">
-        <h3 class="mat-font-title-sm">Done</h3>
-        <mat-icon fontIcon="expand_more"></mat-icon>
-      </div>
-
-      <!-- Done contents -->
-      <div>
-        <app-task-sort [projectId]="projectId" projectStatus="APPROVED" />
-      </div>
-    </div>
+  <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+    @for (category of taskCategories; track $index) {
+      <app-project-task-board-card [taskStatus]="category" />
+    }
   </div>
 </section>

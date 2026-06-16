@@ -44,6 +44,12 @@ p {
 
 // Typrography
 
+// Display
+.mat-font-display-lg {
+  font: var(--mat-sys-display-large);
+  letter-spacing: var(--mat-sys-display-large-tracking);
+}
+
 // Title
 .mat-font-title-lg {
   font: var(--mat-sys-title-large);

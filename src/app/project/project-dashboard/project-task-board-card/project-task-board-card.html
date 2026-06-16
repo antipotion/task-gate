@@ -1,0 +1,10 @@
+@let tasks = this.tasks();
+
+<div class="flex flex-col gap-1 items-center w-fit">
+  <div
+    class="flex items-center justify-center w-36 h-36 mat-bg-surface-container-low mat-corner-sm"
+  >
+    <p class="mat-font-display-lg">{{ tasks?.length }}</p>
+  </div>
+  <p class="mat-font-title-sm">{{ taskStatus() | titlecase }}</p>
+</div>
