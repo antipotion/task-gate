@@ -13,5 +13,4 @@ export class ProjectHeader {
   readonly projectName = input.required<string | undefined>();
   readonly projectStatus = input.required<ProjectStatusModel | null>();
   readonly projectDeadlinePressure = input.required<DeadlinePressureModel | null>();
-  readonly userFullName = input.required<string | null>();
 }

@@ -78,7 +78,9 @@ p {
 }
 
 // Shape
-
+.mat-corner-sm {
+  border-radius: var(--mat-sys-corner-small);
+}
 .mat-corner-full {
   border-radius: var(--mat-sys-corner-full);
 }
@@ -98,6 +100,9 @@ p {
 }
 .mat-text-inverse-on-surface {
   color: var(--mat-sys-inverse-on-surface);
+}
+.mat-bg-surface-container-low {
+  background-color: var(--mat-sys-surface-container-low);
 }
 
 .mat-error-state {

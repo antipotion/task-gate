@@ -29,7 +29,6 @@
 
     <!-- Contents -->
     <app-project-header
-      [userFullName]="userFullName()"
       [projectName]="projectData?.name"
       [projectStatus]="projectStatus()"
       [projectDeadlinePressure]="projectDeadlinePressure()"
@@ -38,8 +37,8 @@
       [startDate]="projectData?.startDate ?? null"
       [deadline]="projectData?.deadline ?? null"
       [description]="projectData?.description ?? null"
+      [projectOwnerFullName]="userFullName()"
     />
-    <app-project-metrics />
     <app-project-tasks-board />
     <app-project-activity-feed />
   </div>

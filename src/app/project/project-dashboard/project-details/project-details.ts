@@ -14,7 +14,6 @@ import { CreateTask } from '../../task/create-task/create-task';
 import { TaskFacade } from '../../task/task-facade';
 import { ProjectActivityFeed } from '../project-activity-feed/project-activity-feed';
 import { ProjectHeader } from '../project-header/project-header';
-import { ProjectMetrics } from '../project-metrics/project-metrics';
 import { ProjectOverview } from '../project-overview/project-overview';
 import { ProjectTasksBoard } from '../project-tasks-board/project-tasks-board';
 import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
@@ -24,7 +23,6 @@ import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
   imports: [
     ProjectHeader,
     ProjectOverview,
-    ProjectMetrics,
     ProjectTasksBoard,
     ProjectActivityFeed,
     MatButtonModule,
