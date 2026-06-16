@@ -4,6 +4,7 @@ import { catchError, map, of, startWith } from 'rxjs';
 import { HistoryService } from '../application/history/history-service';
 import { StoreService } from '../application/store/store-service';
 import { AuthStore } from '../authentication/auth-store';
+import { TeamModel } from '../team/team.model';
 import { ProjectUseCase } from './project-use-case';
 import type { DeadlinePressureModel, Project, ProjectStatusModel } from './project.model';
 import { TaskFacade } from './task/task-facade';
@@ -115,5 +116,12 @@ export class ProjectFacade {
 
   historyPop(): void {
     this._historyService.historyStackPop();
+  }
+
+  async getTeamById(teamId: string): Promise<TeamModel | null> {
+    const team = await this._storeService.getTeamById(teamId);
+    if (!team) return null;
+
+    return team;
   }
 }

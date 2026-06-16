@@ -41,7 +41,7 @@ export class StoreService {
     return this.tasks$.pipe(map((tasks) => tasks.find((task) => task.id === taskId)));
   }
 
-  getTeamById(teamId: string): Observable<TeamModel | undefined> {
-    return this.teams$.pipe(map((teams) => teams.find((team) => team.id === teamId)));
+  getTeamById(teamId: string): Promise<TeamModel | null> {
+    return this._repo.getTeamById(teamId);
   }
 }

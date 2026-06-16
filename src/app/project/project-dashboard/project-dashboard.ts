@@ -1,5 +1,5 @@
-import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { DatePipe, NgClass, TitleCasePipe, UpperCasePipe } from '@angular/common';
+import { Component, computed, effect, inject, Signal, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,11 +9,22 @@ import { ROUTES_PARAMS } from '../../app.routes';
 import { Loading } from '../../loading/loading';
 import { TEAM_ROUTE_PARAMS } from '../../team/team.routes';
 import { ProjectFacade } from '../project-facade';
+import { Project, ProjectStatusModel } from '../project.model';
 import { PROJECT_ROUTE_PARAMS } from '../project.routes';
 
 @Component({
   selector: 'app-project-dashboard',
-  imports: [MatProgressSpinner, MatCardModule, DatePipe, MatButtonModule, MatIconModule, Loading],
+  imports: [
+    MatProgressSpinner,
+    MatCardModule,
+    DatePipe,
+    MatButtonModule,
+    MatIconModule,
+    Loading,
+    NgClass,
+    TitleCasePipe,
+    UpperCasePipe,
+  ],
   templateUrl: './project-dashboard.html',
   styleUrl: './project-dashboard.scss',
 })
@@ -25,6 +36,42 @@ export class ProjectDashboard {
   readonly projectsState = computed(() => this._projectFacade.projectState());
   readonly logoutLoading = signal<boolean>(false);
   readonly isLoading = signal<boolean>(false);
+  readonly teamId = signal<string | null>(null);
+  readonly currentTeam = computed(() => {
+    const teamId = this.teamId();
+    if (!teamId) return;
+
+    return this._projectFacade.getTeamById(teamId);
+  });
+  readonly teamsMapCollection = signal<Map<string, string>>(new Map());
+
+  constructor() {
+    effect(async () => {
+      const projectStatus = this.projectsState();
+      if (projectStatus.status !== 'success') return;
+
+      const projects: Project[] = projectStatus.data;
+      for (const project of projects) {
+        const teamId = project.teamId;
+
+        // Check if the teamId is already recorded
+        if (this.teamsMapCollection().has(teamId)) {
+          continue;
+        }
+
+        const team = await this._projectFacade.getTeamById(teamId);
+        if (!team) continue;
+
+        const teamName = team.name;
+        this.teamsMapCollection.update((teams) => {
+          const newTeams = new Map(teams);
+          newTeams.set(teamId, teamName);
+
+          return newTeams;
+        });
+      }
+    });
+  }
 
   onClickProject(projectId: string): void {
     this.isLoading.set(true);
@@ -52,5 +99,13 @@ export class ProjectDashboard {
     this.isLoading.set(true);
     this._router.navigate([ROUTES_PARAMS.teams, TEAM_ROUTE_PARAMS.teamDashboard]);
     this.isLoading.set(false);
+  }
+
+  getProjectStatus(projectId: string): Signal<ProjectStatusModel | null> {
+    return this._projectFacade.getProjectStatus(projectId);
+  }
+
+  getProjectDeadlinePressure(projectStartDate: Date | null, projectDeadline: Date | null) {
+    return this._projectFacade.getProjectDeadlinePressure(projectStartDate, projectDeadline);
   }
 }

@@ -223,6 +223,21 @@ export class FirestoreProjectRepository {
     return updateDoc(teamRef, { memberIds: arrayRemove(userId) });
   }
 
+  async getTeamById(teamId: string): Promise<TeamModel | null> {
+    const docRef = doc(this._teamsCollection, teamId);
+    const snapshot = await getDoc(docRef);
+    if (!snapshot.exists()) return null;
+
+    const data = snapshot.data();
+
+    return {
+      id: snapshot.id,
+      name: data['name'],
+      creatorId: data['creatorId'],
+      memberIds: data['memberIds'],
+    };
+  }
+
   async deleteTeam(teamId: string): Promise<void> {
     const ref = doc(this._teamsCollection, teamId);
 
