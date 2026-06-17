@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { Loading } from '../../../loading/loading';
+import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 import { TaskAction } from '../task-action/task-action';
 import { TaskComment } from '../task-comment/task-comment';
 import { TaskDependency } from '../task-dependency/task-dependency';
@@ -48,6 +49,7 @@ export class TaskDetails implements OnInit {
   private readonly _snackBar = inject(MatSnackBar);
 
   readonly taskId = this._route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.taskId) || '';
+  readonly projectId = this._route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.projectId || '');
 
   readonly activeTask = computed(() => this._taskFacade.activeTask());
   readonly nextTaskAction = signal<TaskActionModel | null>(null);
@@ -62,7 +64,10 @@ export class TaskDetails implements OnInit {
       const result = this._taskFacade.nextTaskState(activeTask);
       this.nextTaskAction.set(result ?? null);
     });
+    const projectId = this.projectId;
+    if (!projectId) return;
 
+    this._taskFacade.setProjectId(projectId);
     this._taskFacade.setTaskId(this.taskId);
   }
 

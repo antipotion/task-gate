@@ -8,6 +8,7 @@ import { TeamModel } from '../team/team.model';
 import { ProjectUseCase } from './project-use-case';
 import type { DeadlinePressureModel, Project, ProjectStatusModel } from './project.model';
 import { TaskFacade } from './task/task-facade';
+import { Task } from './task/task.model';
 import { getDeadlinePressure } from './utility/deadlinePressureCalculator';
 
 export type ProjectState =
@@ -24,6 +25,12 @@ export class ProjectFacade {
   private readonly _historyService = inject(HistoryService);
 
   readonly userFullName = computed<string | null>(() => this._authStore.userFullName());
+  readonly tasksOverdueCount = computed<number | null>(() => {
+    const overdueTasks: Task[] | null = this.getOverdueTasks()();
+    if (!overdueTasks) return null;
+
+    return overdueTasks.length;
+  });
 
   readonly projectState = toSignal(
     this._storeService.projects$.pipe(
@@ -52,7 +59,7 @@ export class ProjectFacade {
 
   getProjectStatus(projectId: string): Signal<ProjectStatusModel | null> {
     return computed(() => {
-      const tasks = this._taskFacade.taskState();
+      const tasks = this._taskFacade.tasks();
       if (!tasks) return null;
 
       const projectTasks = tasks.filter((task) => task.projectId === projectId);
@@ -123,5 +130,28 @@ export class ProjectFacade {
     if (!team) return null;
 
     return team;
+  }
+
+  getProjectProgress(): number | null {
+    const projectTasks: Task[] | null = this._taskFacade.tasks();
+    if (!projectTasks) return null;
+
+    const taskTotal = projectTasks.length;
+    const taskDone = projectTasks.filter((tasks) => tasks.status === 'APPROVED');
+    const currentProgress = (taskDone.length / taskTotal) * 100;
+
+    return currentProgress;
+  }
+
+  getOverdueTasks(): Signal<Task[] | null> {
+    const currentDate = new Date();
+
+    const tasks = this._taskFacade.tasks();
+    if (!tasks) return computed(() => null);
+
+    const result = tasks.filter(
+      (tasks) => tasks.deadline && tasks.deadline < currentDate && tasks.status !== 'APPROVED',
+    );
+    return computed(() => result);
   }
 }

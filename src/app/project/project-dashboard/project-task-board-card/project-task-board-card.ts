@@ -12,7 +12,7 @@ import { Task, TaskStatus } from '../../task/task.model';
 export class ProjectTaskBoardCard {
   private readonly _taskFacade = inject(TaskFacade);
 
-  private readonly _tasks = computed<Task[] | null>(() => this._taskFacade.taskState());
+  private readonly _tasks = computed<Task[] | null>(() => this._taskFacade.tasks());
 
   readonly taskStatus = input.required<TaskStatus>();
 

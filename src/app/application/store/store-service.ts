@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, shareReplay, switchMap, type Observable } from 'rxjs';
 import { AuthStore } from '../../authentication/auth-store';

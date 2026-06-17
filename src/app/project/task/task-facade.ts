@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
 import { StoreService } from '../../application/store/store-service';
 import { ReviewStore } from './review/review-store/review-store';
@@ -21,7 +21,7 @@ export class TaskFacade {
   private readonly _reviewUseCase = inject(ReviewUsecase);
   private readonly _reviewStore = inject(ReviewStore);
 
-  readonly taskState = computed<Task[] | null>(() => this._storeService.tasks());
+  readonly tasks = computed<Task[] | null>(() => this._storeService.tasks());
 
   private readonly selectedTaskId = signal<string | null>(null);
 
@@ -77,5 +77,9 @@ export class TaskFacade {
 
   setTaskId(taskId: string): void {
     this._reviewStore.setTaskId(taskId);
+  }
+
+  setProjectId(projectId: string): void {
+    this._storeService.setProjectId(projectId);
   }
 }

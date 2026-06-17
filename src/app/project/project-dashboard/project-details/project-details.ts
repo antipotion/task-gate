@@ -1,9 +1,12 @@
-import { Component, computed, inject, signal, Signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { Loading } from '../../../loading/loading';
 import { ProjectFacade } from '../../project-facade';
@@ -12,7 +15,6 @@ import { ProjectStatusModel, type Project } from '../../project.model';
 import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 import { CreateTask } from '../../task/create-task/create-task';
 import { TaskFacade } from '../../task/task-facade';
-import { ProjectActivityFeed } from '../project-activity-feed/project-activity-feed';
 import { ProjectHeader } from '../project-header/project-header';
 import { ProjectOverview } from '../project-overview/project-overview';
 import { ProjectTasksBoard } from '../project-tasks-board/project-tasks-board';
@@ -24,11 +26,11 @@ import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
     ProjectHeader,
     ProjectOverview,
     ProjectTasksBoard,
-    ProjectActivityFeed,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
     Loading,
+    MatMenuModule,
   ],
   templateUrl: './project-details.html',
   styleUrl: './project-details.scss',
@@ -40,14 +42,14 @@ export class ProjectDetails {
   private readonly _route = inject(ActivatedRoute);
   private readonly _dialog = inject(MatDialog);
 
-  private readonly _projectId =
-    this._route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.projectId) || '';
+  private readonly _projectId = toSignal(
+    this._route.paramMap.pipe(map((params) => params.get(PROJECT_ROUTE_PARAMS.projectId))),
+    { initialValue: null },
+  );
 
   readonly userFullName = computed<string | null>(() => this._projectFacade.userFullName());
   readonly project = computed<Project | null>(() => this._projectFacade.activeProject());
-  readonly projectStatus: Signal<ProjectStatusModel | null> = this._projectFacade.getProjectStatus(
-    this._projectId,
-  );
+  readonly projectStatus = signal<ProjectStatusModel | null>(null);
   readonly projectDeadlinePressure = computed(() => {
     const project = this.project();
 
@@ -57,9 +59,20 @@ export class ProjectDetails {
     );
   });
   readonly isLoading = signal<boolean>(false);
+  readonly overdueTasksCount = computed<number | null>(() =>
+    this._projectFacade.tasksOverdueCount(),
+  );
 
-  ngOnInit(): void {
-    this._projectFacade.selectProject(this._projectId);
+  constructor() {
+    effect(() => {
+      const projectId = this._projectId();
+      if (!projectId) return;
+
+      this._projectFacade.selectProject(projectId);
+
+      const projectStatus = this._projectFacade.getProjectStatus(projectId);
+      this.projectStatus.set(projectStatus());
+    });
   }
 
   onBack(): void {
@@ -73,6 +86,9 @@ export class ProjectDetails {
 
   openEditDialog(): void {
     const project = this.project();
+    const projectId = this._projectId();
+    if (!projectId) return;
+
     const dialogRef = this._dialog.open(EditProjectDialog, {
       data: {
         name: this.project()?.name,
@@ -83,17 +99,19 @@ export class ProjectDetails {
 
     dialogRef.afterClosed().subscribe((result) => {
       // TODO: Handle the result of the operation (e.g. Success | Error)
-      this._projectFacade.updateProject(this._projectId, result);
+      this._projectFacade.updateProject(projectId, result);
     });
   }
 
   openAddTaskDialog(): void {
     const dialogRef = this._dialog.open(CreateTask);
+    const projectId = this._projectId();
+    if (!projectId) return;
 
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
       // TODO: Handle the result of the operation (e.g. Success | Error)
-      this._taskFacade.addTask(this._projectId, result);
+      this._taskFacade.addTask(projectId, result);
     });
   }
 
@@ -120,5 +138,9 @@ export class ProjectDetails {
       this._router.navigate([ROUTES_PARAMS.project]);
       this.isLoading.set(false);
     });
+  }
+
+  getProjectProgress(): number | null {
+    return this._projectFacade.getProjectProgress();
   }
 }

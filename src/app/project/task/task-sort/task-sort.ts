@@ -19,9 +19,9 @@ export class TaskSort {
   readonly projectId = input.required<string>();
   readonly projectStatus = input.required<TaskStatus>();
 
-  readonly taskState = computed<Task[] | null>(() => this._taskFacade.taskState());
+  readonly tasks = computed<Task[] | null>(() => this._taskFacade.tasks());
   readonly todoTask = computed<Task[] | null>(() => {
-    const tasks = this.taskState();
+    const tasks = this.tasks();
     if (!tasks) return null;
 
     return tasks.filter(

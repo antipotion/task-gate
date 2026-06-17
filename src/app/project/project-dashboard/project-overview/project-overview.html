@@ -39,14 +39,21 @@
 
     <!-- Progress -->
     <p class="mat-font-label-sm">Progress</p>
-    <mat-progress-bar mode="determinate" value="40"></mat-progress-bar>
-
-    <!-- Velocity -->
-    <p class="mat-font-label-sm">Velocity</p>
-    <p class="mat-font-label-sm">5 tasks/week</p>
+    <mat-progress-bar mode="determinate" [value]="currentProgress()"></mat-progress-bar>
 
     <!-- Overdue -->
     <p class="mat-font-label-sm">Overdue</p>
-    <p class="mat-font-label-sm">5 tasks</p>
+    <p class="mat-font-label-sm">
+      @let overdueTaskCount = this.overdueTasksCount();
+      @if (overdueTaskCount) {
+        @if (overdueTaskCount >= 2) {
+          {{ overdueTaskCount }} tasks
+        } @else {
+          {{ overdueTaskCount }} task
+        }
+      } @else {
+        No data available.
+      }
+    </p>
   </div>
 </section>

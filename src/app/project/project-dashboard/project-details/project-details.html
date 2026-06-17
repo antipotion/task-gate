@@ -11,19 +11,29 @@
       </button>
 
       <div class="flex">
-        <!-- Edit Project Dialog -->
-        <button matButton (click)="openEditDialog()">Edit</button>
-
         <!-- Add Task Dialog -->
         <button matButton="filled" (click)="openAddTaskDialog()">
           <mat-icon fontIcon="add"></mat-icon>
           Add Task
         </button>
 
-        <!-- Delete button -->
-        <button matIconButton class="delete-btn" (click)="onDelete()">
-          <mat-icon fontIcon="delete"></mat-icon>
+        <button matIconButton [matMenuTriggerFor]="actionMenu">
+          <mat-icon fontIcon="more_vert"></mat-icon>
         </button>
+
+        <mat-menu #actionMenu="matMenu">
+          <!-- Edit Project Dialog -->
+          <button mat-menu-item (click)="openEditDialog()">
+            <mat-icon fontIcon="edit"></mat-icon>
+            Edit
+          </button>
+
+          <!-- Delete button -->
+          <button mat-menu-item class="mat-error-state" (click)="onDelete()">
+            <mat-icon fontIcon="delete"></mat-icon>
+            Delete
+          </button>
+        </mat-menu>
       </div>
     </div>
 
@@ -38,8 +48,9 @@
       [deadline]="projectData?.deadline ?? null"
       [description]="projectData?.description ?? null"
       [projectOwnerFullName]="userFullName()"
+      [currentProgress]="getProjectProgress()"
+      [overdueTasksCount]="overdueTasksCount()"
     />
     <app-project-tasks-board />
-    <app-project-activity-feed />
   </div>
 }

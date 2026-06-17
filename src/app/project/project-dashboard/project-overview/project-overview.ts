@@ -15,4 +15,6 @@ export class ProjectOverview {
   readonly deadline = input.required<Date | null>();
   readonly description = input.required<string | null>();
   readonly projectOwnerFullName = input.required<string | null>();
+  readonly currentProgress = input.required<number | null>();
+  readonly overdueTasksCount = input.required<number | null>();
 }

@@ -1,6 +1,8 @@
 import type { Routes } from '@angular/router';
+import { ROUTES_PARAMS } from '../app.routes';
 import { Project } from './project';
 import { ProjectDashboard } from './project-dashboard/project-dashboard';
+import { TASK_ROUTE_PARAMS } from './task/task.routes';
 
 export const PROJECT_ROUTE_PARAMS = {
   projectId: 'projectId',
@@ -26,6 +28,10 @@ export const projectRoutes: Routes = [
           import('./project-dashboard/project-details/project-details').then(
             (m) => m.ProjectDetails,
           ),
+      },
+      {
+        path: `:${PROJECT_ROUTE_PARAMS.projectId}/${ROUTES_PARAMS.task}/:${TASK_ROUTE_PARAMS.taskId}`,
+        loadComponent: () => import('./task/task-details/task-details').then((m) => m.TaskDetails),
       },
     ],
   },
