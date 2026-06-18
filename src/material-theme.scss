@@ -91,6 +91,11 @@ p {
   border-radius: var(--mat-sys-corner-full);
 }
 
+// Elevation
+.mat-shadow-1 {
+  box-shadow: var(--mat-sys-level1);
+}
+
 // Colors
 /* PRIMARY */
 .mat-bg-primary-container {

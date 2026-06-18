@@ -1,7 +1,7 @@
 import { CdkListbox, CdkOption } from '@angular/cdk/listbox';
 import { Component, effect, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { StoreService } from '../../../application/store/store-service';
 import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
@@ -17,6 +17,7 @@ import { ProjectTaskBoardCard } from '../project-task-board-card/project-task-bo
 export class ProjectTasksBoard {
   private readonly _route = inject(ActivatedRoute);
   private readonly _storeService = inject(StoreService);
+  private readonly _router = inject(Router);
 
   readonly taskCategories: TaskStatus[] = [
     'TODO',
@@ -38,5 +39,9 @@ export class ProjectTasksBoard {
 
       this._storeService.setProjectId(projectId);
     });
+  }
+
+  onSelectCategory(category: TaskStatus): void {
+    this._router.navigate([category], { relativeTo: this._route });
   }
 }

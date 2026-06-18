@@ -3,18 +3,21 @@
     <h2 class="mat-font-title-md">Tasks Board</h2>
   </div>
 
-<!-- Tasks Board Content -->
-<ul
+  <!-- Tasks Board Content -->
+  <ul
     cdkListbox
     cdkListboxMultiple
     cdkListboxUseActiveDescendant
     class="grid grid-cols-2 gap-x-4 gap-y-2"
   >
     @for (category of taskCategories; track $index) {
-      <li [cdkOption]="category" class="w-full h-full focus:outline-2 hover:cursor-pointer">
+      <li
+        [cdkOption]="category"
+        class="w-full h-full focus:outline-2 hover:cursor-pointer"
+        (click)="onSelectCategory(category)"
+      >
         <app-project-task-board-card [taskStatus]="category" />
       </li>
     }
   </ul>
 </section>
-

@@ -7,6 +7,12 @@ import { TASK_ROUTE_PARAMS } from './task/task.routes';
 export const PROJECT_ROUTE_PARAMS = {
   projectId: 'projectId',
   create: 'create',
+  taskCategory: ':taskCategory',
+} as const;
+
+const PROJECT_ROUTE_HELPERS = {
+  projectDetailRoute: `:${PROJECT_ROUTE_PARAMS.projectId}`,
+  taskCategoryRoute: `:${PROJECT_ROUTE_PARAMS.projectId}/:${PROJECT_ROUTE_PARAMS.taskCategory}`,
 } as const;
 
 export const projectRoutes: Routes = [
@@ -23,15 +29,18 @@ export const projectRoutes: Routes = [
         loadComponent: () => import('./create-project/create-project').then((m) => m.CreateProject),
       },
       {
-        path: `:${PROJECT_ROUTE_PARAMS.projectId}`,
+        path: PROJECT_ROUTE_HELPERS.projectDetailRoute,
         loadComponent: () =>
           import('./project-dashboard/project-details/project-details').then(
             (m) => m.ProjectDetails,
           ),
       },
       {
-        path: `:${PROJECT_ROUTE_PARAMS.projectId}/${ROUTES_PARAMS.task}/:${TASK_ROUTE_PARAMS.taskId}`,
-        loadComponent: () => import('./task/task-details/task-details').then((m) => m.TaskDetails),
+        path: PROJECT_ROUTE_HELPERS.taskCategoryRoute,
+        loadComponent: () =>
+          import('./project-task-category/project-task-category').then(
+            (m) => m.ProjectTaskCategory,
+          ),
       },
     ],
   },

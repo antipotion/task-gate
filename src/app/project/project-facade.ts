@@ -31,6 +31,7 @@ export class ProjectFacade {
 
     return overdueTasks.length;
   });
+  readonly tasks = computed(() => this._taskFacade.tasks());
 
   readonly projectState = toSignal(
     this._storeService.projects$.pipe(
