@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
 import { StoreService } from '../../application/store/store-service';
 import { ReviewStore } from './review/review-store/review-store';
@@ -32,6 +32,8 @@ export class TaskFacade {
     return this._storeService.getTaskById(taskId)();
   });
 
+  readonly taskDataById = computed(() => this._storeService.taskDataById());
+
   selectTaskId(taskId: string): void {
     this.selectedTaskId.set(taskId);
   }
@@ -59,10 +61,6 @@ export class TaskFacade {
     this.updatetask(taskId, task, advancedTask);
   }
 
-  goBack(): void {
-    this._historyService.goBack();
-  }
-
   historyPop(): void {
     this._historyService.historyStackPop();
   }
@@ -75,11 +73,7 @@ export class TaskFacade {
     return this._reviewStore.taskReviews;
   }
 
-  setTaskId(taskId: string): void {
-    this._reviewStore.setTaskId(taskId);
-  }
-
-  setProjectId(projectId: string): void {
-    this._storeService.setProjectId(projectId);
+  setTaskIdData(taskId: string): void {
+    this._storeService.setTaskId(taskId);
   }
 }

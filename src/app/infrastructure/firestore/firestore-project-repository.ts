@@ -6,6 +6,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  DocumentSnapshot,
   getDoc,
   onSnapshot,
   query,
@@ -164,6 +165,21 @@ export class FirestoreProjectRepository {
         },
       );
 
+      return () => unsubscribe();
+    });
+  }
+
+  listenToTask$(taskId: string): Observable<Task | null> {
+    const taskDoc = doc(this._tasksCollection, taskId);
+
+    return new Observable<Task | null>((subscriber) => {
+      const unsubscribe = onSnapshot(taskDoc, (snapshot) => {
+        if (!snapshot.exists()) {
+          subscriber.next(null);
+        }
+        const task = this._mapToSingleTask(snapshot);
+        subscriber.next(task);
+      });
       return () => unsubscribe();
     });
   }
@@ -344,6 +360,23 @@ export class FirestoreProjectRepository {
       authorId: data['authorId'],
       content: data['content'],
       createdAt: data['createdAt']?.toDate(),
+    };
+  }
+
+  private _mapToSingleTask(doc: DocumentSnapshot<DocumentData>): Task | null {
+    const data = doc.data();
+    if (!data) return null;
+
+    return {
+      id: doc.id,
+      name: data['name'],
+      assigneeId: data['assigneeId'],
+      creatorId: data['creatorId'],
+      deadline: data['deadline']?.toDate(),
+      description: data['description'],
+      projectId: data['projectId'],
+      startDate: data['startDate']?.toDate(),
+      status: data['status'],
     };
   }
 

@@ -1,12 +1,14 @@
-import { Component, computed, effect, inject, signal, type OnInit } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { Loading } from '../../../loading/loading';
-import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 import { TaskAction } from '../task-action/task-action';
 import { TaskComment } from '../task-comment/task-comment';
 import { TaskDependency } from '../task-dependency/task-dependency';
@@ -37,21 +39,23 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
     MatButtonModule,
     Loading,
     TaskReviewList,
+    MatMenuModule,
   ],
   templateUrl: './task-details.html',
   styleUrl: './task-details.scss',
 })
-export class TaskDetails implements OnInit {
+export class TaskDetails {
   private readonly _taskFacade = inject(TaskFacade);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _dialog = inject(MatDialog);
   private readonly _snackBar = inject(MatSnackBar);
 
-  readonly taskId = this._route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.taskId) || '';
-  readonly projectId = this._route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.projectId || '');
+  readonly taskId = toSignal(
+    this._route.paramMap.pipe(map((params) => params.get(TASK_ROUTE_PARAMS.taskId))),
+  );
 
-  readonly activeTask = computed(() => this._taskFacade.activeTask());
+  readonly activeTask = computed(() => this._taskFacade.taskDataById());
   readonly nextTaskAction = signal<TaskActionModel | null>(null);
   readonly isLoading = signal<boolean>(false);
   readonly reviews = this._taskFacade.reviewDataList();
@@ -64,15 +68,13 @@ export class TaskDetails implements OnInit {
       const result = this._taskFacade.nextTaskState(activeTask);
       this.nextTaskAction.set(result ?? null);
     });
-    const projectId = this.projectId;
-    if (!projectId) return;
 
-    this._taskFacade.setProjectId(projectId);
-    this._taskFacade.setTaskId(this.taskId);
-  }
+    effect(() => {
+      const taskId = this.taskId();
+      if (!taskId) return;
 
-  ngOnInit(): void {
-    this._taskFacade.selectTaskId(this.taskId);
+      this._taskFacade.setTaskIdData(taskId);
+    });
   }
 
   openTaskEditDialog(): void {
@@ -90,7 +92,10 @@ export class TaskDetails implements OnInit {
       if (!activeTask) return;
 
       try {
-        this._taskFacade.updatetask(this.taskId, activeTask, result);
+        const taskId = this.taskId();
+        if (!taskId) return;
+
+        this._taskFacade.updatetask(taskId, activeTask, result);
       } catch (error) {
         this.openSnackBar('Task edit failed');
       }
@@ -131,8 +136,11 @@ export class TaskDetails implements OnInit {
       const projectId = this.activeTask()?.projectId;
       if (!projectId) return;
 
+      const taskid = this.taskId();
+      if (!taskid) return;
+
       if (!result) return;
-      this._taskFacade.deleteTask(this.taskId);
+      this._taskFacade.deleteTask(taskid);
       this._router.navigate([ROUTES_PARAMS.project, projectId]);
     });
   }
