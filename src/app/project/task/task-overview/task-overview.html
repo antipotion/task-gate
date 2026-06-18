@@ -5,7 +5,13 @@
 <section class="flex flex-col gap-8">
   <!-- Task Description -->
   <div>
-    <p class="line-clamp-4 max-w-[90vw]">Description: {{ description }}</p>
+    <p class="line-clamp-4 max-w-[90vw]">
+      @if (description) {
+        {{ description }}
+      } @else {
+        Task has no description.
+      }
+    </p>
   </div>
 
   <!-- Task Dates -->

@@ -49,11 +49,12 @@
       [reviews]="reviews()"
       (nextActionTriggered)="transitionTask($event)"
     />
-    <app-task-dependency />
-    <app-task-subtask />
-    <app-task-review-list [reviewList]="reviews()" />
-    <app-task-time />
-    <app-task-comment />
-    <app-task-history />
+
+    <div class="w-full flex justify-center">
+      <button matButton (click)="onShowReviewList()">
+        <mat-icon fontIcon="list"></mat-icon>
+        Show Review List
+      </button>
+    </div>
   </div>
 }
