@@ -1,6 +1,8 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, effect, input, signal } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DeadlinePressureModel } from '../../project.model';
+import { getDeadlinePressure } from '../../utility/deadlinePressureCalculator';
 
 @Component({
   selector: 'app-task-header',
@@ -11,4 +13,18 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 export class TaskHeader {
   readonly taskName = input.required<string | undefined>();
   readonly taskStatus = input.required<string | undefined>();
+  readonly taskStartDate = input.required<Date | null>();
+  readonly taskDeadline = input.required<Date | null>();
+
+  readonly deadlinePressure = signal<DeadlinePressureModel | null>(null);
+
+  constructor() {
+    effect(() => {
+      const startDate = this.taskStartDate();
+      const deadline = this.taskDeadline();
+
+      const deadlinePressure = getDeadlinePressure(startDate, deadline);
+      this.deadlinePressure.set(deadlinePressure);
+    });
+  }
 }

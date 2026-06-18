@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskTodo } from './task-todo';
+import { TaskSort } from './task-sort';
 
 describe('TaskTodo', () => {
-  let component: TaskTodo;
-  let fixture: ComponentFixture<TaskTodo>;
+  let component: TaskSort;
+  let fixture: ComponentFixture<TaskSort>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaskTodo],
+      imports: [TaskSort],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TaskTodo);
+    fixture = TestBed.createComponent(TaskSort);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

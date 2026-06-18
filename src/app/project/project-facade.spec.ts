@@ -3,7 +3,7 @@ import { Subject } from 'rxjs';
 
 import { StoreService } from '../application/store/store-service';
 import { ProjectFacade } from './project-facade';
-import type { Project } from './project.types';
+import { Project } from './project.model';
 
 describe('ProjectFacade', () => {
   let service: ProjectFacade;

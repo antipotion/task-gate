@@ -19,7 +19,13 @@
     <div class="flex flex-col gap-1">
       <!-- Start Date -->
       <div>
-        <mat-chip><p class="mat-font-label-sm">Start Date: MM/DD/YYYY</p> </mat-chip>
+        <mat-chip>
+          @if (taskStartDate(); as startDate) {
+            <p class="mat-font-label-sm">Start Date: {{ startDate | date }}</p>
+          } @else {
+            <mat-spinner diameter="22"></mat-spinner>
+          }
+        </mat-chip>
       </div>
 
       <!-- Deadline -->

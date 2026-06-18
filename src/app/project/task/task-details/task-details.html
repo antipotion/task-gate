@@ -31,8 +31,14 @@
       </div>
     </div>
 
-    <app-task-header [taskName]="activeTaskData?.name" [taskStatus]="activeTaskData?.status" />
+    <app-task-header
+      [taskName]="activeTaskData?.name"
+      [taskStatus]="activeTaskData?.status"
+      [taskStartDate]="activeTaskData?.startDate ?? null"
+      [taskDeadline]="activeTaskData?.deadline ?? null"
+    />
     <app-task-overview
+      [taskStartDate]="activeTaskData?.startDate ?? null"
       [taskDeadline]="activeTaskData?.deadline ?? null"
       [taskDescription]="activeTaskData?.description ?? null"
     />

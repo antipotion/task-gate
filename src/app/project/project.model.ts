@@ -8,11 +8,6 @@ export type DeadlinePressureModel =
   | 'critical'
   | 'overdue';
 
-type Member = {
-  id: string;
-  name: string;
-};
-
 export type Project = {
   id: string;
   name: string;

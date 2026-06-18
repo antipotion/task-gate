@@ -8,11 +8,6 @@ import { getAvailableActions, transitionTask } from './task-state-machine';
 import { TaskUseCase } from './task-use-case';
 import { Task, TaskActionModel } from './task.model';
 
-export type TaskState =
-  | { status: 'loading' }
-  | { status: 'success'; data: Task[] }
-  | { status: 'error'; error: string };
-
 @Injectable({ providedIn: 'root' })
 export class TaskFacade {
   private readonly _storeService = inject(StoreService);
