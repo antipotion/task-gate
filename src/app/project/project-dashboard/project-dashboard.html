@@ -81,7 +81,8 @@
                       <!-- Project badges -->
                       <div class="absolute flex flex-col top-4 right-4 gap-1 items-end">
                         <!-- Project status -->
-                        @let projectStatus = getProjectStatus(project.id)();
+                        @let getProject = this.projectsStatus().get(project.id);
+                        @let projectStatus = getProject && getProject();
                         <div
                           class="w-fit px-2 py-1 mat-corner-full"
                           [ngClass]="{

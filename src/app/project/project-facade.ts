@@ -154,4 +154,8 @@ export class ProjectFacade {
     );
     return computed(() => result);
   }
+
+  setProjectIdForTask(projectId: string): void {
+    this._storeService.setProjectId(projectId);
+  }
 }

@@ -44,6 +44,7 @@ export class ProjectDashboard {
     return this._projectFacade.getTeamById(teamId);
   });
   readonly teamsMapCollection = signal<Map<string, string>>(new Map());
+  readonly projectsStatus = signal<Map<string, Signal<ProjectStatusModel | null>>>(new Map());
 
   constructor() {
     effect(async () => {
@@ -70,6 +71,26 @@ export class ProjectDashboard {
           return newTeams;
         });
       }
+    });
+
+    effect(() => {
+      const projectsState = this.projectsState();
+      if (projectsState.status !== 'success') return;
+
+      const projects: Project[] = projectsState.data;
+
+      this.projectsStatus.update((oldProjects) => {
+        const newProjects = new Map(oldProjects);
+
+        for (const project of projects) {
+          const projectId = project.id;
+          const status = this.getProjectStatus(projectId);
+          this._projectFacade.setProjectIdForTask(projectId);
+          newProjects.set(projectId, status);
+        }
+
+        return newProjects;
+      });
     });
   }
 
