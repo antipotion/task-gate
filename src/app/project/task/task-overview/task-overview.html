@@ -1,48 +1,33 @@
-<section class="flex flex-col gap-4">
-  <div class="flex justify-between">
-    <h2 class="mat-font-title-md">Task Overview</h2>
-    <mat-icon fontIcon="expand_more"></mat-icon>
+@let description = taskDescription();
+@let startDate = taskStartDate();
+@let deadline = taskDeadline();
+
+<section class="flex flex-col gap-8">
+  <!-- Task Description -->
+  <div>
+    <p class="line-clamp-4 max-w-[90vw]">Description: {{ description }}</p>
   </div>
 
-  <!-- Contents -->
-  <div class="flex flex-col gap-2">
-    <!-- Task Description -->
-    <div>
-      @if (taskDescription(); as description) {
-        <p>{{ description }}</p>
+  <!-- Task Dates -->
+  <div class="grid grid-cols-2 gap-2 mat-bg-surface-container-low p-4 mat-corner-sm">
+    <!-- Start Date -->
+    <p class="mat-font-label-sm">Start Date</p>
+    <p class="mat-font-label-sm">
+      @if (startDate) {
+        {{ startDate | date }}
       } @else {
-        <mat-spinner diameter="22"></mat-spinner>
+        None
       }
-    </div>
+    </p>
 
-    <!-- Task Dates -->
-    <div class="flex flex-col gap-1">
-      <!-- Start Date -->
-      <div>
-        <mat-chip>
-          @if (taskStartDate(); as startDate) {
-            <p class="mat-font-label-sm">Start Date: {{ startDate | date }}</p>
-          } @else {
-            <mat-spinner diameter="22"></mat-spinner>
-          }
-        </mat-chip>
-      </div>
-
-      <!-- Deadline -->
-      <div>
-        <mat-chip>
-          @if (taskDeadline(); as deadline) {
-            <p class="mat-font-label-sm">Deadline: {{ deadline | date }}</p>
-          } @else {
-            <mat-spinner diameter="22"></mat-spinner>
-          }
-        </mat-chip>
-      </div>
-    </div>
-
-    <!-- Tags -->
-    <div>
-      <mat-chip><p class="mat-font-label-sm">Tag</p></mat-chip>
-    </div>
+    <!-- Deadline -->
+    <p class="mat-font-label-sm">Deadline</p>
+    <p class="mat-font-label-sm">
+      @if (deadline) {
+        {{ deadline | date }}
+      } @else {
+        None
+      }
+    </p>
   </div>
 </section>
