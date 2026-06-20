@@ -1,7 +1,6 @@
 export type TaskStatus =
   | 'TODO'
   | 'IN-PROGRESS'
-  | 'SUBMITTED'
   | 'REVIEWING'
   | 'APPROVED'
   | 'REJECTED'
@@ -9,7 +8,6 @@ export type TaskStatus =
 export type TaskActionModel =
   | 'START'
   | 'SUBMIT'
-  | 'BEGIN_REVIEW'
   | 'APPROVE'
   | 'REJECT'
   | 'RESUME';
@@ -24,5 +22,4 @@ export interface Task {
   startDate: Date | null;
   deadline: Date | null;
   status: TaskStatus;
-  currentSubmissionVersion: number;
 }

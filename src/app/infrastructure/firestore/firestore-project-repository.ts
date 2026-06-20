@@ -6,9 +6,11 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   onSnapshot,
   query,
   QueryDocumentSnapshot,
+  serverTimestamp,
   setDoc,
   updateDoc,
   where,
@@ -20,6 +22,8 @@ import { Observable, of } from 'rxjs';
 import { db } from '../../../environment/firebase.config';
 import { UserModel } from '../../authentication/auth.model';
 import type { Project } from '../../project/project.model';
+import { CommentModel } from '../../project/review/comment/comment.model';
+import { ReviewModel } from '../../project/task/review/review.model';
 import type { Task } from '../../project/task/task.model';
 import { TeamModel } from '../../team/team.model';
 
@@ -32,6 +36,8 @@ export class FirestoreProjectRepository {
   private readonly _tasksCollection = collection(this._db, 'tasks');
   private readonly _usersCollection = collection(this._db, 'users');
   private readonly _teamsCollection = collection(this._db, 'teams');
+  private readonly _reviewsCollection = collection(this._db, 'reviews');
+  private readonly _commentsCollection = collection(this._db, 'comments');
 
   listenToProjects$(teams: TeamModel[]): Observable<Project[]> {
     const teamIds = teams.map((team) => team.id);
@@ -47,7 +53,7 @@ export class FirestoreProjectRepository {
       const unsubscribe = onSnapshot(
         projectQuery,
         (snapshot: QuerySnapshot<DocumentData>) => {
-          const projects = snapshot.docs.map((doc) => this.mapToProject(doc));
+          const projects = snapshot.docs.map((doc) => this._mapToProject(doc));
 
           subscriber.next(projects);
         },
@@ -65,7 +71,7 @@ export class FirestoreProjectRepository {
       const unsubscribe = onSnapshot(
         this._tasksCollection,
         (snapshot) => {
-          const tasks = snapshot.docs.map((doc) => this.mapToTask(doc));
+          const tasks = snapshot.docs.map((doc) => this._mapToTask(doc));
 
           subscriber.next(tasks);
         },
@@ -85,7 +91,7 @@ export class FirestoreProjectRepository {
       const unsubscribe = onSnapshot(
         teamsQuery,
         (snapshot) => {
-          const teams = snapshot.docs.map((doc) => this.mapToTeam(doc));
+          const teams = snapshot.docs.map((doc) => this._mapToTeam(doc));
 
           subscriber.next(teams);
         },
@@ -107,9 +113,49 @@ export class FirestoreProjectRepository {
         (snapshot) => {
           if (!snapshot.exists()) return;
 
-          const user = this.mapToUser(snapshot);
+          const user = this._mapToUser(snapshot);
 
           subscriber.next(user);
+        },
+        (error) => {
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
+  listenToReviews$(taskId: string): Observable<ReviewModel[]> {
+    const reviewQuery = query(this._reviewsCollection, where('taskId', '==', taskId));
+
+    return new Observable<ReviewModel[]>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        reviewQuery,
+        (snapshot: QuerySnapshot<DocumentData>) => {
+          const reviews = snapshot.docs.map((doc) => this._mapToReview(doc));
+
+          subscriber.next(reviews);
+        },
+        (error) => {
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
+  listenToComments$(reviewId: string): Observable<CommentModel[]> {
+    const commentQuery = query(this._commentsCollection, where('reviewId', '==', reviewId));
+
+    return new Observable<CommentModel[]>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        commentQuery,
+        (snapshot: QuerySnapshot<DocumentData>) => {
+          const comments = snapshot.docs.map((doc) => this._mapToComment(doc));
+
+          subscriber.next(comments);
         },
         (error) => {
           subscriber.error(error);
@@ -183,7 +229,28 @@ export class FirestoreProjectRepository {
     return deleteDoc(ref);
   }
 
-  private mapToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
+  async addReview(data: Omit<ReviewModel, 'id' | 'submittedAt'>): Promise<string> {
+    const withSubmittedAt: Omit<ReviewModel, 'id'> = { ...data, submittedAt: serverTimestamp() };
+
+    const result = await addDoc(this._reviewsCollection, withSubmittedAt);
+    return result.id;
+  }
+
+  async closeReview(reviewId: string, data: Pick<ReviewModel, 'closeStatus'>): Promise<void> {
+    const reviewRef = doc(this._reviewsCollection, reviewId);
+    const withClosedDate = { ...data, closedDate: serverTimestamp() };
+
+    return await updateDoc(reviewRef, { ...withClosedDate });
+  }
+
+  async addComment(data: Omit<CommentModel, 'id' | 'createdAt'>): Promise<string> {
+    const withCreatedAt: Omit<CommentModel, 'id'> = { ...data, createdAt: serverTimestamp() };
+
+    const result = await addDoc(this._commentsCollection, withCreatedAt);
+    return result.id;
+  }
+
+  private _mapToProject(doc: QueryDocumentSnapshot<DocumentData>): Project {
     const data = doc.data();
 
     return {
@@ -197,7 +264,7 @@ export class FirestoreProjectRepository {
     };
   }
 
-  private mapToTask(doc: QueryDocumentSnapshot<DocumentData>): Task {
+  private _mapToTask(doc: QueryDocumentSnapshot<DocumentData>): Task {
     const data = doc.data();
 
     return {
@@ -210,11 +277,10 @@ export class FirestoreProjectRepository {
       startDate: data['startDate']?.toDate() ?? null,
       deadline: data['deadline']?.toDate() ?? null,
       status: data['status'],
-      currentSubmissionVersion: data['currentSubmissionVersion'],
     };
   }
 
-  private mapToTeam(doc: QueryDocumentSnapshot<DocumentData>): TeamModel {
+  private _mapToTeam(doc: QueryDocumentSnapshot<DocumentData>): TeamModel {
     const data = doc.data();
 
     return {
@@ -225,11 +291,54 @@ export class FirestoreProjectRepository {
     };
   }
 
-  private mapToUser(doc: QueryDocumentSnapshot<DocumentData>): UserModel {
+  private _mapToUser(doc: QueryDocumentSnapshot<DocumentData>): UserModel {
     const data = doc.data();
 
     return {
       id: doc.id,
+      firstName: data['firstName'],
+      lastName: data['lastName'],
+      role: data['role'],
+    };
+  }
+
+  private _mapToReview(doc: QueryDocumentSnapshot<DocumentData>): ReviewModel {
+    const data = doc.data();
+
+    return {
+      id: doc.id,
+      taskId: data['taskId'],
+      proofUrls: data['proofUrls'],
+      submittedById: data['submittedById'],
+      submittedAt: data['submittedAt']?.toDate(),
+      reviewerId: data['reviewerId'],
+      closedDate: data['closedDate']?.toDate() ?? null,
+      closeStatus: data['closeStatus'],
+    };
+  }
+
+  private _mapToComment(doc: QueryDocumentSnapshot<DocumentData>): CommentModel {
+    const data = doc.data();
+
+    return {
+      id: doc.id,
+      taskId: data['taskId'],
+      reviewId: data['reviewId'],
+      authorId: data['authorId'],
+      content: data['content'],
+      createdAt: data['createdAt']?.toDate(),
+    };
+  }
+
+  async getUserById(userId: string): Promise<UserModel | null> {
+    const docRef = doc(this._usersCollection, userId);
+    const snapshot = await getDoc(docRef);
+    if (!snapshot.exists()) return null;
+
+    const data = snapshot.data();
+
+    return {
+      id: snapshot.id,
       firstName: data['firstName'],
       lastName: data['lastName'],
       role: data['role'],

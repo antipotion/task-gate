@@ -1,8 +1,11 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, map, of, startWith } from 'rxjs';
 import { HistoryService } from '../../application/history/history-service';
 import { StoreService } from '../../application/store/store-service';
+import { ReviewStore } from './review/review-store/review-store';
+import { ReviewUsecase } from './review/review-usecase/review-usecase';
+import { ReviewModel } from './review/review.model';
 import { getAvailableActions, transitionTask } from './task-state-machine';
 import { TaskUseCase } from './task-use-case';
 import { Task, TaskActionModel } from './task.model';
@@ -12,11 +15,13 @@ export type TaskState =
   | { status: 'success'; data: Task[] }
   | { status: 'error'; error: string };
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TaskFacade {
   private readonly _storeService = inject(StoreService);
   private readonly _taskUseCase = inject(TaskUseCase);
   private readonly _historyService = inject(HistoryService);
+  private readonly _reviewUseCase = inject(ReviewUsecase);
+  private readonly _reviewStore = inject(ReviewStore);
 
   readonly taskState = toSignal(
     this._storeService.tasks$.pipe(
@@ -76,5 +81,17 @@ export class TaskFacade {
 
   historyPop(): void {
     this._historyService.historyStackPop();
+  }
+
+  async submitReview(data: Pick<ReviewModel, 'taskId' | 'proofUrls'>): Promise<string> {
+    return this._reviewUseCase.addReview(data);
+  }
+
+  reviewDataList(): Signal<ReviewModel[] | null> {
+    return this._reviewStore.taskReviews;
+  }
+
+  setTaskId(taskId: string): void {
+    this._reviewStore.setTaskId(taskId);
   }
 }

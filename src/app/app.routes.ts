@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { guestGuard } from './application/guards/guest-guard';
 import { authGuard } from './application/guards/auth-guard';
+import { guestGuard } from './application/guards/guest-guard';
 
 export const ROUTES_PARAMS = {
   auth: 'auth',

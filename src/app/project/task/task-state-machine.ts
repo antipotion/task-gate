@@ -15,11 +15,6 @@ const TRANSITIONS: readonly TransitionDefinition[] = [
   {
     from: 'IN-PROGRESS',
     action: 'SUBMIT',
-    to: 'SUBMITTED',
-  },
-  {
-    from: 'SUBMITTED',
-    action: 'BEGIN_REVIEW',
     to: 'REVIEWING',
   },
   {
@@ -66,10 +61,6 @@ export function transitionTask(task: Task, action: TaskActionModel): Task {
     ...task,
     status: transition.to,
   };
-
-  if (action === 'SUBMIT') {
-    next.currentSubmissionVersion += 1;
-  }
 
   return next;
 }
