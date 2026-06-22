@@ -1,4 +1,8 @@
-export type ProjectDevelopmentStatus = 'active development' | 'maintenance' | 'stable';
+import packageData from '../../../package.json' with { type: 'json' };
+
+export type ProjectDevelopmentStatus = 'active development' | 'maintenance' | 'stable' | 'paused';
+
+const pVersion = packageData.version;
 
 export interface ProjectInfoModel {
   projectName: string;
@@ -8,6 +12,6 @@ export interface ProjectInfoModel {
 
 export const PROJECT_INFO: ProjectInfoModel = {
   projectName: 'Task Gate',
-  projectVersion: 'v0.3.0-alpha',
+  projectVersion: `v${pVersion}`,
   projectStatus: 'active development',
 };

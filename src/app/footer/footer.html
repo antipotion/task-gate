@@ -18,8 +18,14 @@
 
   <!-- Source links -->
   <div class="flex gap-2">
-    <a [href]="projectSourceLinks.portfolioLink" target="_blank" matButton>View Portfolio</a>
-    <a [href]="projectSourceLinks.sourceLink" target="_blank" matButton>View Source Code</a>
+    <a [href]="projectSourceLinks.portfolioLink" target="_blank" matButton>
+      <mat-icon fontIcon="work_outline"></mat-icon>
+      Portfolio
+    </a>
+    <a [href]="projectSourceLinks.sourceLink" target="_blank" matButton>
+      <mat-icon fontIcon="code"></mat-icon>
+      Source Code
+    </a>
   </div>
 
   <!-- Copyright -->
