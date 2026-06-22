@@ -1,13 +1,13 @@
-import { Component, computed, effect, inject, input, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute } from '@angular/router';
-import { FieldValue } from 'firebase/firestore';
-import { TASK_ROUTE_PARAMS } from '../../task.routes';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
+import { ROUTES_PARAMS } from '../../../../app.routes';
 import { REVIEW_ROUTE_PARAMS } from '../review.routes';
 import { CommentFacade } from './comment-facade';
 
@@ -19,22 +19,25 @@ import { CommentFacade } from './comment-facade';
     MatInputModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatCardModule,
   ],
   templateUrl: './comment.html',
   styleUrl: './comment.scss',
 })
-export class Comment implements OnInit {
+export class Comment {
   private readonly _commentFacade = inject(CommentFacade);
   private readonly _route = inject(ActivatedRoute);
+  private readonly _router = inject(Router);
 
-  private readonly _taskId = this._route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.taskId);
-  private readonly _reviewId = this._route.snapshot.paramMap.get(REVIEW_ROUTE_PARAMS.reviewId);
+  private readonly _reviewId = toSignal<string | null>(
+    this._route.paramMap.pipe(map((params) => params.get(REVIEW_ROUTE_PARAMS.reviewId))),
+    { initialValue: null },
+  );
 
-  readonly closedDate = input.required<Date | FieldValue | null>();
+  private readonly reviewData = computed(() => this._commentFacade.reviewData());
 
+  readonly userId = computed(() => this._commentFacade.userId());
+  readonly closedDate = computed(() => this.reviewData()?.closedDate);
   readonly commentAuthors = signal<Map<string, string>>(new Map());
-
   readonly comments = computed(() => this._commentFacade.comments());
 
   commentForm = new FormGroup({
@@ -44,6 +47,14 @@ export class Comment implements OnInit {
   readonly commentControl = this.commentForm.controls.commentContent;
 
   constructor() {
+    // Get comments
+    effect(() => {
+      const reviewId = this._reviewId();
+      if (!reviewId) return;
+
+      this._commentFacade.setReviewId(reviewId);
+    });
+
     // Get authors' fullname
     effect(async () => {
       const comments = this.comments();
@@ -67,16 +78,9 @@ export class Comment implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    const reviewId = this._reviewId;
-    if (!reviewId) return;
-
-    this._commentFacade.setReviewId(reviewId);
-  }
-
   async addComment(): Promise<void> {
-    const taskId = this._taskId;
-    const reviewId = this._reviewId;
+    const taskId = this.reviewData()?.taskId;
+    const reviewId = this._reviewId();
     if (!taskId || !reviewId) return;
 
     const content = this.commentControl.value;
@@ -92,5 +96,12 @@ export class Comment implements OnInit {
     if (!result) return null;
 
     return `${result.firstName} ${result.lastName}`;
+  }
+
+  onBack(): void {
+    const reviewId = this._reviewId();
+    if (!reviewId) return;
+
+    this._router.navigate([ROUTES_PARAMS.review, reviewId]);
   }
 }

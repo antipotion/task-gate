@@ -180,6 +180,12 @@ export class FirestoreProjectRepository {
         commentQuery,
         (snapshot: QuerySnapshot<DocumentData>) => {
           const comments = snapshot.docs.map((doc) => this._mapToComment(doc));
+          comments.sort((a, b) => {
+            const createdA = a.createdAt as Date;
+            const createdB = b.createdAt as Date;
+
+            return createdA?.getTime() - createdB?.getTime();
+          });
 
           subscriber.next(comments);
         },
