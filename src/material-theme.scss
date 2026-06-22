@@ -115,6 +115,9 @@ p {
 .mat-bg-surface-container-low {
   background-color: var(--mat-sys-surface-container-low);
 }
+.mat-bg-surface-container {
+  background-color: var(--mat-sys-surface-container);
+}
 
 .mat-error-state {
   --mat-icon-button-icon-color: var(--mat-sys-error);
