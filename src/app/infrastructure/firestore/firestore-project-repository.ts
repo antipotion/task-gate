@@ -8,6 +8,7 @@ import {
   doc,
   DocumentSnapshot,
   getDoc,
+  getDocs,
   onSnapshot,
   query,
   QueryDocumentSnapshot,
@@ -211,6 +212,13 @@ export class FirestoreProjectRepository {
       });
       return () => unsubscribe();
     });
+  }
+
+  async getProjectTasks(projectId: string): Promise<Task[]> {
+    const taskQuery = query(this._tasksCollection, where('projectId', '==', projectId));
+    const snapshot = await getDocs(taskQuery);
+
+    return snapshot.docs.map((doc) => this._mapToTask(doc));
   }
 
   async addProject(data: Omit<Project, 'id'>): Promise<string> {

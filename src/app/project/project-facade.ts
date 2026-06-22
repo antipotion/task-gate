@@ -159,4 +159,8 @@ export class ProjectFacade {
   setProjectIdForTask(projectId: string): void {
     this._storeService.setProjectId(projectId);
   }
+
+  async getProjectTasks(projectId: string): Promise<Task[]> {
+    return this._storeService.getProjectTasks(projectId);
+  }
 }

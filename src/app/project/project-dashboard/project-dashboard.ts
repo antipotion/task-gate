@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, TitleCasePipe, UpperCasePipe } from '@angular/common';
-import { Component, computed, effect, inject, Signal, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +24,7 @@ import { PROJECT_ROUTE_PARAMS } from '../project.routes';
     NgClass,
     TitleCasePipe,
     UpperCasePipe,
+    MatProgressSpinner,
   ],
   templateUrl: './project-dashboard.html',
   styleUrl: './project-dashboard.scss',
@@ -44,7 +45,7 @@ export class ProjectDashboard {
     return this._projectFacade.getTeamById(teamId);
   });
   readonly teamsMapCollection = signal<Map<string, string>>(new Map());
-  readonly projectsStatus = signal<Map<string, Signal<ProjectStatusModel | null>>>(new Map());
+  readonly projectsStatus = signal<Map<string, ProjectStatusModel | null>>(new Map());
 
   constructor() {
     effect(async () => {
@@ -73,24 +74,21 @@ export class ProjectDashboard {
       }
     });
 
-    effect(() => {
+    effect(async () => {
       const projectsState = this.projectsState();
       if (projectsState.status !== 'success') return;
 
       const projects: Project[] = projectsState.data;
 
-      this.projectsStatus.update((oldProjects) => {
-        const newProjects = new Map(oldProjects);
+      const newProjects = new Map<string, ProjectStatusModel | null>();
 
-        for (const project of projects) {
-          const projectId = project.id;
-          const status = this.getProjectStatus(projectId);
-          this._projectFacade.setProjectIdForTask(projectId);
-          newProjects.set(projectId, status);
-        }
+      for (const project of projects) {
+        const projectId = project.id;
+        const status = await this.getProjectStatus(projectId);
+        newProjects.set(projectId, status);
+      }
 
-        return newProjects;
-      });
+      this.projectsStatus.set(newProjects);
     });
   }
 
@@ -122,8 +120,20 @@ export class ProjectDashboard {
     this.isLoading.set(false);
   }
 
-  getProjectStatus(projectId: string): Signal<ProjectStatusModel | null> {
-    return this._projectFacade.getProjectStatus(projectId);
+  async getProjectStatus(projectId: string): Promise<ProjectStatusModel | null> {
+    const tasks = await this._projectFacade.getProjectTasks(projectId);
+    if (!tasks) return null;
+
+    // Vacuous truth: returns true if the array is empty
+    if (tasks.every((task) => task.status === 'TODO')) {
+      return 'not started';
+    }
+
+    if (tasks.every((task) => task.status === 'APPROVED')) {
+      return 'completed';
+    }
+
+    return 'in progress';
   }
 
   getProjectDeadlinePressure(projectStartDate: Date | null, projectDeadline: Date | null) {

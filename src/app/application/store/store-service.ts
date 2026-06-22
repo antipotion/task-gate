@@ -66,4 +66,8 @@ export class StoreService {
   setTaskId(taskId: string): void {
     this._taskId.set(taskId);
   }
+
+  async getProjectTasks(projectId: string): Promise<Task[]> {
+    return this._repo.getProjectTasks(projectId);
+  }
 }
