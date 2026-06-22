@@ -59,7 +59,9 @@
                     <mat-card class="relative flex flex-col gap-4 pb-4">
                       <mat-card-header>
                         <mat-card-title>
-                          {{ project.name }}
+                          <div class="truncate max-w-40">
+                            {{ project.name }}
+                          </div>
                         </mat-card-title>
                       </mat-card-header>
                       <mat-card-content>
