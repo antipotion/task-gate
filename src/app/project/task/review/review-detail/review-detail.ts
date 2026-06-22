@@ -11,10 +11,11 @@ import { TaskActionModel } from '../../task.model';
 import { ReviewFacade } from '../review-facade/review-facade';
 import { ReviewHero } from '../review-hero/review-hero';
 import { REVIEW_ROUTE_PARAMS } from '../review.routes';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-review-detail',
-  imports: [ReviewHero, ReviewResource, Comment, MatButtonModule],
+  imports: [ReviewHero, ReviewResource, Comment, MatButtonModule, MatIconModule],
   templateUrl: './review-detail.html',
   styleUrl: './review-detail.scss',
 })
