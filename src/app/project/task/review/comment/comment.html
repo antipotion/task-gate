@@ -27,7 +27,7 @@
               </div>
               <!-- TODO: create a dedicated DTO for the field values -->
               <p class="mat-font-label-sm mat-text-on-surface-variant text-end">
-                Sent on {{ comment.createdAt }}
+                Sent on {{ comment.createdAt | date }}
               </p>
             </div>
           </div>
@@ -45,7 +45,7 @@
                 <p>{{ comment.content }}</p>
               </div>
               <p class="mat-font-label-sm mat-text-on-surface-variant">
-                Sent on {{ comment.createdAt }}
+                Sent on {{ comment.createdAt | date }}
               </p>
             </div>
           </div>

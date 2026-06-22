@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -19,6 +20,7 @@ import { CommentFacade } from './comment-facade';
     MatInputModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+    DatePipe,
   ],
   templateUrl: './comment.html',
   styleUrl: './comment.scss',
