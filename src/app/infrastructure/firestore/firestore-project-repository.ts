@@ -149,6 +149,29 @@ export class FirestoreProjectRepository {
     });
   }
 
+  listenToReviewById$(reviewId: string): Observable<ReviewModel | null> {
+    const reviewDoc = doc(this._reviewsCollection, reviewId);
+
+    return new Observable<ReviewModel | null>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        reviewDoc,
+        (snapshot) => {
+          if (!snapshot.exists()) {
+            subscriber.next(null);
+          }
+          const review = this._mapToSingleReview(snapshot);
+
+          subscriber.next(review);
+        },
+        (error) => {
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
   listenToComments$(reviewId: string): Observable<CommentModel[]> {
     const commentQuery = query(this._commentsCollection, where('reviewId', '==', reviewId));
 
@@ -337,6 +360,22 @@ export class FirestoreProjectRepository {
 
   private _mapToReview(doc: QueryDocumentSnapshot<DocumentData>): ReviewModel {
     const data = doc.data();
+
+    return {
+      id: doc.id,
+      taskId: data['taskId'],
+      proofUrls: data['proofUrls'],
+      submittedById: data['submittedById'],
+      submittedAt: data['submittedAt']?.toDate(),
+      reviewerId: data['reviewerId'],
+      closedDate: data['closedDate']?.toDate() ?? null,
+      closeStatus: data['closeStatus'],
+    };
+  }
+
+  private _mapToSingleReview(doc: DocumentSnapshot<DocumentData>): ReviewModel | null {
+    const data = doc.data();
+    if (!data) return null;
 
     return {
       id: doc.id,

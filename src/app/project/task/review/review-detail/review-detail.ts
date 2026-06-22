@@ -1,12 +1,13 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../../app.routes';
 import { UserModel } from '../../../../authentication/auth.model';
 import { Comment } from '../../../review/comment/comment';
 import { ReviewResource } from '../../../review/review-resource/review-resource';
 import { TaskActionModel } from '../../task.model';
-import { TASK_ROUTE_PARAMS } from '../../task.routes';
 import { ReviewFacade } from '../review-facade/review-facade';
 import { ReviewHero } from '../review-hero/review-hero';
 import { REVIEW_ROUTE_PARAMS } from '../review.routes';
@@ -17,19 +18,28 @@ import { REVIEW_ROUTE_PARAMS } from '../review.routes';
   templateUrl: './review-detail.html',
   styleUrl: './review-detail.scss',
 })
-export class ReviewDetail implements OnInit {
+export class ReviewDetail {
   private readonly _reviewFacade = inject(ReviewFacade);
   private readonly _route = inject(ActivatedRoute);
   private readonly _router = inject(Router);
 
-  private readonly _taskId = this._route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.taskId);
-  private readonly _reviewId = this._route.snapshot.paramMap.get(REVIEW_ROUTE_PARAMS.reviewId);
+  private readonly _reviewId = toSignal(
+    this._route.paramMap.pipe(map((params) => params.get(REVIEW_ROUTE_PARAMS.reviewId))),
+  );
 
-  readonly currentReviewData = this._reviewFacade.getCurrentReview(this._reviewId, this._taskId);
+  readonly currentReviewData = computed(() => this._reviewFacade.review());
   readonly submittedBy = signal<string | null>(null);
   readonly reviewer = signal<string | null>(null);
 
   constructor() {
+    // CurrentReviewData
+    effect(() => {
+      const reviewId = this._reviewId();
+      if (!reviewId) return;
+
+      this._reviewFacade.setReviewid(reviewId);
+    });
+
     // SubmittedByData
     effect(async () => {
       const submittedById = this.currentReviewData()?.submittedById;
@@ -59,13 +69,6 @@ export class ReviewDetail implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    const taskId = this._taskId;
-    if (!taskId) return;
-
-    this._reviewFacade.selectTaskId(taskId);
-  }
-
   getUserById(userId: string | undefined): Promise<UserModel | null> {
     if (!userId) return Promise.resolve(null);
 
@@ -80,8 +83,8 @@ export class ReviewDetail implements OnInit {
   }
 
   async onJudgement(action: Extract<TaskActionModel, 'APPROVE' | 'REJECT'>): Promise<void> {
-    const taskId = this._taskId;
-    const reviewId = this._reviewId;
+    const taskId = this.currentReviewData()?.taskId;
+    const reviewId = this._reviewId();
     if (!taskId || !reviewId) {
       throw new Error('taskId or reviewId is missing cannot process review judgement');
     }
