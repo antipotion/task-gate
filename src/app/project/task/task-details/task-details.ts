@@ -3,7 +3,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -20,15 +19,7 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
 
 @Component({
   selector: 'app-task-details',
-  imports: [
-    TaskHeader,
-    TaskOverview,
-    TaskAction,
-    MatIconModule,
-    MatButtonModule,
-    Loading,
-    MatMenuModule,
-  ],
+  imports: [TaskHeader, TaskOverview, TaskAction, MatIconModule, MatButtonModule, Loading],
   templateUrl: './task-details.html',
   styleUrl: './task-details.scss',
 })

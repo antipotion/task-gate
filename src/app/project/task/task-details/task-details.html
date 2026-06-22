@@ -18,16 +18,11 @@
           Edit
         </button>
 
-        <button matIconButton>
-          <mat-icon fontIcon="more_vert"></mat-icon>
+        <!-- Task delete button -->
+        <button matButton class="mat-error-state" (click)="openConfirmDeleteDialog()">
+          <mat-icon fontIcon="delete"></mat-icon>
+          Delete
         </button>
-
-        <mat-menu #moreMenu="matMenu">
-          <!-- Task delete button -->
-          <button mat-menu-item class="mat-error-state" (click)="openConfirmDeleteDialog()">
-            Delete
-          </button>
-        </mat-menu>
       </div>
     </div>
 
