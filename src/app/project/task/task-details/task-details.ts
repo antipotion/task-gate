@@ -9,7 +9,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { Loading } from '../../../loading/loading';
-import { REVIEW_ROUTE_PARAMS } from '../review/review.routes';
 import { TaskAction } from '../task-action/task-action';
 import { TaskEdit } from '../task-edit/task-edit';
 import { TaskFacade } from '../task-facade';
@@ -63,6 +62,13 @@ export class TaskDetails {
       if (!taskId) return;
 
       this._taskFacade.setTaskIdData(taskId);
+    });
+
+    effect(() => {
+      const taskId = this.taskId();
+      if (!taskId) return;
+
+      this._taskFacade.setTaskIdForReviews(taskId);
     });
   }
 
@@ -142,8 +148,8 @@ export class TaskDetails {
   }
 
   onShowReviewList(): void {
-    this._router.navigate([REVIEW_ROUTE_PARAMS.review], {
-      relativeTo: this._route,
-    });
+    const taskId = this.taskId();
+
+    this._router.navigate([ROUTES_PARAMS.task, taskId, TASK_ROUTE_PARAMS.reviewList]);
   }
 }

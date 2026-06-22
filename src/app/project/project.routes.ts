@@ -8,6 +8,10 @@ export const PROJECT_ROUTE_PARAMS = {
   taskCategory: ':taskCategory',
 } as const;
 
+const PROJECT_ROUTE_HELPERS = {
+  taskCategory: `:${PROJECT_ROUTE_PARAMS.projectId}/:${PROJECT_ROUTE_PARAMS.taskCategory}`,
+} as const;
+
 export const projectRoutes: Routes = [
   {
     path: '',
@@ -27,15 +31,13 @@ export const projectRoutes: Routes = [
           import('./project-dashboard/project-details/project-details').then(
             (m) => m.ProjectDetails,
           ),
-        children: [
-          {
-            path: `:${PROJECT_ROUTE_PARAMS.taskCategory}`,
-            loadComponent: () =>
-              import('./project-task-category/project-task-category').then(
-                (m) => m.ProjectTaskCategory,
-              ),
-          },
-        ],
+      },
+      {
+        path: PROJECT_ROUTE_HELPERS.taskCategory,
+        loadComponent: () =>
+          import('./project-task-category/project-task-category').then(
+            (m) => m.ProjectTaskCategory,
+          ),
       },
     ],
   },

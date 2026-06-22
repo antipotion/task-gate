@@ -7,6 +7,7 @@ export const ROUTES_PARAMS = {
   project: 'project',
   task: 'task',
   teams: 'teams',
+  review: 'review',
 } as const;
 
 export const routes: Routes = [
@@ -33,6 +34,11 @@ export const routes: Routes = [
   {
     path: ROUTES_PARAMS.teams,
     loadChildren: () => import('./team/team.routes').then((m) => m.TeamRoutes),
+    canMatch: [authGuard],
+  },
+  {
+    path: ROUTES_PARAMS.review,
+    loadChildren: () => import('./project/task/review/review.routes').then((m) => m.reviewRoutes),
     canMatch: [authGuard],
   },
 ];

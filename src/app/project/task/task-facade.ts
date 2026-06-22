@@ -27,6 +27,8 @@ export class TaskFacade {
     return this._storeService.getTaskById(taskId)();
   });
 
+  readonly taskReviews = computed(() => this._reviewStore.taskReviews());
+
   readonly taskDataById = computed(() => this._storeService.taskDataById());
 
   selectTaskId(taskId: string): void {
@@ -70,5 +72,9 @@ export class TaskFacade {
 
   setTaskIdData(taskId: string): void {
     this._storeService.setTaskId(taskId);
+  }
+
+  setTaskIdForReviews(taskId: string): void {
+    this._reviewStore.setTaskId(taskId);
   }
 }
