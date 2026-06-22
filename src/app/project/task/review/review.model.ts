@@ -8,6 +8,17 @@ export interface ReviewModel {
   submittedById: string;
   submittedAt: Date | FieldValue;
   reviewerId: string;
-  closedDate: Date | FieldValue | null;
+  closedDate: Date | null;
+  closeStatus: Extract<TaskStatus, 'APPROVED' | 'REJECTED'> | null;
+}
+
+export interface ReviewModelDTO {
+  id: string;
+  taskId: string;
+  proofUrls: string[];
+  submittedById: string;
+  submittedAt: Date | FieldValue;
+  reviewerId: string;
+  closedDate: FieldValue | null;
   closeStatus: Extract<TaskStatus, 'APPROVED' | 'REJECTED'> | null;
 }

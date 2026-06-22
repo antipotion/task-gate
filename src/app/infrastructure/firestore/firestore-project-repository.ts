@@ -23,8 +23,8 @@ import { Observable, of } from 'rxjs';
 import { db } from '../../../environment/firebase.config';
 import { UserModel } from '../../authentication/auth.model';
 import type { Project } from '../../project/project.model';
-import { CommentModel } from '../../project/task/review/comment/comment.model';
-import { ReviewModel } from '../../project/task/review/review.model';
+import { CommentModel, CommentModelDTO } from '../../project/task/review/comment/comment.model';
+import { ReviewModel, ReviewModelDTO } from '../../project/task/review/review.model';
 import type { Task } from '../../project/task/task.model';
 import { TeamModel } from '../../team/team.model';
 
@@ -181,10 +181,10 @@ export class FirestoreProjectRepository {
         (snapshot: QuerySnapshot<DocumentData>) => {
           const comments = snapshot.docs.map((doc) => this._mapToComment(doc));
           comments.sort((a, b) => {
-            const createdA = a.createdAt as Date;
-            const createdB = b.createdAt as Date;
+            const createdA = a.createdAt;
+            const createdB = b.createdAt;
 
-            return createdA?.getTime() - createdB?.getTime();
+            return createdA.getTime() - createdB.getTime();
           });
 
           subscriber.next(comments);
@@ -291,22 +291,22 @@ export class FirestoreProjectRepository {
     return deleteDoc(ref);
   }
 
-  async addReview(data: Omit<ReviewModel, 'id' | 'submittedAt'>): Promise<string> {
-    const withSubmittedAt: Omit<ReviewModel, 'id'> = { ...data, submittedAt: serverTimestamp() };
+  async addReview(data: Omit<ReviewModelDTO, 'id' | 'submittedAt'>): Promise<string> {
+    const withSubmittedAt: Omit<ReviewModelDTO, 'id'> = { ...data, submittedAt: serverTimestamp() };
 
     const result = await addDoc(this._reviewsCollection, withSubmittedAt);
     return result.id;
   }
 
-  async closeReview(reviewId: string, data: Pick<ReviewModel, 'closeStatus'>): Promise<void> {
+  async closeReview(reviewId: string, data: Pick<ReviewModelDTO, 'closeStatus'>): Promise<void> {
     const reviewRef = doc(this._reviewsCollection, reviewId);
     const withClosedDate = { ...data, closedDate: serverTimestamp() };
 
     return await updateDoc(reviewRef, { ...withClosedDate });
   }
 
-  async addComment(data: Omit<CommentModel, 'id' | 'createdAt'>): Promise<string> {
-    const withCreatedAt: Omit<CommentModel, 'id'> = { ...data, createdAt: serverTimestamp() };
+  async addComment(data: Omit<CommentModelDTO, 'id' | 'createdAt'>): Promise<string> {
+    const withCreatedAt: Omit<CommentModelDTO, 'id'> = { ...data, createdAt: serverTimestamp() };
 
     const result = await addDoc(this._commentsCollection, withCreatedAt);
     return result.id;

@@ -6,5 +6,14 @@ export interface CommentModel {
   reviewId: string;
   authorId: string;
   content: string;
-  createdAt: Date | FieldValue;
+  createdAt: Date;
+}
+
+export interface CommentModelDTO {
+  id: string;
+  taskId: string;
+  reviewId: string;
+  authorId: string;
+  content: string;
+  createdAt: FieldValue;
 }
