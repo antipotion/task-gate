@@ -1,21 +1,20 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../../app.routes';
 import { UserModel } from '../../../../authentication/auth.model';
-import { Comment } from '../../../review/comment/comment';
-import { ReviewResource } from '../../../review/review-resource/review-resource';
 import { TaskActionModel } from '../../task.model';
 import { ReviewFacade } from '../review-facade/review-facade';
 import { ReviewHero } from '../review-hero/review-hero';
+import { ReviewResource } from '../review-resource/review-resource';
 import { REVIEW_ROUTE_PARAMS } from '../review.routes';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-review-detail',
-  imports: [ReviewHero, ReviewResource, Comment, MatButtonModule, MatIconModule],
+  imports: [ReviewHero, ReviewResource, MatButtonModule, MatIconModule],
   templateUrl: './review-detail.html',
   styleUrl: './review-detail.scss',
 })
@@ -94,5 +93,9 @@ export class ReviewDetail {
 
     this._reviewFacade.advanceTaskState(action);
     this._router.navigate([ROUTES_PARAMS.task, taskId]);
+  }
+
+  onShowDiscussion(): void {
+    this._router.navigate([REVIEW_ROUTE_PARAMS.discussion], { relativeTo: this._route });
   }
 }

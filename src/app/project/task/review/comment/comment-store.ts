@@ -1,8 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, switchMap } from 'rxjs';
-import { FirestoreProjectRepository } from '../../../infrastructure/firestore/firestore-project-repository';
 import { CommentModel } from './comment.model';
+import { FirestoreProjectRepository } from '../../../../infrastructure/firestore/firestore-project-repository';
 
 @Injectable({
   providedIn: 'root',

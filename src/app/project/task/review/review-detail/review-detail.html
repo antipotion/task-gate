@@ -9,7 +9,7 @@
   />
   <app-review-resource [proofUrls]="currentReviewData?.proofUrls" />
 
-  <button matButton>
+  <button matButton (click)="onShowDiscussion()">
     <mat-icon fontIcon="chat"></mat-icon>
     Show Discussion
   </button>

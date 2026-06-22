@@ -7,8 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute } from '@angular/router';
 import { FieldValue } from 'firebase/firestore';
-import { REVIEW_ROUTE_PARAMS } from '../../task/review/review.routes';
-import { TASK_ROUTE_PARAMS } from '../../task/task.routes';
+import { TASK_ROUTE_PARAMS } from '../../task.routes';
+import { REVIEW_ROUTE_PARAMS } from '../review.routes';
 import { CommentFacade } from './comment-facade';
 
 @Component({
