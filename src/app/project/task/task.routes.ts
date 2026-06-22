@@ -6,7 +6,7 @@ export const TASK_ROUTE_PARAMS = {
   reviewList: 'reviewList',
 } as const;
 
-export const TASK_ROUTE_HELPERS = {
+const TASK_ROUTE_HELPERS = {
   taskReviewList: `:${TASK_ROUTE_PARAMS.taskId}/${TASK_ROUTE_PARAMS.reviewList}`,
 } as const;
 
