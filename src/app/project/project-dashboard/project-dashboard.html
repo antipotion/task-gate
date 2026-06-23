@@ -59,7 +59,7 @@
                     <mat-card class="relative flex flex-col gap-4 pb-4">
                       <mat-card-header>
                         <mat-card-title>
-                          <div class="truncate max-w-40">
+                          <div class="truncate max-w-[12ch]">
                             {{ project.name }}
                           </div>
                         </mat-card-title>
@@ -68,8 +68,12 @@
                         @let teamsMapCollection = this.teamsMapCollection();
                         <!-- Project team and dates -->
                         <div class="flex gap-2 items-center">
-                          <p class="w-8 text-nowrap overflow-hidden mat-font-label-sm">
-                            {{ teamsMapCollection.get(project.teamId) ?? 'none' | uppercase }}
+                          <p class="text-nowrap overflow-hidden mat-font-label-sm">
+                            {{
+                              teamsMapCollection.get(project.teamId) ?? 'none'
+                                | slice: 0 : 4
+                                | uppercase
+                            }}
                           </p>
 
                           <p>|</p>

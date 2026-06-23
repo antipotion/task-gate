@@ -2,7 +2,7 @@
   <header class="flex justify-between">
     <!-- Expand/collapse button -->
     @let isMenuExpanded = this.isMenuExpanded();
-    <button matIconButton class="ml-2" (click)="toggleIsMenuExpanded()">
+    <button matIconButton class="ml-6" (click)="toggleIsMenuExpanded()">
       <mat-icon [fontIcon]="isMenuExpanded ? 'menu_open' : 'menu'"></mat-icon>
     </button>
 
@@ -21,7 +21,7 @@
   </header>
 
   <div class="flex gap-6 h-full">
-    <aside class="w-fit flex flex-col gap-8 items-center">
+    <aside class="w-fit flex flex-col gap-8 items-center px-4">
       <!-- Create project button -->
       @if (isMenuExpanded) {
         <ng-content select="[fab-extended]"></ng-content>
@@ -65,7 +65,6 @@
           </div>
         }
 
-        
         <!-- Account -->
         @if (isMenuExpanded) {
           <div class="flex flex-col gap-1 mat-neutral-state">
@@ -93,14 +92,18 @@
       }"
     >
       <!-- Primary -->
-      <section class="mat-bg-surface-container-lowest mat-corner-sm overflow-y-auto">
-        <ng-content select="[primary]"></ng-content>
+      <section class="mat-bg-surface-container-lowest mat-corner-sm max-h-[90vh]">
+        <div class="overflow-y-auto h-full">
+          <ng-content select="[primary]"></ng-content>
+        </div>
       </section>
 
       @if (withSecondary()) {
         <!-- Secondary -->
-        <section class="mat-bg-surface-container-lowest mat-corner-sm overflow-y-auto">
-          <ng-content select="[secondary]"></ng-content>
+        <section class="mat-bg-surface-container-lowest mat-corner-sm max-h-[90vh]">
+          <div class="overflow-y-auto h-full">
+            <ng-content select="[secondary]"></ng-content>
+          </div>
         </section>
       }
     </div>

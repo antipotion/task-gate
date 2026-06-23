@@ -15,8 +15,8 @@ import { TEAM_ROUTE_PARAMS } from '../team/team.routes';
 export class NavigationService {
   private readonly _route = inject(ActivatedRoute);
   private readonly _breakpointObserver = inject(BreakpointObserver);
-  
-  private readonly mobileScreen = '(max-width: 768px)';
+
+  private readonly mobileScreen = '(max-width: 760px)';
 
   readonly isMobileScreen = toSignal(
     this._breakpointObserver.observe(this.mobileScreen).pipe(map((state) => state.matches)),

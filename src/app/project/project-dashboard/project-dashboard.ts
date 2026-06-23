@@ -1,4 +1,4 @@
-import { DatePipe, NgClass, TitleCasePipe, UpperCasePipe } from '@angular/common';
+import { DatePipe, NgClass, SlicePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -25,6 +25,7 @@ import { PROJECT_ROUTE_PARAMS } from '../project.routes';
     TitleCasePipe,
     UpperCasePipe,
     MatProgressSpinner,
+    SlicePipe,
   ],
   templateUrl: './project-dashboard.html',
   styleUrl: './project-dashboard.scss',
