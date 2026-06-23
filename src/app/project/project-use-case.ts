@@ -3,7 +3,7 @@ import { AuthStore } from '../authentication/auth-store';
 import { FirestoreProjectRepository } from '../infrastructure/firestore/firestore-project-repository';
 import type { Project } from './project.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProjectUseCase {
   private readonly _repo = inject(FirestoreProjectRepository);
   private readonly _authStore = inject(AuthStore);

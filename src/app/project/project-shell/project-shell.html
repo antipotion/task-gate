@@ -1,0 +1,24 @@
+@if (isMobile()) {
+  <app-mobile-shell>
+    <app-project-dashboard primary />
+
+    <!-- Fab button -->
+    <button matFab fab>
+      <mat-icon fontIcon="add"></mat-icon>
+    </button>
+  </app-mobile-shell>
+} @else {
+  <app-tablet-shell>
+    <app-project-dashboard primary />
+
+    <!-- Fab buttons -->
+    <button matFab fab>
+      <mat-icon fontIcon="add"></mat-icon>
+    </button>
+    
+    <button matFab extended fab-extended>
+      <mat-icon fontIcon="add"></mat-icon>
+      Create Project
+    </button>
+  </app-tablet-shell>
+}

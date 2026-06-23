@@ -1,6 +1,6 @@
 import type { Routes } from '@angular/router';
-import { Project } from './project';
 import { ProjectDashboard } from './project-dashboard/project-dashboard';
+import { ProjectShell } from './project-shell/project-shell';
 
 export const PROJECT_ROUTE_PARAMS = {
   projectId: 'projectId',
@@ -15,7 +15,7 @@ const PROJECT_ROUTE_HELPERS = {
 export const projectRoutes: Routes = [
   {
     path: '',
-    component: Project,
+    component: ProjectShell,
     children: [
       {
         path: '',

@@ -16,7 +16,7 @@ export type ProjectState =
   | { status: 'success'; data: Project[] }
   | { status: 'error'; error: string };
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProjectFacade {
   private readonly _storeService = inject(StoreService);
   private readonly _projectUseCase = inject(ProjectUseCase);

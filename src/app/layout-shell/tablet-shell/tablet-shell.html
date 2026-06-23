@@ -1,0 +1,108 @@
+<div class="mat-bg-surface-container h-full p-4 flex flex-col gap-2">
+  <header class="flex justify-between">
+    <!-- Expand/collapse button -->
+    @let isMenuExpanded = this.isMenuExpanded();
+    <button matIconButton class="ml-2" (click)="toggleIsMenuExpanded()">
+      <mat-icon [fontIcon]="isMenuExpanded ? 'menu_open' : 'menu'"></mat-icon>
+    </button>
+
+    <div class="flex gap-2">
+      <!-- Notification button -->
+      <button matIconButton>
+        <mat-icon fontIcon="notifications"></mat-icon>
+      </button>
+
+      <!-- Logout button -->
+      <button matButton class="mat-error-state">
+        <mat-icon fontIcon="logout"></mat-icon>
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <div class="flex gap-6 h-full">
+    <aside class="w-fit flex flex-col gap-8 items-center">
+      <!-- Create project button -->
+      @if (isMenuExpanded) {
+        <ng-content select="[fab-extended]"></ng-content>
+      } @else {
+        <ng-content select="[fab]"></ng-content>
+      }
+
+      <!-- Page main sections -->
+      <div class="flex flex-col gap-4 w-full">
+        <!-- Project dashboard -->
+        @if (isMenuExpanded) {
+          <div class="flex flex-col gap-1 mat-neutral-state">
+            <button matButton class="nowrap">
+              <mat-icon fontIcon="folder"></mat-icon>
+              Project Dashboard
+            </button>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-1 items-center">
+            <button matIconButton>
+              <mat-icon fontIcon="folder"></mat-icon>
+            </button>
+            <span class="mat-font-label-sm text-center">Projects</span>
+          </div>
+        }
+
+        <!-- Team dashboard -->
+        @if (isMenuExpanded) {
+          <div class="flex flex-col gap-1 mat-neutral-state">
+            <button matButton class="nowrap">
+              <mat-icon fontIcon="groups"></mat-icon>
+              Team Dashboard
+            </button>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-1 items-center">
+            <button matIconButton>
+              <mat-icon fontIcon="groups"></mat-icon>
+            </button>
+            <span class="mat-font-label-sm text-center">Teams</span>
+          </div>
+        }
+
+        
+        <!-- Account -->
+        @if (isMenuExpanded) {
+          <div class="flex flex-col gap-1 mat-neutral-state">
+            <button matButton class="nowrap">
+              <mat-icon fontIcon="account_circle"></mat-icon>
+              Account Settings
+            </button>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-1 items-center">
+            <button matIconButton>
+              <mat-icon fontIcon="account_circle"></mat-icon>
+            </button>
+            <span class="mat-font-label-sm text-center">Account</span>
+          </div>
+        }
+      </div>
+    </aside>
+
+    <div
+      class="grid w-full gap-4"
+      [ngClass]="{
+        'grid-cols-2': withSecondary(),
+        'grid-cols-1': !withSecondary(),
+      }"
+    >
+      <!-- Primary -->
+      <section class="mat-bg-surface-container-lowest mat-corner-sm overflow-y-auto">
+        <ng-content select="[primary]"></ng-content>
+      </section>
+
+      @if (withSecondary()) {
+        <!-- Secondary -->
+        <section class="mat-bg-surface-container-lowest mat-corner-sm overflow-y-auto">
+          <ng-content select="[secondary]"></ng-content>
+        </section>
+      }
+    </div>
+  </div>
+</div>

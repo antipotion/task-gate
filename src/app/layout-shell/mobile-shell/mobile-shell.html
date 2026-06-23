@@ -1,0 +1,53 @@
+<div class="mat-bg-surface-container w-full h-screen pt-2 pb-4 px-2 grid grid-rows-[auto_1fr_auto]">
+  <header class="flex items-center justify-end py-1">
+    <!-- Notification button -->
+    <button matIconButton>
+      <mat-icon fontIcon="notifications"></mat-icon>
+    </button>
+
+    <!-- Logout button -->
+    <button matButton class="mat-error-state">
+      <mat-icon fontIcon="logout"></mat-icon>
+      Logout
+    </button>
+  </header>
+
+  <!-- Primary content -->
+  <div class="mat-bg-surface-container-lowest h-[80vh] mat-corner-sm relative">
+    <div class="h-full overflow-y-auto">
+      <ng-content select="[primary]"></ng-content>
+    </div>
+
+    <!-- Fab button -->
+    <div class="absolute bottom-[2%] right-[4%]">
+      <ng-content select="[fab]"></ng-content>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <aside class="grid grid-cols-3 h-full place-items-center py-2">
+    <!-- Projects -->
+    <div class="flex flex-col gap-0.5 items-center">
+      <button matIconButton>
+        <mat-icon fontIcon="folders"></mat-icon>
+      </button>
+      <span class="mat-font-label-sm">Projects</span>
+    </div>
+
+    <!-- Teams -->
+    <div class="flex flex-col gap-0.5 items-center">
+      <button matIconButton>
+        <mat-icon fontIcon="groups"></mat-icon>
+      </button>
+      <span class="mat-font-label-sm">Teams</span>
+    </div>
+
+    <!-- Account -->
+    <div class="flex flex-col gap-0.5 items-center">
+      <button matIconButton>
+        <mat-icon fontIcon="account_circle"></mat-icon>
+      </button>
+      <span class="mat-font-label-sm">Account</span>
+    </div>
+  </aside>
+</div>
