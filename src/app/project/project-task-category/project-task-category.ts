@@ -51,4 +51,11 @@ export class ProjectTaskCategory {
   onSelectTask(taskId: string): void {
     this._router.navigate([ROUTES_PARAMS.task, taskId]);
   }
+
+  onBack(): void {
+    const projectId = this._projectId();
+    if (!projectId) return;
+
+    this._router.navigate([ROUTES_PARAMS.project, projectId]);
+  }
 }
