@@ -35,7 +35,7 @@ export class TaskFacade {
     this.selectedTaskId.set(taskId);
   }
 
-  addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
+  async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
     return this._taskUseCase.addTask(projectId, task);
   }
 

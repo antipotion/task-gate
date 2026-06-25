@@ -3,7 +3,7 @@
 @if (isLoading()) {
   <app-loading />
 } @else {
-  <div class="p-4 flex flex-col gap-4 w-full">
+  <div class="flex flex-col gap-8 w-full">
     <h1 class="mat-font-title-md">Project Dashboard</h1>
     <!-- Content -->
     <!-- Empty state -->
@@ -11,17 +11,18 @@
       <p>No projects found. Create a new project to get started or join a team!</p>
     } @else {
       <!-- Projects list -->
-      <ul class="flex flex-col gap-4">
+      <ul class="flex flex-col gap-4 md:grid md:grid-cols-2 2xl:grid-cols-3">
         @for (project of projects; track project.id) {
           <li>
             <div class="cursor-pointer" (click)="onClickProject(project.id)">
               <mat-card class="relative flex flex-col gap-4 pb-4">
                 <mat-card-header>
-                  <mat-card-title>
-                    <div class="truncate max-w-[12ch]">
-                      {{ project.name }}
-                    </div>
-                  </mat-card-title>
+                  <div class="grid grid-cols-[1fr_var(--status-badge-space)] w-full">
+                    <!-- Project title -->
+                    <p class="mat-font-title-lg truncate">{{ project.name }}</p>
+                    <!-- Empty div to consume the space reserved for absolute badges -->
+                    <div></div>
+                  </div>
                 </mat-card-header>
                 <mat-card-content>
                   <!-- Project team and dates -->

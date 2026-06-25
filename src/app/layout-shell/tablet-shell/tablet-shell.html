@@ -24,7 +24,9 @@
     <aside class="w-fit flex flex-col gap-8 items-center px-4">
       <!-- Create project button -->
       @if (isMenuExpanded) {
-        <ng-content select="[fab-extended]"></ng-content>
+        <div class="flex w-full">
+          <ng-content select="[fab-extended]"></ng-content>
+        </div>
       } @else {
         <ng-content select="[fab]"></ng-content>
       }
@@ -93,7 +95,7 @@
     >
       <!-- Primary -->
       <section class="mat-bg-surface-container-lowest mat-corner-sm max-h-[90vh]">
-        <div class="overflow-y-auto h-full">
+        <div class="overflow-y-auto h-full p-4">
           <ng-content select="[primary]"></ng-content>
         </div>
       </section>
@@ -101,7 +103,7 @@
       @if (withSecondary()) {
         <!-- Secondary -->
         <section class="mat-bg-surface-container-lowest mat-corner-sm max-h-[90vh]">
-          <div class="overflow-y-auto h-full">
+          <div class="overflow-y-auto h-full p-4">
             <ng-content select="[secondary]"></ng-content>
           </div>
         </section>

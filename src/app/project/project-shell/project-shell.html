@@ -1,10 +1,6 @@
 @if (isMobile()) {
   <app-mobile-shell>
-    @if (routeProjectId()) {
-      <app-project-details primary />
-    } @else {
-      <app-project-dashboard primary />
-    }
+    <app-project-dashboard primary />
     <!-- Fab create project button -->
     <button matFab fab (click)="onCreateProject()">
       <mat-icon fontIcon="add"></mat-icon>
@@ -19,7 +15,7 @@
       <mat-icon fontIcon="add"></mat-icon>
     </button>
 
-    <button matFab extended fab-extended (click)="onCreateProject()">
+    <button matFab extended fab-extended class="grow" (click)="onCreateProject()">
       <mat-icon fontIcon="add"></mat-icon>
       Create Project
     </button>

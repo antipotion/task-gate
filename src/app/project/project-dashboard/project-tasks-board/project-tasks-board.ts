@@ -3,6 +3,7 @@ import { Component, effect, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
+import { ROUTES_PARAMS } from '../../../app.routes';
 import { StoreService } from '../../../application/store/store-service';
 import { PROJECT_ROUTE_PARAMS } from '../../project-route/project.routes';
 import { TaskStatus } from '../../task/task.model';
@@ -42,6 +43,8 @@ export class ProjectTasksBoard {
   }
 
   onSelectCategory(category: TaskStatus): void {
-    this._router.navigate([category], { relativeTo: this._route });
+    const projectId = this.projectId();
+
+    this._router.navigate([ROUTES_PARAMS.project, projectId, category]);
   }
 }

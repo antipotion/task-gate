@@ -1,5 +1,4 @@
 import type { Routes } from '@angular/router';
-import { ProjectShell } from '../project-shell/project-shell';
 
 export const PROJECT_ROUTE_PARAMS = {
   projectId: 'projectId',
@@ -14,7 +13,6 @@ const PROJECT_ROUTE_HELPERS = {
 export const projectRoutes: Routes = [
   {
     path: '',
-    component: ProjectShell,
     children: [
       {
         path: '',
@@ -22,14 +20,13 @@ export const projectRoutes: Routes = [
       },
       {
         path: `:${PROJECT_ROUTE_PARAMS.projectId}`,
-        loadComponent: () => import('../project-shell/project-shell').then((m) => m.ProjectShell),
+        loadComponent: () =>
+          import('../project-detail-shell/project-detail-shell').then((m) => m.ProjectDetailShell),
       },
       {
         path: PROJECT_ROUTE_HELPERS.taskCategory,
         loadComponent: () =>
-          import('../project-task-category/project-task-category').then(
-            (m) => m.ProjectTaskCategory,
-          ),
+          import('../project-detail-shell/project-detail-shell').then((m) => m.ProjectDetailShell),
       },
     ],
   },

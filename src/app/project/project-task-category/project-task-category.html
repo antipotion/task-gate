@@ -1,12 +1,14 @@
 @let tasks = this.filteredTasks();
 @let category = this.category();
 
-<section class="flex flex-col gap-6 p-4">
+<section class="flex flex-col gap-6">
   <div class="flex gap-2 items-center">
-    <button matIconButton (click)="onBack()">
-      <mat-icon fontIcon="arrow_back"></mat-icon>
-    </button>
-    <h2 class="mat-font-title-md">{{ category | titlecase }}</h2>
+    @if (isMobile()) {
+      <button matIconButton (click)="onBack()">
+        <mat-icon fontIcon="arrow_back"></mat-icon>
+      </button>
+    }
+    <h2 class="mat-font-title-md">{{ category ?? 'TODO' | titlecase }}</h2>
   </div>
   <div class="flex flex-col gap-4">
     @if (!tasks || tasks.length === 0) {
@@ -14,7 +16,9 @@
     } @else {
       @for (task of tasks; track task.id) {
         <div
-          class="flex justify-between items-center mat-bg-surface-container-low p-4 mat-corner-sm mat-shadow-1"
+          class="flex justify-between items-center mat-bg-surface-container-low p-4 mat-corner-sm mat-shadow-1 hover:cursor-pointer interactive-item"
+          (click)="onSelectTask(task.id)"
+          matRipple
         >
           <div class="flex flex-col gap-2">
             <!-- Task info -->
@@ -38,11 +42,8 @@
             </div>
           </div>
 
-          <!-- More button -->
           <div>
-            <button matIconButton (click)="onSelectTask(task.id)">
-              <mat-icon fontIcon="arrow_forward"></mat-icon>
-            </button>
+            <mat-icon fontIcon="arrow_forward"></mat-icon>
           </div>
         </div>
       }

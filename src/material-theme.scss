@@ -145,3 +145,7 @@ p {
   --mat-menu-item-label-text-color: var(--mat-sys-on-surface-variant);
   --mat-button-text-label-text-color: var(--mat-sys-on-surface-variant);
 }
+
+.interactive-item:hover {
+  background-color: var(--mat-sys-primary-container);
+}

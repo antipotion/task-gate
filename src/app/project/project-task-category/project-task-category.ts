@@ -1,7 +1,8 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -12,11 +13,11 @@ import { Task } from '../task/task.model';
 
 @Component({
   selector: 'app-project-task-category',
-  imports: [TitleCasePipe, MatIconModule, NgClass, MatButtonModule],
+  imports: [TitleCasePipe, MatIconModule, NgClass, MatButtonModule, MatRippleModule],
   templateUrl: './project-task-category.html',
   styleUrl: './project-task-category.scss',
 })
-export class ProjectTaskCategory {
+export class ProjectTaskCategory implements OnDestroy {
   private readonly _projectFacade = inject(ProjectFacade);
   private readonly _route = inject(ActivatedRoute);
   private readonly _router = inject(Router);
@@ -32,6 +33,7 @@ export class ProjectTaskCategory {
   private readonly _tasks = computed(() => this._projectFacade.tasks());
 
   readonly filteredTasks = signal<Task[] | null>(null);
+  readonly isMobile = input<boolean>(false);
 
   constructor() {
     effect(() => {
@@ -41,7 +43,7 @@ export class ProjectTaskCategory {
       this._projectFacade.setProjectIdForTask(projectId);
 
       const tasks = this._tasks();
-      const category = this.category();
+      const category = this.category() ?? 'TODO';
       const filteredTasks = tasks?.filter((task) => task.status === category);
 
       this.filteredTasks.set(filteredTasks ?? null);
@@ -57,5 +59,9 @@ export class ProjectTaskCategory {
     if (!projectId) return;
 
     this._router.navigate([ROUTES_PARAMS.project, projectId]);
+  }
+
+  ngOnDestroy(): void {
+    this.filteredTasks.set(null);
   }
 }

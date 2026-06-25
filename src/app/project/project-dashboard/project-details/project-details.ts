@@ -13,8 +13,6 @@ import { ProjectFacade } from '../../project-facade/project-facade';
 import { ProjectStatusModel, type Project } from '../../project-model/project.model';
 import { PROJECT_ROUTE_PARAMS } from '../../project-route/project.routes';
 import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
-import { CreateTask } from '../../task/create-task/create-task';
-import { TaskFacade } from '../../task/task-facade';
 import { Task } from '../../task/task.model';
 import { ProjectHeader } from '../project-header/project-header';
 import { ProjectOverview } from '../project-overview/project-overview';
@@ -38,7 +36,6 @@ import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
 })
 export class ProjectDetails {
   private readonly _projectFacade = inject(ProjectFacade);
-  private readonly _taskFacade = inject(TaskFacade);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _dialog = inject(MatDialog);
@@ -139,18 +136,6 @@ export class ProjectDetails {
     dialogRef.afterClosed().subscribe((result) => {
       // TODO: Handle the result of the operation (e.g. Success | Error)
       this._projectFacade.updateProject(projectId, result);
-    });
-  }
-
-  openAddTaskDialog(): void {
-    const dialogRef = this._dialog.open(CreateTask);
-    const projectId = this._projectId();
-    if (!projectId) return;
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (!result) return;
-      // TODO: Handle the result of the operation (e.g. Success | Error)
-      this._taskFacade.addTask(projectId, result);
     });
   }
 

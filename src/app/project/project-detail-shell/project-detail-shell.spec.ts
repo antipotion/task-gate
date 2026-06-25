@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LayoutShell } from './layout-shell';
+import { ProjectDetailShell } from './project-detail-shell';
 
-describe('LayoutShell', () => {
-  let component: LayoutShell;
-  let fixture: ComponentFixture<LayoutShell>;
+describe('ProjectDetailShell', () => {
+  let component: ProjectDetailShell;
+  let fixture: ComponentFixture<ProjectDetailShell>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LayoutShell],
+      imports: [ProjectDetailShell],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LayoutShell);
+    fixture = TestBed.createComponent(ProjectDetailShell);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

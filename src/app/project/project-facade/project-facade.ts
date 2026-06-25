@@ -39,7 +39,6 @@ export class ProjectFacade {
   });
   readonly tasks = computed(() => this._taskFacade.tasks());
   readonly projects = computed(() => this._storeService.projects());
-  readonly routeProjectId = computed(() => this._navigationService.routeProjectId());
 
   private readonly selectedProjectId = signal<string | null>(null);
 
@@ -156,5 +155,9 @@ export class ProjectFacade {
 
   async getProjectTasks(projectId: string): Promise<Task[]> {
     return this._storeService.getProjectTasks(projectId);
+  }
+
+  async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
+    return this._taskFacade.addTask(projectId, task);
   }
 }
