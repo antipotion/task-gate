@@ -16,4 +16,5 @@ export type Project = {
   description: string | null;
   startDate: Date | null;
   deadline: Date | null;
+  status: ProjectStatusModel;
 };

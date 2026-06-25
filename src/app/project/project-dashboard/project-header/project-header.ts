@@ -1,7 +1,7 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { DeadlinePressureModel, ProjectStatusModel } from '../../project.model';
+import { DeadlinePressureModel, ProjectStatusModel } from '../../project-model/project.model';
 
 @Component({
   selector: 'app-project-header',

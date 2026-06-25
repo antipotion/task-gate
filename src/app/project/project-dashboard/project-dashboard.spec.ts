@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProjectFacade, ProjectState } from '../project-facade';
+import { ProjectFacade, ProjectState } from '../project-facade/project-facade';
 import { ProjectDashboard } from './project-dashboard';
 
 describe('ProjectDashboard', () => {

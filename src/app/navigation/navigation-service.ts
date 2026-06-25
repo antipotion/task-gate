@@ -4,7 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../app.routes';
-import { PROJECT_ROUTE_PARAMS } from '../project/project.routes';
+import { PROJECT_ROUTE_PARAMS } from '../project/project-route/project.routes';
 import { REVIEW_ROUTE_PARAMS } from '../project/task/review/review.routes';
 import { TASK_ROUTE_PARAMS } from '../project/task/task.routes';
 import { TEAM_ROUTE_PARAMS } from '../team/team.routes';

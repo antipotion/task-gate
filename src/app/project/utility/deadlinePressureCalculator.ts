@@ -1,4 +1,4 @@
-import { DeadlinePressureModel } from '../project.model';
+import { DeadlinePressureModel } from '../project-model/project.model';
 
 export function getDeadlinePressure(
   startDate: Date | null,

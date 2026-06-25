@@ -1,7 +1,7 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { FirebaseAuth } from '../../infrastructure/auth/firebase-auth';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
-import { TeamModel } from '../team.model';
+import { TeamModel } from '../team-model/team.model';
 
 @Injectable({
   providedIn: 'root',

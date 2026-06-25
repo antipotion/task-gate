@@ -23,11 +23,11 @@ import {
 import { Observable, of } from 'rxjs';
 import { db } from '../../../environment/firebase.config';
 import { UserModel } from '../../authentication/auth.model';
-import type { Project } from '../../project/project.model';
+import type { Project } from '../../project/project-model/project.model';
 import { CommentModel, CommentModelDTO } from '../../project/task/review/comment/comment.model';
 import { ReviewModel, ReviewModelDTO } from '../../project/task/review/review.model';
 import type { Task } from '../../project/task/task.model';
-import { TeamModel } from '../../team/team.model';
+import { TeamModel } from '../../team/team-model/team.model';
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +53,7 @@ export class FirestoreProjectRepository {
 
     return new Observable<Project[]>((subscriber) => {
       const unsubscribe = onSnapshot(
-          projectQuery,
+        projectQuery,
         (snapshot: QuerySnapshot<DocumentData>) => {
           const projects = snapshot.docs.map((doc) => this._mapToProject(doc));
 
@@ -89,9 +89,7 @@ export class FirestoreProjectRepository {
   }
 
   listenToTeams$(userId: string): Observable<TeamModel[]> {
-    console.log(userId);
     const teamsQuery = query(this._teamsCollection, where('memberIds', 'array-contains', userId));
-    console.log(userId);
 
     return new Observable<TeamModel[]>((subscriber) => {
       const unsubscribe = onSnapshot(
@@ -333,6 +331,7 @@ export class FirestoreProjectRepository {
       description: data['description'] ?? null,
       startDate: data['startDate']?.toDate() ?? null,
       deadline: data['deadline']?.toDate() ?? null,
+      status: data['status'] ?? 'not started',
     };
   }
 

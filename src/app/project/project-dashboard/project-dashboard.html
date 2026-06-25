@@ -1,102 +1,86 @@
+@let projects = this.projects();
+
 @if (isLoading()) {
   <app-loading />
 } @else {
-  @let state = projectsState();
-  @switch (state.status) {
-    @case ('loading') {
-      <div class="flex flex-col items-center justify-center gap-4 h-full">
-        <mat-spinner></mat-spinner>
-        <p>Fetching your projects...</p>
-      </div>
-    }
-    @case ('error') {
-      <p>{{ state.error }}</p>
-      <p>Failed to load projects.</p>
-    }
-    @case ('success') {
-      <div class="p-4 flex flex-col gap-4 w-full">
-        <h1 class="mat-font-title-md">Project Dashboard</h1>
-        <!-- Content -->
-        <!-- Empty state -->
-        @if (state.data.length === 0) {
-          <p>No projects found. Create a new project to get started or join a team!</p>
-        } @else {
-          <!-- Projects list -->
-          <ul class="flex flex-col gap-4">
-            @for (project of state.data; track project.id) {
-              <li>
-                <div class="cursor-pointer" (click)="onClickProject(project.id)">
-                  <mat-card class="relative flex flex-col gap-4 pb-4">
-                    <mat-card-header>
-                      <mat-card-title>
-                        <div class="truncate max-w-[12ch]">
-                          {{ project.name }}
-                        </div>
-                      </mat-card-title>
-                    </mat-card-header>
-                    <mat-card-content>
-                      @let teamsMapCollection = this.teamsMapCollection();
-                      <!-- Project team and dates -->
-                      <div class="flex gap-2 items-center">
-                        <p class="text-nowrap overflow-hidden mat-font-label-sm">
-                          {{
-                            teamsMapCollection.get(project.teamId) ?? 'none'
-                              | slice: 0 : 4
-                              | uppercase
-                          }}
-                        </p>
-
-                        <p>|</p>
-
-                        <p class="mat-font-label-sm">
-                          {{ project.deadline | date: 'MM/dd/yy' }}
-                        </p>
-                      </div>
-                    </mat-card-content>
-
-                    <!-- Project badges -->
-                    <div class="absolute flex flex-col top-4 right-4 gap-1 items-end">
-                      <!-- Project status -->
-                      @let getProject = this.projectsStatus().get(project.id);
-                      @let projectStatus = getProject;
-                      <div
-                        class="w-fit px-2 py-1 mat-corner-full"
-                        [ngClass]="{
-                          'bg-gray-200': projectStatus === 'not started' || !projectStatus,
-                          'bg-amber-200': projectStatus === 'in progress',
-                          'bg-green-200': projectStatus === 'completed',
-                        }"
-                      >
-                        @if (!projectStatus) {
-                          <mat-spinner diameter="16"></mat-spinner>
-                        }
-                        <p class="mat-font-label-sm">{{ projectStatus | titlecase }}</p>
-                      </div>
-
-                      <!-- Project deadline pressure -->
-                      @let projectDeadlinePressure =
-                        getProjectDeadlinePressure(project.startDate, project.deadline);
-                      <div
-                        class="px-2 py-1 mat-corner-full w-fit"
-                        [ngClass]="{
-                          'bg-gray-200': projectDeadlinePressure === 'unknown',
-                          'bg-green-200': projectDeadlinePressure === 'healthy',
-                          'bg-teal-200': projectDeadlinePressure === 'stable',
-                          'bg-amber-200': projectDeadlinePressure === 'warning',
-                          'bg-orange-200': projectDeadlinePressure === 'critical',
-                          'bg-red-200': projectDeadlinePressure === 'overdue',
-                        }"
-                      >
-                        <p class="mat-font-label-sm">{{ projectDeadlinePressure | titlecase }}</p>
-                      </div>
+  <div class="p-4 flex flex-col gap-4 w-full">
+    <h1 class="mat-font-title-md">Project Dashboard</h1>
+    <!-- Content -->
+    <!-- Empty state -->
+    @if (projects?.length === 0) {
+      <p>No projects found. Create a new project to get started or join a team!</p>
+    } @else {
+      <!-- Projects list -->
+      <ul class="flex flex-col gap-4">
+        @for (project of projects; track project.id) {
+          <li>
+            <div class="cursor-pointer" (click)="onClickProject(project.id)">
+              <mat-card class="relative flex flex-col gap-4 pb-4">
+                <mat-card-header>
+                  <mat-card-title>
+                    <div class="truncate max-w-[12ch]">
+                      {{ project.name }}
                     </div>
-                  </mat-card>
+                  </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  @let teamsMapCollection = this.teamsMapCollection();
+                  <!-- Project team and dates -->
+                  <div class="flex gap-2 items-center">
+                    <p class="text-nowrap overflow-hidden mat-font-label-sm">
+                      {{
+                        teamsMapCollection.get(project.teamId) ?? 'none' | slice: 0 : 4 | uppercase
+                      }}
+                    </p>
+
+                    <p>|</p>
+
+                    <p class="mat-font-label-sm">
+                      {{ project.deadline | date: 'MM/dd/yy' }}
+                    </p>
+                  </div>
+                </mat-card-content>
+
+                <!-- Project badges -->
+                <div class="absolute flex flex-col top-4 right-4 gap-1 items-end">
+                  <!-- Project status -->
+                  @let projectStatus = project.status;
+                  <div
+                    class="w-fit px-2 py-1 mat-corner-full"
+                    [ngClass]="{
+                      'bg-gray-200': projectStatus === 'not started' || !projectStatus,
+                      'bg-amber-200': projectStatus === 'in progress',
+                      'bg-green-200': projectStatus === 'completed',
+                    }"
+                  >
+                    @if (!projectStatus) {
+                      <mat-spinner diameter="16"></mat-spinner>
+                    }
+                    <p class="mat-font-label-sm">{{ projectStatus | titlecase }}</p>
+                  </div>
+
+                  <!-- Project deadline pressure -->
+                  @let projectDeadlinePressure =
+                    getProjectDeadlinePressure(project.startDate, project.deadline);
+                  <div
+                    class="px-2 py-1 mat-corner-full w-fit"
+                    [ngClass]="{
+                      'bg-gray-200': projectDeadlinePressure === 'unknown',
+                      'bg-green-200': projectDeadlinePressure === 'healthy',
+                      'bg-teal-200': projectDeadlinePressure === 'stable',
+                      'bg-amber-200': projectDeadlinePressure === 'warning',
+                      'bg-orange-200': projectDeadlinePressure === 'critical',
+                      'bg-red-200': projectDeadlinePressure === 'overdue',
+                    }"
+                  >
+                    <p class="mat-font-label-sm">{{ projectDeadlinePressure | titlecase }}</p>
+                  </div>
                 </div>
-              </li>
-            }
-          </ul>
+              </mat-card>
+            </div>
+          </li>
         }
-      </div>
+      </ul>
     }
-  }
+  </div>
 }

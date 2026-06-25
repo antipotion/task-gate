@@ -9,12 +9,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { Loading } from '../../../loading/loading';
-import { ProjectFacade } from '../../project-facade';
+import { ProjectFacade } from '../../project-facade/project-facade';
+import { ProjectStatusModel, type Project } from '../../project-model/project.model';
+import { PROJECT_ROUTE_PARAMS } from '../../project-route/project.routes';
 import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
-import { ProjectStatusModel, type Project } from '../../project.model';
-import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
 import { CreateTask } from '../../task/create-task/create-task';
 import { TaskFacade } from '../../task/task-facade';
+import { Task } from '../../task/task.model';
 import { ProjectHeader } from '../project-header/project-header';
 import { ProjectOverview } from '../project-overview/project-overview';
 import { ProjectTasksBoard } from '../project-tasks-board/project-tasks-board';
@@ -72,6 +73,28 @@ export class ProjectDetails {
 
       const projectStatus = this._projectFacade.getProjectStatus(projectId);
       this.projectStatus.set(projectStatus());
+    });
+
+    effect(() => {
+      const tasks = this._projectFacade.tasks();
+      const projectId = this._projectId();
+      const project = this.project();
+      if (!tasks || !projectId || !project) return;
+
+      // During navigation, the route's projectId updates before the task listener
+      // emits the new project's tasks. A debugger inspection showed that the effect
+      // can briefly observe the previous project's task list while projectId already
+      // points to the new project.
+      //
+      // projectId is the invariant linking tasks to a project. If no tasks match the
+      // current projectId, the task list is stale and the status computation is
+      // deferred until the new snapshot arrives.
+      const computedProjectStatus = computeProjectDashboardStatus(projectId, tasks);
+      console.log(`project status: ${project.status}, expected: ${computedProjectStatus}`);
+      if (project.status === computedProjectStatus || !computedProjectStatus) return;
+
+      console.log('project updated');
+      this._projectFacade.updateProject(projectId, { ...project, status: computedProjectStatus });
     });
   }
 
@@ -143,4 +166,25 @@ export class ProjectDetails {
   getProjectProgress(): number | null {
     return this._projectFacade.getProjectProgress();
   }
+}
+
+function computeProjectDashboardStatus(
+  projectId: string,
+  tasks: Task[],
+): ProjectStatusModel | null {
+  const projectTasks = tasks.filter((task) => task.projectId === projectId);
+
+  // No matching tasks indicates the current task list belongs to a previous
+  // project while the new Firestore listener is still synchronizing.
+  if (projectTasks.length === 0) return null;
+
+  if (projectTasks.every((task) => task.status === 'TODO')) {
+    return 'not started';
+  }
+
+  if (projectTasks.every((task) => task.status === 'APPROVED')) {
+    return 'completed';
+  }
+
+  return 'in progress';
 }

@@ -1,16 +1,18 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of, startWith } from 'rxjs';
-import { HistoryService } from '../application/history/history-service';
-import { StoreService } from '../application/store/store-service';
-import { AuthStore } from '../authentication/auth-store';
-import { NavigationService } from '../navigation/navigation-service';
-import { TeamModel } from '../team/team.model';
-import { ProjectUseCase } from './project-use-case';
-import type { DeadlinePressureModel, Project, ProjectStatusModel } from './project.model';
-import { TaskFacade } from './task/task-facade';
-import { Task } from './task/task.model';
-import { getDeadlinePressure } from './utility/deadlinePressureCalculator';
+import { HistoryService } from '../../application/history/history-service';
+import { StoreService } from '../../application/store/store-service';
+import { AuthStore } from '../../authentication/auth-store';
+import { NavigationService } from '../../navigation/navigation-service';
+import { TeamModel } from '../../team/team-model/team.model';
+import type {
+  DeadlinePressureModel,
+  Project,
+  ProjectStatusModel,
+} from '../project-model/project.model';
+import { ProjectUseCase } from '../project-usecase/project-use-case';
+import { TaskFacade } from '../task/task-facade';
+import { Task } from '../task/task.model';
+import { getDeadlinePressure } from '../utility/deadlinePressureCalculator';
 
 export type ProjectState =
   | { status: 'loading' }
@@ -36,30 +38,18 @@ export class ProjectFacade {
     return overdueTasks.length;
   });
   readonly tasks = computed(() => this._taskFacade.tasks());
-
-  readonly projectState = toSignal(
-    this._storeService.projects$.pipe(
-      map(
-        (projects): ProjectState => ({
-          status: 'success',
-          data: projects,
-        }),
-      ),
-      startWith({ status: 'loading' } as ProjectState),
-      catchError((error) => of({ status: 'error', error: String(error) } as ProjectState)),
-    ),
-    { initialValue: { status: 'loading' } },
-  );
+  readonly projects = computed(() => this._storeService.projects());
+  readonly routeProjectId = computed(() => this._navigationService.routeProjectId());
 
   private readonly selectedProjectId = signal<string | null>(null);
 
   readonly activeProject = computed<Project | null>(() => {
-    const state = this.projectState();
+    const projects = this.projects();
     const id = this.selectedProjectId();
 
-    if (state.status !== 'success' || !id) return null;
+    if (!projects || !id) return null;
 
-    return state.data.find((p) => p.id === id) ?? null;
+    return projects.find((p) => p.id === id) ?? null;
   });
 
   getProjectStatus(projectId: string): Signal<ProjectStatusModel | null> {
@@ -92,7 +82,7 @@ export class ProjectFacade {
     return getDeadlinePressure(startDate, deadline);
   }
 
-  addProject(project: Omit<Project, 'id' | 'creatorId'>): Promise<string> {
+  addProject(project: Omit<Project, 'id' | 'creatorId' | 'status'>): Promise<string> {
     return this._projectUseCase.addProject(project);
   }
 
@@ -101,11 +91,11 @@ export class ProjectFacade {
   }
 
   async updateProject(id: string, dto: Partial<Project>): Promise<void> {
-    const state = this.projectState();
+    const projects = this.projects();
 
-    if (state.status !== 'success') return;
+    if (!projects) return;
 
-    const project = state.data.find((project) => project.id === id);
+    const project = projects.find((project) => project.id === id);
     if (!project) {
       console.error('Project not found');
       return;

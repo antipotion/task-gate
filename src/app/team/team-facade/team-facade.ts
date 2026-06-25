@@ -1,23 +1,22 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
-import { StoreService } from '../../application/store/store-service';
 import { AuthStore } from '../../authentication/auth-store';
+import { TeamModel } from '../team-model/team.model';
+import { TeamStore } from '../team-store/team-store';
 import { TeamUsecase } from '../team-usecase/team-usecase';
-import { TeamModel } from '../team.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TeamFacade {
-  private readonly _store = inject(StoreService);
   private readonly _historyService = inject(HistoryService);
   private readonly _teamUseCase = inject(TeamUsecase);
   private readonly _authStore = inject(AuthStore);
+  private readonly _teamStore = inject(TeamStore);
 
   private readonly _teamName = signal<string | null>(null);
   readonly team = signal<TeamModel | null>(null);
-  readonly teams = toSignal<TeamModel[] | null>(this._store.teams$, { initialValue: null });
+  readonly teams = computed(() => this._teamStore.teamsList());
 
   goBack(): void {
     this._historyService.goBack();

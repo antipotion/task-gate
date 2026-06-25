@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { AuthStore } from '../../authentication/auth-store';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
-import { diff } from '../project-use-case';
+import { diff } from '../project-usecase/project-use-case';
 import type { Task, TaskActionModel, TaskStatus } from './task.model';
 
 @Injectable({

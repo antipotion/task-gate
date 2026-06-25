@@ -6,8 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../app.routes';
-import { ProjectFacade } from '../project-facade';
-import { PROJECT_ROUTE_PARAMS } from '../project.routes';
+import { ProjectFacade } from '../project-facade/project-facade';
+import { PROJECT_ROUTE_PARAMS } from '../project-route/project.routes';
 import { Task } from '../task/task.model';
 
 @Component({

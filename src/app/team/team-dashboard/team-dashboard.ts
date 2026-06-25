@@ -7,7 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TeamFacade } from '../team-facade/team-facade';
-import { TeamModel } from '../team.model';
+import { TeamModel } from '../team-model/team.model';
 import { TeamDashboardHeader } from './team-dashboard-header/team-dashboard-header';
 
 @Component({

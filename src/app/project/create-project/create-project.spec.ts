@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { ProjectFacade } from '../project-facade';
+import { ProjectFacade } from '../project-facade/project-facade';
 import { CreateProject } from './create-project';
 
 describe('CreateProject', () => {

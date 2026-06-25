@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../app.routes';
-import { ProjectFacade } from '../../project/project-facade';
+import { ProjectFacade } from '../../project/project-facade/project-facade';
 
 @Component({
   selector: 'app-mobile-shell',

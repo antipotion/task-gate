@@ -1,7 +1,7 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
 import { Component, effect, input, signal } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { DeadlinePressureModel } from '../../project.model';
+import { DeadlinePressureModel } from '../../project-model/project.model';
 import { getDeadlinePressure } from '../../utility/deadlinePressureCalculator';
 
 @Component({

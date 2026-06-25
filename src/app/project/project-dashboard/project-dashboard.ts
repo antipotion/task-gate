@@ -6,8 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Loading } from '../../loading/loading';
-import { ProjectFacade } from '../project-facade';
-import { Project, ProjectStatusModel } from '../project.model';
+import { ProjectFacade } from '../project-facade/project-facade';
+import { ProjectStatusModel } from '../project-model/project.model';
 
 @Component({
   selector: 'app-project-dashboard',
@@ -32,7 +32,7 @@ export class ProjectDashboard {
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
 
-  readonly projectsState = computed(() => this._projectFacade.projectState());
+  readonly projects = computed(() => this._projectFacade.projects());
   readonly isLoading = signal<boolean>(false);
   readonly teamId = signal<string | null>(null);
   readonly currentTeam = computed(() => {
@@ -42,14 +42,12 @@ export class ProjectDashboard {
     return this._projectFacade.getTeamById(teamId);
   });
   readonly teamsMapCollection = signal<Map<string, string>>(new Map());
-  readonly projectsStatus = signal<Map<string, ProjectStatusModel | null>>(new Map());
 
   constructor() {
     effect(async () => {
-      const projectStatus = this.projectsState();
-      if (projectStatus.status !== 'success') return;
+      const projects = this.projects();
+      if (!projects) return;
 
-      const projects: Project[] = projectStatus.data;
       for (const project of projects) {
         const teamId = project.teamId;
 
@@ -69,23 +67,6 @@ export class ProjectDashboard {
           return newTeams;
         });
       }
-    });
-
-    effect(async () => {
-      const projectsState = this.projectsState();
-      if (projectsState.status !== 'success') return;
-
-      const projects: Project[] = projectsState.data;
-
-      const newProjects = new Map<string, ProjectStatusModel | null>();
-
-      for (const project of projects) {
-        const projectId = project.id;
-        const status = await this.getProjectStatus(projectId);
-        newProjects.set(projectId, status);
-      }
-
-      this.projectsStatus.set(newProjects);
     });
   }
 

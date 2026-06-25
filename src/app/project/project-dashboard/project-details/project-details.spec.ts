@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { signal } from '@angular/core';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
-import { ProjectFacade } from '../../project-facade';
+import { ProjectFacade } from '../../project-facade/project-facade';
 import { Project } from '../../project.model';
 import { ProjectDetails } from './project-details';
 
