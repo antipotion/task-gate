@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, shareReplay, switchMap, type Observable } from 'rxjs';
+import { filter, shareReplay, switchMap, tap, type Observable } from 'rxjs';
 import { AuthStore } from '../../authentication/auth-store';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 import type { Project } from '../../project/project.model';
@@ -34,7 +34,12 @@ export class StoreService {
   );
 
   readonly projects$: Observable<Project[]> = this.teams$.pipe(
-    switchMap((teams) => this._repo.listenToProjects$(teams)),
+    tap(() => console.log('teams emitted')),
+    switchMap((teams) => {
+      console.log(teams);
+
+      return this._repo.listenToProjects$(teams);
+    }),
     shareReplay({ bufferSize: 1, refCount: true }),
   );
 

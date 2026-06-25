@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { UserCredential } from 'firebase/auth';
 import { AuthStore } from './auth-store';
 import { AuthUseCase } from './auth-use-case';
@@ -11,6 +11,7 @@ export class AuthFacade {
 
   readonly userRole = signal<RoleModel | null>(null);
   readonly user = signal<UserModel | null>(null);
+  readonly isAuthenticated = computed(() => this._authStore.isAuthenticated());
 
   async loginWithEmailAndPassword(email: string, password: string): Promise<UserCredential> {
     return this._authUseCase.login(email, password);

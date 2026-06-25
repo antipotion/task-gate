@@ -53,7 +53,7 @@ export class FirestoreProjectRepository {
 
     return new Observable<Project[]>((subscriber) => {
       const unsubscribe = onSnapshot(
-        projectQuery,
+          projectQuery,
         (snapshot: QuerySnapshot<DocumentData>) => {
           const projects = snapshot.docs.map((doc) => this._mapToProject(doc));
 
@@ -89,7 +89,9 @@ export class FirestoreProjectRepository {
   }
 
   listenToTeams$(userId: string): Observable<TeamModel[]> {
+    console.log(userId);
     const teamsQuery = query(this._teamsCollection, where('memberIds', 'array-contains', userId));
+    console.log(userId);
 
     return new Observable<TeamModel[]>((subscriber) => {
       const unsubscribe = onSnapshot(

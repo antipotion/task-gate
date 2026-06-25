@@ -2,8 +2,8 @@
   <app-mobile-shell>
     <app-project-dashboard primary />
 
-    <!-- Fab button -->
-    <button matFab fab>
+    <!-- Fab create project button -->
+    <button matFab fab (click)="onCreateProject()">
       <mat-icon fontIcon="add"></mat-icon>
     </button>
   </app-mobile-shell>
@@ -11,12 +11,12 @@
   <app-tablet-shell>
     <app-project-dashboard primary />
 
-    <!-- Fab buttons -->
-    <button matFab fab>
+    <!-- Fab create project buttons -->
+    <button matFab fab (click)="onCreateProject()">
       <mat-icon fontIcon="add"></mat-icon>
     </button>
-    
-    <button matFab extended fab-extended>
+
+    <button matFab extended fab-extended (click)="onCreateProject()">
       <mat-icon fontIcon="add"></mat-icon>
       Create Project
     </button>

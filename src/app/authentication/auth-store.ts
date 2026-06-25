@@ -14,6 +14,7 @@ export class AuthStore {
   private readonly _repo = inject(FirestoreProjectRepository);
   private readonly _firebaseAuth = inject(FirebaseAuth);
 
+  readonly isAuthenticated = computed(() => this._firebaseAuth.isAuthenticated());
   readonly userId = computed<string | null>(() => this._firebaseAuth.userId());
   readonly userData = toSignal(
     toObservable(this.userId).pipe(

@@ -1,28 +1,29 @@
-import { Component, computed, inject } from '@angular/core';
-import { NavigationService } from '../../navigation/navigation-service';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../app.routes';
+import { ProjectFacade } from '../../project/project-facade';
 
 @Component({
   selector: 'app-mobile-shell',
-  imports: [MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './mobile-shell.html',
   styleUrl: './mobile-shell.scss',
 })
 export class MobileShell {
-  private readonly _navigationService = inject(NavigationService);
+  private readonly _projectFacade = inject(ProjectFacade);
+  private readonly _destroyRef = inject(DestroyRef);
+  private readonly _router = inject(Router);
 
-  readonly routeProject = computed(() => this._navigationService.routeProject());
-  readonly routeProjectId = computed(() => this._navigationService.routeProjectId());
-  readonly routeProjectTaskCategory = computed(() =>
-    this._navigationService.routeProjectTaskCategory(),
-  );
-  readonly routeTask = computed(() => this._navigationService.routeTask());
-  readonly routeTaskId = computed(() => this._navigationService.routeTaskId());
-  readonly routeTaskReviewList = computed(() => this._navigationService.routeTaskReviewList());
-  readonly routeTeam = computed(() => this._navigationService.routeTeam());
-  readonly routeTeamId = computed(() => this._navigationService.routeTeamId());
-  readonly routeReview = computed(() => this._navigationService.routeReview());
-  readonly routeReviewId = computed(() => this._navigationService.routeReviewId());
-  readonly routeDiscussion = computed(() => this._navigationService.routeDiscussion());
+  readonly logoutLoading = signal<boolean>(false);
+
+  async onLogout(): Promise<void> {
+    this.logoutLoading.set(true);
+    await this._projectFacade.logout();
+    this._router.navigate([ROUTES_PARAMS.auth]);
+
+    this._destroyRef.onDestroy(() => this.logoutLoading.set(false));
+  }
 }

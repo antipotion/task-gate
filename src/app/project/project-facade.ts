@@ -4,6 +4,7 @@ import { catchError, map, of, startWith } from 'rxjs';
 import { HistoryService } from '../application/history/history-service';
 import { StoreService } from '../application/store/store-service';
 import { AuthStore } from '../authentication/auth-store';
+import { NavigationService } from '../navigation/navigation-service';
 import { TeamModel } from '../team/team.model';
 import { ProjectUseCase } from './project-use-case';
 import type { DeadlinePressureModel, Project, ProjectStatusModel } from './project.model';
@@ -23,6 +24,9 @@ export class ProjectFacade {
   private readonly _authStore = inject(AuthStore);
   private readonly _taskFacade = inject(TaskFacade);
   private readonly _historyService = inject(HistoryService);
+  private readonly _navigationService = inject(NavigationService);
+
+  readonly isMobileScreen = computed<boolean>(() => this._navigationService.isMobileScreen());
 
   readonly userFullName = computed<string | null>(() => this._authStore.userFullName());
   readonly tasksOverdueCount = computed<number | null>(() => {

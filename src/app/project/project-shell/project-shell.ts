@@ -1,10 +1,12 @@
 import { Component, computed, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MobileShell } from '../../layout-shell/mobile-shell/mobile-shell';
 import { TabletShell } from '../../layout-shell/tablet-shell/tablet-shell';
-import { NavigationService } from '../../navigation/navigation-service';
+import { CreateProject } from '../create-project/create-project';
 import { ProjectDashboard } from '../project-dashboard/project-dashboard';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { ProjectFacade } from '../project-facade';
 
 @Component({
   selector: 'app-project-shell',
@@ -13,7 +15,12 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './project-shell.scss',
 })
 export class ProjectShell {
-  private readonly _navigationService = inject(NavigationService);
+  private readonly _projectFacade = inject(ProjectFacade);
+  private readonly _dialog = inject(MatDialog);
 
-  readonly isMobile = computed<boolean>(() => this._navigationService.isMobileScreen());
+  readonly isMobile = computed<boolean>(() => this._projectFacade.isMobileScreen());
+
+  onCreateProject(): void {
+    this._dialog.open(CreateProject);
+  }
 }

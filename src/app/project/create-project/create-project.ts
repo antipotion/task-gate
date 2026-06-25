@@ -3,13 +3,15 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatButtonModule } from '@angular/material/button';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../app.routes';
 import { TeamStore } from '../../team/team-store/team-store';
 import { ProjectFacade } from '../project-facade';
 import type { Project } from '../project.model';
@@ -27,6 +29,7 @@ type CreateProjectState = 'idle' | 'loading';
     MatProgressSpinnerModule,
     MatIconModule,
     MatSelectModule,
+    MatDialogModule,
   ],
   templateUrl: './create-project.html',
   styleUrl: './create-project.scss',
@@ -34,10 +37,10 @@ type CreateProjectState = 'idle' | 'loading';
 })
 export class CreateProject {
   private readonly _router = inject(Router);
-  private readonly _route = inject(ActivatedRoute);
   private readonly _projectFacade = inject(ProjectFacade);
   private readonly _teamStore = inject(TeamStore);
   private readonly _snackBar = inject(MatSnackBar);
+  private readonly _dialogRef = inject(MatDialogRef<CreateProject>);
 
   readonly createProjectState = signal<CreateProjectState>('idle');
   readonly teams = computed(() => this._teamStore.teamsList());
@@ -95,7 +98,7 @@ export class CreateProject {
       // NOTE: Assumption for the navigation is that the parent is the project dashboard component route.
       // if this is violated -> change the `relativeTo` to align it
       // or make the path explicit
-      this._router.navigate([projectId], { relativeTo: this._route.parent });
+      this._router.navigate([ROUTES_PARAMS.project, projectId]);
     } catch (error) {
       console.error('Error creating project:', error);
 
@@ -104,10 +107,12 @@ export class CreateProject {
 
       this.createProjectState.set('idle');
       this.openSnackBar('Project creation failed');
+    } finally {
+      this.onNoClick();
     }
   }
 
-  onBack(): void {
-    this._projectFacade.goBack();
+  onNoClick(): void {
+    this._dialogRef.close();
   }
 }

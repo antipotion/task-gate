@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, inject, OnDestroy, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -6,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
+import { filter, firstValueFrom } from 'rxjs';
 import { ROUTES_PARAMS } from '../../app.routes';
 import { Disclaimer } from '../../disclaimer/disclaimer';
 import { AuthFacade } from '../auth-facade';
@@ -31,6 +33,7 @@ export class Login implements AfterViewInit, OnDestroy {
   private readonly _dialog = inject(MatDialog);
 
   readonly loggingInLoading = signal<boolean>(false);
+  readonly isAuthenticated$ = toObservable(this._authFacade.isAuthenticated);
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -56,6 +59,9 @@ export class Login implements AfterViewInit, OnDestroy {
 
     this.loggingInLoading.set(true);
     await this._authFacade.loginWithEmailAndPassword(email, password);
+
+    // Only truthy value passes the filter(Boolean)
+    await firstValueFrom(this.isAuthenticated$.pipe(filter(Boolean)));
 
     this._router.navigate([ROUTES_PARAMS.project]);
   }

@@ -1,3 +1,12 @@
+@if (logoutLoading()) {
+  <div
+    class="flex flex-col gap-4 items-center justify-center fixed h-full w-full z-999 mat-bg-surface-container"
+  >
+    <mat-spinner></mat-spinner>
+    <p>Logging out...</p>
+  </div>
+}
+
 <div class="mat-bg-surface-container w-full h-screen pt-2 pb-4 px-2 grid grid-rows-[auto_1fr_auto]">
   <header class="flex items-center justify-end py-1">
     <!-- Notification button -->
@@ -6,7 +15,7 @@
     </button>
 
     <!-- Logout button -->
-    <button matButton class="mat-error-state">
+    <button matButton class="mat-error-state" (click)="onLogout()">
       <mat-icon fontIcon="logout"></mat-icon>
       Logout
     </button>

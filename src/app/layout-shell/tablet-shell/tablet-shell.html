@@ -2,7 +2,7 @@
   <header class="flex justify-between">
     <!-- Expand/collapse button -->
     @let isMenuExpanded = this.isMenuExpanded();
-    <button matIconButton class="ml-6" (click)="toggleIsMenuExpanded()">
+    <button matIconButton class="ml-6" (click)="onToggleIsMenuExpanded()">
       <mat-icon [fontIcon]="isMenuExpanded ? 'menu_open' : 'menu'"></mat-icon>
     </button>
 

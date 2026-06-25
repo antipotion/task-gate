@@ -13,7 +13,7 @@ export class TabletShell {
   readonly withSecondary = input<boolean>(false);
   readonly isMenuExpanded = signal<boolean>(false);
 
-  toggleIsMenuExpanded(): void {
+  onToggleIsMenuExpanded(): void {
     this.isMenuExpanded.update((value) => !value);
   }
 }
