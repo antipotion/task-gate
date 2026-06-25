@@ -75,6 +75,7 @@ export class ProjectDetails {
       this.projectStatus.set(projectStatus());
     });
 
+    // Validate and update the project status for dashboard read
     effect(() => {
       const tasks = this._projectFacade.tasks();
       const projectId = this._projectId();
@@ -90,11 +91,26 @@ export class ProjectDetails {
       // current projectId, the task list is stale and the status computation is
       // deferred until the new snapshot arrives.
       const computedProjectStatus = computeProjectDashboardStatus(projectId, tasks);
-      console.log(`project status: ${project.status}, expected: ${computedProjectStatus}`);
       if (project.status === computedProjectStatus || !computedProjectStatus) return;
 
-      console.log('project updated');
       this._projectFacade.updateProject(projectId, { ...project, status: computedProjectStatus });
+    });
+
+    // Validate and update the team name for dashboard read
+    effect(async () => {
+      const project = this.project();
+      if (!project) return;
+      const projectId = project.id;
+
+      const teamId = project.teamId;
+      const projectTeamName = project.teamName;
+      const currentTeamData = await this._projectFacade.getTeamById(teamId);
+      if (!currentTeamData) return;
+      const currentTeamName = currentTeamData?.name;
+
+      if (projectTeamName === currentTeamName) return;
+
+      this._projectFacade.updateProject(projectId, { ...project, teamName: currentTeamName });
     });
   }
 

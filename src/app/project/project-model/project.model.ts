@@ -13,6 +13,7 @@ export type Project = {
   name: string;
   creatorId: string;
   teamId: string;
+  teamName: string;
   description: string | null;
   startDate: Date | null;
   deadline: Date | null;

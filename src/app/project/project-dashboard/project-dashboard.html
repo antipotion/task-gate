@@ -24,19 +24,16 @@
                   </mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
-                  @let teamsMapCollection = this.teamsMapCollection();
                   <!-- Project team and dates -->
                   <div class="flex gap-2 items-center">
                     <p class="text-nowrap overflow-hidden mat-font-label-sm">
-                      {{
-                        teamsMapCollection.get(project.teamId) ?? 'none' | slice: 0 : 4 | uppercase
-                      }}
+                      {{ project.teamName | slice: 0 : 4 | uppercase }}
                     </p>
 
                     <p>|</p>
 
                     <p class="mat-font-label-sm">
-                      {{ project.deadline | date: 'MM/dd/yy' }}
+                      {{ (project.deadline | date: 'MM/dd/yy') ?? 'No deadline' }}
                     </p>
                   </div>
                 </mat-card-content>
