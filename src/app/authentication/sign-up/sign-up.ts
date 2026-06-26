@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -17,8 +17,15 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './sign-up.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sign-up.scss',
 })
 export class SignUp implements OnDestroy {

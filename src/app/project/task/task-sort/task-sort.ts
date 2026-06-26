@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import type { Task, TaskStatus } from '../task.model';
   selector: 'app-task-sort',
   imports: [MatProgressSpinnerModule, MatCardModule],
   templateUrl: './task-sort.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './task-sort.scss',
 })
 export class TaskSort {

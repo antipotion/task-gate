@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -8,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   selector: 'app-task-overview',
   imports: [MatIconModule, MatChipsModule, DatePipe, MatProgressSpinnerModule],
   templateUrl: './task-overview.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './task-overview.scss',
 })
 export class TaskOverview {

@@ -1,4 +1,12 @@
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +24,7 @@ import { REVIEW_ROUTE_PARAMS } from '../review.routes';
   selector: 'app-review-detail',
   imports: [ReviewHero, ReviewResource, MatButtonModule, MatIconModule],
   templateUrl: './review-detail.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './review-detail.scss',
 })
 export class ReviewDetail {

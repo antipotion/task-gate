@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,6 +19,7 @@ import { TeamFacade } from '../team-facade/team-facade';
     MatButtonModule,
   ],
   templateUrl: './create-team.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './create-team.scss',
 })
 export class CreateTeam {

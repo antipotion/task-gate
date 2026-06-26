@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { MobileShell } from '../../../layout-shell/mobile-shell/mobile-shell';
@@ -12,6 +19,7 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
   selector: 'app-task-detail-shell',
   imports: [MobileShell, TaskDetails, TabletShell, TaskReviewList],
   templateUrl: './task-detail-shell.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './task-detail-shell.scss',
 })
 export class TaskDetailShell {

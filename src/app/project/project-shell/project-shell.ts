@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +12,7 @@ import { ProjectFacade } from '../project-facade/project-facade';
   selector: 'app-project-shell',
   imports: [ProjectDashboard, TabletShell, MobileShell, MatButtonModule, MatIconModule],
   templateUrl: './project-shell.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-shell.scss',
 })
 export class ProjectShell {

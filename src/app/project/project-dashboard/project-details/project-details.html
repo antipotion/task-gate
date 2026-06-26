@@ -37,7 +37,7 @@
 
     <!-- Contents -->
     <app-project-header
-      [projectName]="projectData?.name"
+      [projectName]="$safeNavigationMigration(projectData?.name)"
       [projectStatus]="projectStatus()"
       [projectDeadlinePressure]="projectDeadlinePressure()"
     />

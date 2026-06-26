@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -24,6 +24,7 @@ import { CreateTask } from '../task/create-task/create-task';
     TabletShell,
   ],
   templateUrl: './project-detail-shell.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-detail-shell.scss',
 })
 export class ProjectDetailShell {

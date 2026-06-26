@@ -7,7 +7,7 @@
     [reviewer]="reviewer()"
     (backEvent)="onBack()"
   />
-  <app-review-resource [proofUrls]="currentReviewData?.proofUrls" />
+  <app-review-resource [proofUrls]="$safeNavigationMigration(currentReviewData?.proofUrls)" />
 
   @if (isMobile()) {
     <button matButton (click)="onShowDiscussion()">

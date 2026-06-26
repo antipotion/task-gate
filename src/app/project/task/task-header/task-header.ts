@@ -1,5 +1,5 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
-import { Component, effect, input, signal } from '@angular/core';
+import { Component, effect, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DeadlinePressureModel } from '../../project-model/project.model';
 import { getDeadlinePressure } from '../../utility/deadlinePressureCalculator';
@@ -8,6 +8,7 @@ import { getDeadlinePressure } from '../../utility/deadlinePressureCalculator';
   selector: 'app-task-header',
   imports: [MatProgressSpinnerModule, TitleCasePipe, NgClass],
   templateUrl: './task-header.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './task-header.scss',
 })
 export class TaskHeader {

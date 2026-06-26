@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -8,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   selector: 'app-project-overview',
   imports: [MatIconModule, MatProgressSpinnerModule, DatePipe, MatProgressBarModule],
   templateUrl: './project-overview.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-overview.scss',
 })
 export class ProjectOverview {

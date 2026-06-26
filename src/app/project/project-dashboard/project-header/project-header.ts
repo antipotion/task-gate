@@ -1,5 +1,5 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DeadlinePressureModel, ProjectStatusModel } from '../../project-model/project.model';
 
@@ -7,6 +7,7 @@ import { DeadlinePressureModel, ProjectStatusModel } from '../../project-model/p
   selector: 'app-project-header',
   imports: [MatProgressSpinnerModule, TitleCasePipe, NgClass],
   templateUrl: './project-header.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-header.scss',
 })
 export class ProjectHeader {

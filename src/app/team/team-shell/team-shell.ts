@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
@@ -13,6 +13,7 @@ import { TEAM_ROUTE_PARAMS } from '../team.routes';
   selector: 'app-team-shell',
   imports: [MobileShell, TabletShell, TeamDashboard, TeamDetail],
   templateUrl: './team-shell.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team-shell.scss',
 })
 export class TeamShell {

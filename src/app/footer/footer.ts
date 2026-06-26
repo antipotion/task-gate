@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FontAwesomeModule, IconDefinition } from '@fortawesome/angular-fontawesome';
@@ -11,6 +11,7 @@ import { PROJECT_SOURCE_LINK, ProjectSourceLinkModel } from '../author/source.co
   selector: 'app-footer',
   imports: [MatButtonModule, MatIconModule, FontAwesomeModule],
   templateUrl: './footer.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './footer.scss',
 })
 export class Footer {

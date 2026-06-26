@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-review-resource',
   imports: [MatIconModule, MatButtonModule],
   templateUrl: './review-resource.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './review-resource.scss',
 })
 export class ReviewResource {

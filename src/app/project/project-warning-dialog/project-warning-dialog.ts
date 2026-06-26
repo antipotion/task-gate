@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -23,6 +23,7 @@ import { MatInputModule } from '@angular/material/input';
     MatInputModule,
   ],
   templateUrl: './project-warning-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-warning-dialog.scss',
 })
 export class ProjectWarningDialog {

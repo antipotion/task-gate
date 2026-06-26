@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -9,6 +9,7 @@ import { TEAM_ROUTE_PARAMS } from './team.routes';
   selector: 'app-team',
   imports: [MatButtonModule, MatInputModule, MatFormFieldModule],
   templateUrl: './team.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team.scss',
 })
 export class Team {

@@ -1,4 +1,11 @@
-import { Component, DestroyRef, inject, input, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -10,6 +17,7 @@ import { ProjectFacade } from '../../project/project-facade/project-facade';
   selector: 'app-mobile-shell',
   imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './mobile-shell.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mobile-shell.scss',
 })
 export class MobileShell {

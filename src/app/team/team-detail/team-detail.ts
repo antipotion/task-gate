@@ -1,4 +1,12 @@
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +20,7 @@ import { TEAM_ROUTE_PARAMS } from '../team.routes';
   selector: 'app-team-detail',
   imports: [MatButtonModule, MatIconModule],
   templateUrl: './team-detail.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team-detail.scss',
 })
 export class TeamDetail {

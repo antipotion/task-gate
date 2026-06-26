@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
@@ -6,6 +6,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
   selector: 'app-disclaimer',
   imports: [MatDialogModule, MatButtonModule],
   templateUrl: './disclaimer.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './disclaimer.scss',
 })
 export class Disclaimer {
