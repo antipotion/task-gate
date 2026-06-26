@@ -1,0 +1,14 @@
+@if (isMobileScreen()) {
+  <app-mobile-shell>
+    @if (routeTeamId()) {
+      <app-team-detail primary />
+    } @else {
+      <app-team-dashboard primary />
+    }
+  </app-mobile-shell>
+} @else {
+  <app-tablet-shell [withSecondary]="true">
+    <app-team-dashboard primary />
+    <app-team-detail secondary />
+  </app-tablet-shell>
+}

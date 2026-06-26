@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../app.routes';
 import { TeamFacade } from '../team-facade/team-facade';
 import { TeamModel } from '../team-model/team.model';
 import { TeamDashboardHeader } from './team-dashboard-header/team-dashboard-header';
@@ -27,6 +29,7 @@ import { TeamDashboardHeader } from './team-dashboard-header/team-dashboard-head
 export class TeamDashboard {
   private readonly _teamFacade = inject(TeamFacade);
   private readonly _snackbar = inject(MatSnackBar);
+  private readonly _router = inject(Router);
 
   readonly teamsList = computed<TeamModel[] | null>(() => this._teamFacade.teams());
 
@@ -45,5 +48,9 @@ export class TeamDashboard {
     } catch {
       this._snackbar.open('An error occured while leaving the team', 'Dismiss', { duration: 3000 });
     }
+  }
+
+  onViewTeam(teamId: string): void {
+    this._router.navigate([ROUTES_PARAMS.teams, teamId]);
   }
 }

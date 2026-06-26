@@ -1,6 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
 import { AuthStore } from '../../authentication/auth-store';
+import { UserModel } from '../../authentication/auth.model';
+import { NavigationService } from '../../navigation/navigation-service';
 import { TeamModel } from '../team-model/team.model';
 import { TeamStore } from '../team-store/team-store';
 import { TeamUsecase } from '../team-usecase/team-usecase';
@@ -13,10 +15,13 @@ export class TeamFacade {
   private readonly _teamUseCase = inject(TeamUsecase);
   private readonly _authStore = inject(AuthStore);
   private readonly _teamStore = inject(TeamStore);
+  private readonly _navigationService = inject(NavigationService);
 
   private readonly _teamName = signal<string | null>(null);
+
   readonly team = signal<TeamModel | null>(null);
   readonly teams = computed(() => this._teamStore.teamsList());
+  readonly isMobileScreen = computed(() => this._navigationService.isMobileScreen());
 
   goBack(): void {
     this._historyService.goBack();
@@ -55,5 +60,9 @@ export class TeamFacade {
 
   setTeamName(teamName: string): void {
     this._teamName.set(teamName);
+  }
+
+  async getUserById(userId: string): Promise<UserModel | null> {
+    return this._authStore.getUserById(userId);
   }
 }

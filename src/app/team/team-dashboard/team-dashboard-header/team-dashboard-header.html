@@ -1,9 +1,11 @@
-<div class="flex justify-between items-center p-4">
-  <button matIconButton (click)="onBack()">
-    <mat-icon fontIcon="arrow_back"></mat-icon>
-  </button>
+<div class="flex justify-between items-center">
+  <div class="flex gap-2 items-center">
+    <button matIconButton (click)="onBack()">
+      <mat-icon fontIcon="arrow_back"></mat-icon>
+    </button>
 
-  <h1 class="mat-font-title-md">Team Dashboard</h1>
+    <p class="mat-font-title-md">Team Dashboard</p>
+  </div>
 
   <div>
     <!-- Buttons to show on small screen -->
@@ -12,7 +14,7 @@
       <button matIconButton (click)="onAddTeam()">
         <mat-icon fontIcon="add"></mat-icon>
       </button>
-      
+
       <!-- Join team button -->
       <button matIconButton (click)="onJoinTeam()">
         <mat-icon fontIcon="group_add"></mat-icon>
@@ -21,8 +23,14 @@
 
     <!-- Buttons to show on medium screen -->
     <div class="hidden md:flex">
-      <button matButton (click)="onAddTeam()">Add Team</button>
-      <button matButton (click)="onJoinTeam()">Join Team</button>
+      <button matButton (click)="onAddTeam()">
+        <mat-icon fontIcon="add"></mat-icon>
+        Add Team
+      </button>
+      <button matButton (click)="onJoinTeam()">
+        <mat-icon fontIcon="group_add"></mat-icon>
+        Join Team
+      </button>
     </div>
   </div>
 </div>

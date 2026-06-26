@@ -1,0 +1,31 @@
+@let currentTeam = this.currentTeam();
+
+<div class="flex flex-col gap-8">
+  <!-- Header -->
+  <div>
+    @if (isMobile()) {
+      <button matIconButton>
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    }
+    <p class="mat-font-title-md">Team Detail</p>
+  </div>
+
+  <section class="flex flex-col gap-8">
+    @if (!currentTeam) {
+      <div class="flex w-full justify-center">
+        <p class="mat-text-on-surface-variant">Select a team to view</p>
+      </div>
+    } @else {
+      <div class="flex gap-2 items-center">
+        <mat-icon>groups</mat-icon>
+        <h1 class="mat-font-title-lg">{{ currentTeam?.name }}</h1>
+      </div>
+
+      <!-- Owner -->
+      <div class="flex flex-col gap-2">
+        <p class="mat-font-label-sm">Owner</p>
+      </div>
+    }
+  </section>
+</div>
