@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
 import { StoreService } from '../../application/store/store-service';
+import { NavigationService } from '../../navigation/navigation-service';
 import { ReviewStore } from './review/review-store/review-store';
 import { ReviewUsecase } from './review/review-usecase/review-usecase';
 import { ReviewModel } from './review/review.model';
@@ -15,8 +16,10 @@ export class TaskFacade {
   private readonly _historyService = inject(HistoryService);
   private readonly _reviewUseCase = inject(ReviewUsecase);
   private readonly _reviewStore = inject(ReviewStore);
+  private readonly _navigationService = inject(NavigationService);
 
   readonly tasks = computed<Task[] | null>(() => this._storeService.tasks());
+  readonly isMobileScreen = computed<boolean>(() => this._navigationService.isMobileScreen());
 
   private readonly selectedTaskId = signal<string | null>(null);
 

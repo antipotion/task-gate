@@ -23,13 +23,13 @@
   <div class="flex gap-6 h-full">
     <aside class="w-fit flex flex-col gap-8 items-center px-4">
       <!-- Create project button -->
-      @if (isMenuExpanded) {
-        <div class="flex w-full">
+      <div class="flex w-full min-h-14 min-w-14">
+        @if (isMenuExpanded) {
           <ng-content select="[fab-extended]"></ng-content>
-        </div>
-      } @else {
-        <ng-content select="[fab]"></ng-content>
-      }
+        } @else {
+          <ng-content select="[fab]"></ng-content>
+        }
+      </div>
 
       <!-- Page main sections -->
       <div class="flex flex-col gap-4 w-full">

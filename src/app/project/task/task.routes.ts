@@ -1,5 +1,4 @@
 import type { Routes } from '@angular/router';
-import { Task } from './task';
 
 export const TASK_ROUTE_PARAMS = {
   taskId: 'taskId',
@@ -13,20 +12,21 @@ const TASK_ROUTE_HELPERS = {
 export const TaskRoutes: Routes = [
   {
     path: '',
-    component: Task,
     children: [
       {
         path: '',
-        loadComponent: () => import('./task-dashboard/task-dashboard').then((m) => m.TaskDashboard),
+        loadComponent: () =>
+          import('./task-detail-shell/task-detail-shell').then((m) => m.TaskDetailShell),
       },
       {
         path: `:${TASK_ROUTE_PARAMS.taskId}`,
-        loadComponent: () => import('./task-details/task-details').then((m) => m.TaskDetails),
+        loadComponent: () =>
+          import('./task-detail-shell/task-detail-shell').then((m) => m.TaskDetailShell),
       },
       {
         path: TASK_ROUTE_HELPERS.taskReviewList,
         loadComponent: () =>
-          import('./task-review-list/task-review-list').then((m) => m.TaskReviewList),
+          import('./task-detail-shell/task-detail-shell').then((m) => m.TaskDetailShell),
       },
     ],
   },

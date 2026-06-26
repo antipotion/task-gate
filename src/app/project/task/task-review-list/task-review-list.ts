@@ -1,5 +1,5 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -25,6 +25,7 @@ export class TaskReviewList {
     this._route.paramMap.pipe(map((params) => params.get(TASK_ROUTE_PARAMS.taskId))),
   );
 
+  readonly isMobile = input<boolean>(false);
   readonly reviewList = computed(() => this._taskFacade.taskReviews());
 
   constructor() {
