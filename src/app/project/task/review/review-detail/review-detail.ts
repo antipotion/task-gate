@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,6 +27,7 @@ export class ReviewDetail {
     this._route.paramMap.pipe(map((params) => params.get(REVIEW_ROUTE_PARAMS.reviewId))),
   );
 
+  readonly isMobile = input<boolean>(false);
   readonly currentReviewData = computed(() => this._reviewFacade.review());
   readonly submittedBy = signal<string | null>(null);
   readonly reviewer = signal<string | null>(null);

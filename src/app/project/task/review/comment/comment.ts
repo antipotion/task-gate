@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,6 +37,7 @@ export class Comment {
 
   private readonly reviewData = computed(() => this._commentFacade.reviewData());
 
+  readonly isMobile = input<boolean>(false);
   readonly userId = computed(() => this._commentFacade.userId());
   readonly closedDate = computed(() => this.reviewData()?.closedDate);
   readonly commentAuthors = signal<Map<string, string>>(new Map());

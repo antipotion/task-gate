@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -18,6 +18,7 @@ export class MobileShell {
   private readonly _router = inject(Router);
 
   readonly logoutLoading = signal<boolean>(false);
+  readonly dontOverflow = input<boolean>(false);
 
   async onLogout(): Promise<void> {
     this.logoutLoading.set(true);

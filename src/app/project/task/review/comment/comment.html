@@ -1,16 +1,17 @@
-@let comments = this.comments();
-@let userId = this.userId();
+@let comments = this.comments(); @let userId = this.userId();
 
-<section class="grid grid-rows-[auto_1fr_auto] gap-4 p-4 h-full">
+<section class="grid grid-rows-[auto_1fr_auto] gap-4 h-full">
   <div class="flex items-center gap-2 h-fit">
-    <button matIconButton (click)="onBack()">
-      <mat-icon fontIcon="arrow_back"></mat-icon>
-    </button>
+    @if (isMobile()) {
+      <button matIconButton (click)="onBack()">
+        <mat-icon fontIcon="arrow_back"></mat-icon>
+      </button>
+    }
     <h2 class="mat-font-title-md">Discussion</h2>
   </div>
 
-  <!-- Contents -->
-  <div class="flex flex-col gap-4">
+  <!-- Conversation -->
+  <div class="flex flex-col overflow-y-auto gap-4 pr-4">
     @if (!comments || comments.length === 0) {
       <div class="flex items-center justify-center h-full w-full">
         <p class="mat-text-on-surface-variant">This discussion hasn't been started.</p>
@@ -22,7 +23,7 @@
           <div [id]="comment.id" class="flex gap-2 justify-end max-w-[60ch] self-end">
             <div class="flex flex-col gap-1">
               <p class="mat-font-label-sm mat-text-on-surface-variant text-end">You</p>
-              <div class="mat-bg-primary-container p-4 mat-corner-sm">
+              <div class="mat-bg-primary-container p-4 mat-corner-sm ">
                 <p>{{ comment.content }}</p>
               </div>
               <!-- TODO: create a dedicated DTO for the field values -->
@@ -55,7 +56,7 @@
   </div>
 
   <!-- Send comment  -->
-  <div class="h-fit">
+  <div class="h-fit border-t pt-4 mat-border-subtle-top">
     @if (!closedDate()) {
       <form
         [formGroup]="commentForm"

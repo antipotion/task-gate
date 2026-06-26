@@ -22,8 +22,8 @@
       @for (review of reviewList; track review.id) {
         <mat-card>
           <mat-card-content>
-            <div class="flex gap-4 items-center">
-              <p>
+            <div class="grid grid-cols-[1fr_auto] gap-4 items-center">
+              <p class="truncate">
                 {{ review.id }}
               </p>
 

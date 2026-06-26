@@ -5,6 +5,7 @@ import { TaskFacade } from '../../task-facade';
 import { TaskActionModel } from '../../task.model';
 import { ReviewStore } from '../review-store/review-store';
 import { ReviewUsecase } from '../review-usecase/review-usecase';
+import { NavigationService } from '../../../../navigation/navigation-service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +15,10 @@ export class ReviewFacade {
   private readonly _authStore = inject(AuthStore);
   private readonly _taskFacade = inject(TaskFacade);
   private readonly _reviewUsecase = inject(ReviewUsecase);
+  private readonly _navigationService = inject(NavigationService);
 
   readonly review = computed(() => this._reviewStore.review());
+  readonly isMobileScreen = computed(() => this._navigationService.isMobileScreen());
 
   async getUserById(userId: string): Promise<UserModel | null> {
     return this._authStore.getUserById(userId);

@@ -1,0 +1,14 @@
+@if (isMobileScreen()) {
+  <app-mobile-shell>
+    @if (routeDiscussion()) {
+      <app-comment primary [isMobile]="true" />
+    } @else {
+      <app-review-detail primary [isMobile]="true" />
+    }
+  </app-mobile-shell>
+} @else {
+  <app-tablet-shell [withSecondary]="true">
+    <app-review-detail primary />
+    <app-comment secondary />
+  </app-tablet-shell>
+}

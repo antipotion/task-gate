@@ -1,6 +1,6 @@
 @let currentReviewData = this.currentReviewData();
 
-<section class="flex flex-col gap-8 p-4">
+<section class="flex flex-col gap-8">
   <app-review-hero
     [closeStatus]="currentReviewData?.closeStatus ?? null"
     [submittedBy]="submittedBy()"
@@ -9,10 +9,12 @@
   />
   <app-review-resource [proofUrls]="currentReviewData?.proofUrls" />
 
-  <button matButton (click)="onShowDiscussion()">
-    <mat-icon fontIcon="chat"></mat-icon>
-    Show Discussion
-  </button>
+  @if (isMobile()) {
+    <button matButton (click)="onShowDiscussion()">
+      <mat-icon fontIcon="chat"></mat-icon>
+      Show Discussion
+    </button>
+  }
 
   @if (!currentReviewData?.closedDate) {
     <div class="flex gap-2">

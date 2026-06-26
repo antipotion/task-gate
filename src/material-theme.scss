@@ -96,6 +96,14 @@ p {
   box-shadow: var(--mat-sys-level1);
 }
 
+// Border
+.mat-border-subtle {
+  border: 1px solid var(--mat-sys-outline-variant);
+}
+.mat-border-subtle-top {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
 // Colors
 /* PRIMARY */
 .mat-bg-primary-container {

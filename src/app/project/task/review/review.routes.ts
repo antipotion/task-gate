@@ -13,14 +13,16 @@ export const reviewRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../task-review-list/task-review-list').then((m) => m.TaskReviewList),
+      import('./review-detail-shell/review-detail-shell').then((m) => m.ReviewDetailShell),
   },
   {
     path: `:${REVIEW_ROUTE_PARAMS.reviewId}`,
-    loadComponent: () => import('./review-detail/review-detail').then((m) => m.ReviewDetail),
+    loadComponent: () =>
+      import('./review-detail-shell/review-detail-shell').then((m) => m.ReviewDetailShell),
   },
   {
     path: REVIEW_ROUTE_HELPERS.discussion,
-    loadComponent: () => import('./comment/comment').then((m) => m.Comment),
+    loadComponent: () =>
+      import('./review-detail-shell/review-detail-shell').then((m) => m.ReviewDetailShell),
   },
 ];
