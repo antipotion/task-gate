@@ -1,5 +1,5 @@
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,7 +24,6 @@ import { TeamDashboardHeader } from './team-dashboard-header/team-dashboard-head
     ClipboardModule,
   ],
   templateUrl: './team-dashboard.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team-dashboard.scss',
 })
 export class TeamDashboard {

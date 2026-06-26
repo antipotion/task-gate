@@ -65,4 +65,16 @@ export class TeamFacade {
   async getUserById(userId: string): Promise<UserModel | null> {
     return this._authStore.getUserById(userId);
   }
+
+  async getUsersById(userIds: Set<string>): Promise<UserModel[] | null> {
+    const userIdsArray = [];
+
+    for (const userId of userIds) {
+      userIdsArray.push(userId);
+    }
+
+    if (userIdsArray.length === 0) return null;
+
+    return this._teamStore.getUsersById(userIdsArray);
+  }
 }

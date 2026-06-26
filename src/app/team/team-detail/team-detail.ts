@@ -1,17 +1,10 @@
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  signal,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, resource, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
+import { UserModel } from '../../authentication/auth.model';
 import { TeamFacade } from '../team-facade/team-facade';
 import { TeamModel } from '../team-model/team.model';
 import { TEAM_ROUTE_PARAMS } from '../team.routes';
@@ -20,7 +13,6 @@ import { TEAM_ROUTE_PARAMS } from '../team.routes';
   selector: 'app-team-detail',
   imports: [MatButtonModule, MatIconModule],
   templateUrl: './team-detail.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team-detail.scss',
 })
 export class TeamDetail {
@@ -33,9 +25,60 @@ export class TeamDetail {
     { initialValue: null },
   );
   private readonly _userIds = signal<Set<string>>(new Set());
+  private readonly _userNamesResource = resource({
+    params: () => this._userIds(),
+    loader: ({ params }) => this._teamFacade.getUsersById(params),
+  });
 
   readonly isMobile = input<boolean>(false);
   readonly currentTeam = signal<TeamModel | null>(null);
+  readonly userNames = computed<Map<string, UserModel> | null>(() => {
+    const userResource = this._userNamesResource;
+    if (!userResource.hasValue()) return null;
+    const users = userResource.value();
+    if (!users) return null;
+
+    const userMap = new Map<string, UserModel>();
+
+    for (const user of users) {
+      const userId = user.id;
+      userMap.set(userId, user);
+    }
+
+    return userMap;
+  });
+  readonly ownerName = computed<string | null>(() => {
+    const userNames = this.userNames();
+    const ownerId = this.currentTeam()?.creatorId;
+    if (!userNames || !ownerId) return null;
+
+    const ownerData = this.userNames()?.get(ownerId);
+    if (!ownerData) return null;
+
+    return `${ownerData.firstName} ${ownerData.lastName}`;
+  });
+  readonly membersName = computed<string[] | null>(() => {
+    const userNames = this.userNames();
+    const memberIds = this.currentTeam()?.memberIds;
+    const ownerId = this.currentTeam()?.creatorId;
+    if (!userNames || !memberIds || !ownerId) return null;
+
+    const memberNames: string[] = [];
+    for (const memberId of memberIds) {
+      if (memberId === ownerId) continue;
+
+      const memberData = userNames.get(memberId);
+      if (!memberData) continue;
+
+      const memberFirstName = memberData.firstName;
+      const memberLastName = memberData.lastName;
+      const memberFullName = `${memberFirstName} ${memberLastName}`;
+
+      memberNames.push(memberFullName);
+    }
+
+    return memberNames;
+  });
 
   constructor() {
     effect((onCleanUp) => {
@@ -53,11 +96,14 @@ export class TeamDetail {
 
       if (!ownerOfCurrentTeam || !membersOfCurrentTeam) return;
 
-      this._userIds.update((userIds) => userIds.add(ownerOfCurrentTeam));
+      const newUserIdsSet = new Set<string>();
+      newUserIdsSet.add(ownerOfCurrentTeam);
 
       for (const member of membersOfCurrentTeam) {
-        this._userIds.update((userIds) => userIds.add(member));
+        newUserIdsSet.add(member);
       }
+
+      this._userIds.set(newUserIdsSet);
 
       // Clean up the current team to avoid stale data from persisting
       onCleanUp(() => this.currentTeam.set(null));

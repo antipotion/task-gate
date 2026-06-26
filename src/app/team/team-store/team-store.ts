@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, switchMap } from 'rxjs';
 import { AuthStore } from '../../authentication/auth-store';
+import { UserModel } from '../../authentication/auth.model';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 
 @Injectable({
@@ -18,4 +19,8 @@ export class TeamStore {
     ),
     { initialValue: [] },
   );
+
+  async getUsersById(userIds: string[]): Promise<UserModel[] | null> {
+    return this._repo.getUsersById(userIds);
+  }
 }

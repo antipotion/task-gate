@@ -6,6 +6,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  documentId,
   DocumentSnapshot,
   getDoc,
   getDocs,
@@ -448,5 +449,14 @@ export class FirestoreProjectRepository {
       lastName: data['lastName'],
       role: data['role'],
     };
+  }
+
+  async getUsersById(userIds: string[]): Promise<UserModel[] | null> {
+    const userQuery = query(this._usersCollection, where(documentId(), 'in', userIds));
+    const snapshot = await getDocs(userQuery);
+
+    const users = snapshot.docs.map((doc) => this._mapToUser(doc));
+
+    return users;
   }
 }
