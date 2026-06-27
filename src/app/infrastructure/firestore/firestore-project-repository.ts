@@ -23,7 +23,7 @@ import {
 } from 'firebase/firestore';
 import { Observable, of } from 'rxjs';
 import { db } from '../../../environment/firebase.config';
-import { UserModel } from '../../authentication/auth.model';
+import { UserModel } from '../../authentication/auth-model/auth.model';
 import type { Project } from '../../project/project-model/project.model';
 import { CommentModel, CommentModelDTO } from '../../project/task/review/comment/comment.model';
 import { ReviewModel, ReviewModelDTO } from '../../project/task/review/review.model';

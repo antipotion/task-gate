@@ -18,7 +18,8 @@ export const routes: Routes = [
   },
   {
     path: ROUTES_PARAMS.auth,
-    loadChildren: () => import('./authentication/auth.routes').then((m) => m.AuthRoutes),
+    loadChildren: () =>
+      import('./authentication/auth-routes/auth.routes').then((m) => m.AuthRoutes),
     canMatch: [guestGuard],
   },
   {

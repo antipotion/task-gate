@@ -1,6 +1,6 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { AuthStore } from '../../../../authentication/auth-store';
-import { UserModel } from '../../../../authentication/auth.model';
+import { UserModel } from '../../../../authentication/auth-model/auth.model';
+import { AuthStore } from '../../../../authentication/auth-store/auth-store';
 import { ReviewStore } from '../review-store/review-store';
 import { CommentStore } from './comment-store';
 import { CommentUsecase } from './comment-usecase';

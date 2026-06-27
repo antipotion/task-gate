@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../app.routes';
-import { UserModel } from '../../authentication/auth.model';
+import { UserModel } from '../../authentication/auth-model/auth.model';
 import { TeamFacade } from '../team-facade/team-facade';
 import { TeamModel } from '../team-model/team.model';
 import { TEAM_ROUTE_PARAMS } from '../team.routes';

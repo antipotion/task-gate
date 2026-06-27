@@ -1,12 +1,12 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { UserCredential } from 'firebase/auth';
-import { AuthStore } from './auth-store';
-import { AuthUseCase } from './auth-use-case';
-import { RoleModel, UserModel } from './auth.model';
+import { RoleModel, UserModel } from '../auth-model/auth.model';
+import { AuthStore } from '../auth-store/auth-store';
+import { AuthUsecase } from '../auth-usecase/auth-usecase';
 
 @Injectable({ providedIn: 'root' })
 export class AuthFacade {
-  private readonly _authUseCase = inject(AuthUseCase);
+  private readonly _authUseCase = inject(AuthUsecase);
   private readonly _authStore = inject(AuthStore);
 
   readonly userRole = signal<RoleModel | null>(null);

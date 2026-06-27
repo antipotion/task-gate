@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RoleModel } from '../../authentication/auth.model';
+import { RoleModel } from '../../authentication/auth-model/auth.model';
 
 const SESSION_STORAGE_KEYS = {
   userRole: 'userRole',

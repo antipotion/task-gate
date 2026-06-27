@@ -16,8 +16,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../app.routes';
 import { Disclaimer } from '../../disclaimer/disclaimer';
-import { AuthFacade } from '../auth-facade';
-import { AUTH_ROUTE_PARAMS } from '../auth.routes';
+import { AuthFacade } from '../auth-facade/auth-facade';
+import { AUTH_ROUTE_PARAMS } from '../auth-routes/auth.routes';
 
 @Component({
   selector: 'app-login',

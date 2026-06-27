@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../../app.routes';
-import { UserModel } from '../../../../authentication/auth.model';
+import { UserModel } from '../../../../authentication/auth-model/auth.model';
 import { TaskActionModel } from '../../task.model';
 import { ReviewFacade } from '../review-facade/review-facade';
 import { ReviewHero } from '../review-hero/review-hero';

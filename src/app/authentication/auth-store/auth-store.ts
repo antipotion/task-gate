@@ -1,10 +1,10 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { of, switchMap } from 'rxjs';
-import { FirebaseAuth } from '../infrastructure/auth/firebase-auth';
-import { FirestoreProjectRepository } from '../infrastructure/firestore/firestore-project-repository';
-import { SignupSessionStorage } from '../infrastructure/signup-session-storage/signup-session-storage';
-import { RoleModel, UserModel } from './auth.model';
+import { FirebaseAuth } from '../../infrastructure/auth/firebase-auth';
+import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
+import { SignupSessionStorage } from '../../infrastructure/signup-session-storage/signup-session-storage';
+import { RoleModel, UserModel } from '../auth-model/auth.model';
 
 @Injectable({
   providedIn: 'root',

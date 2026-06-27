@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
-import { AuthStore } from '../../authentication/auth-store';
-import { UserModel } from '../../authentication/auth.model';
+import { UserModel } from '../../authentication/auth-model/auth.model';
+import { AuthStore } from '../../authentication/auth-store/auth-store';
 import { NavigationService } from '../../navigation/navigation-service';
 import { TeamModel } from '../team-model/team.model';
 import { TeamStore } from '../team-store/team-store';

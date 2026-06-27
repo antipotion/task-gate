@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { AuthStore } from '../../authentication/auth-store';
+import { AuthStore } from '../../authentication/auth-store/auth-store';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 import type { Project, ProjectStatusModel } from '../project-model/project.model';
 

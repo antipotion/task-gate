@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { StoreService } from '../../../../application/store/store-service';
-import { AuthStore } from '../../../../authentication/auth-store';
+import { AuthStore } from '../../../../authentication/auth-store/auth-store';
 import { FirestoreProjectRepository } from '../../../../infrastructure/firestore/firestore-project-repository';
 import { Task, TaskActionModel, TaskStatus } from '../../task.model';
 import { ReviewModel, ReviewModelDTO } from '../review.model';

@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../app.routes';
-import { AuthFacade } from '../auth-facade';
+import { AuthFacade } from '../auth-facade/auth-facade';
 
 @Component({
   selector: 'app-sign-up',

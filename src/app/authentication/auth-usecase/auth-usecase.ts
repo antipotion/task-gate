@@ -1,11 +1,11 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { UserCredential } from 'firebase/auth';
-import { FirebaseAuth } from '../infrastructure/auth/firebase-auth';
-import { FirestoreProjectRepository } from '../infrastructure/firestore/firestore-project-repository';
-import { RoleModel, UserModel } from './auth.model';
+import { FirebaseAuth } from '../../infrastructure/auth/firebase-auth';
+import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
+import { RoleModel, UserModel } from '../auth-model/auth.model';
 
 @Injectable({ providedIn: 'root' })
-export class AuthUseCase {
+export class AuthUsecase {
   private readonly _auth = inject(FirebaseAuth);
   private readonly _repo = inject(FirestoreProjectRepository);
 

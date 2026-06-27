@@ -1,11 +1,11 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { AuthStore } from '../../../../authentication/auth-store';
-import { UserModel } from '../../../../authentication/auth.model';
+import { UserModel } from '../../../../authentication/auth-model/auth.model';
+import { AuthStore } from '../../../../authentication/auth-store/auth-store';
+import { NavigationService } from '../../../../navigation/navigation-service';
 import { TaskFacade } from '../../task-facade';
 import { TaskActionModel } from '../../task.model';
 import { ReviewStore } from '../review-store/review-store';
 import { ReviewUsecase } from '../review-usecase/review-usecase';
-import { NavigationService } from '../../../../navigation/navigation-service';
 
 @Injectable({
   providedIn: 'root',

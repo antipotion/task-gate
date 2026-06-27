@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AuthUseCase } from './auth-use-case';
+import { AuthUsecase } from './auth-usecase';
 
 describe('AuthUseCase', () => {
-  let service: AuthUseCase;
+  let service: AuthUsecase;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AuthUseCase);
+    service = TestBed.inject(AuthUsecase);
   });
 
   it('should be created', () => {

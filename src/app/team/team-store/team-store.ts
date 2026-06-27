@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { of, switchMap } from 'rxjs';
-import { AuthStore } from '../../authentication/auth-store';
-import { UserModel } from '../../authentication/auth.model';
+import { UserModel } from '../../authentication/auth-model/auth.model';
+import { AuthStore } from '../../authentication/auth-store/auth-store';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 
 @Injectable({

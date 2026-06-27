@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { CommentModel } from './comment.model';
-import { AuthStore } from '../../../../authentication/auth-store';
+import { AuthStore } from '../../../../authentication/auth-store/auth-store';
 import { FirestoreProjectRepository } from '../../../../infrastructure/firestore/firestore-project-repository';
+import { CommentModel } from './comment.model';
 
 @Injectable({
   providedIn: 'root',
