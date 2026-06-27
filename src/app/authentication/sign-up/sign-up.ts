@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../app.routes';
 import { AuthFacade } from '../auth-facade';
 
 @Component({
@@ -82,7 +83,7 @@ export class SignUp implements OnDestroy {
     }
 
     if (this._authFacade.user()) {
-      this._router.navigate(['project']);
+      this._router.navigate([ROUTES_PARAMS.project]);
     }
   }
 

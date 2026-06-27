@@ -1,6 +1,5 @@
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -31,7 +30,6 @@ import { AUTH_ROUTE_PARAMS } from '../auth.routes';
     MatDialogModule,
   ],
   templateUrl: './login.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './login.scss',
 })
 export class Login implements AfterViewInit, OnDestroy {
