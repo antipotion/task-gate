@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Loading } from '../../loading/loading';
 import { ProjectFacade } from '../project-facade/project-facade';
 import { ProjectStatusModel } from '../project-model/project.model';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-project-dashboard',
@@ -23,6 +24,7 @@ import { ProjectStatusModel } from '../project-model/project.model';
     UpperCasePipe,
     MatProgressSpinner,
     SlicePipe,
+    MatRippleModule,
   ],
   templateUrl: './project-dashboard.html',
   styleUrl: './project-dashboard.scss',

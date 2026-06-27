@@ -15,6 +15,7 @@
         [cdkOption]="category"
         class="w-full h-full focus:outline-2 hover:cursor-pointer"
         (click)="onSelectCategory(category)"
+        matRipple
       >
         <app-project-task-board-card [taskStatus]="category" />
       </li>

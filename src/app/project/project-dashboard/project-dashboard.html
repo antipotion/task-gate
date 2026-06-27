@@ -15,7 +15,7 @@
         @for (project of projects; track project.id) {
           <li>
             <div class="cursor-pointer" (click)="onClickProject(project.id)">
-              <mat-card class="relative flex flex-col gap-4 pb-4">
+              <mat-card class="relative flex flex-col gap-4 pb-4 interactive-item" matRipple>
                 <mat-card-header>
                   <div class="grid grid-cols-[1fr_var(--status-badge-space)] w-full">
                     <!-- Project title -->
