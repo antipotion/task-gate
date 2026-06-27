@@ -1,24 +1,23 @@
 import { NgClass } from '@angular/common';
-import {
-  Component,
-  DestroyRef,
-  inject,
-  input,
-  signal,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ROUTES_PARAMS } from '../../app.routes';
 import { ProjectFacade } from '../../project/project-facade/project-facade';
 
 @Component({
   selector: 'app-tablet-shell',
-  imports: [MatIconModule, MatButtonModule, NgClass, MatProgressSpinnerModule],
+  imports: [
+    MatIconModule,
+    MatButtonModule,
+    NgClass,
+    MatProgressSpinnerModule,
+    RouterLink,
+    RouterLinkActive,
+  ],
   templateUrl: './tablet-shell.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tablet-shell.scss',
 })
 export class TabletShell {

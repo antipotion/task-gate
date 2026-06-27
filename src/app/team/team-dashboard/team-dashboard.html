@@ -12,7 +12,10 @@
       @for (team of teams; track team.id) {
         <mat-card class="gap-4">
           <mat-card-content>
-            <h2 class="mat-font-title-md">{{ team.name }}</h2>
+            <div class="grid grid-cols-[auto_1fr] gap-2">
+              <mat-icon>groups</mat-icon>
+              <h2 class="mat-font-title-md truncate">{{ team.name }}</h2>
+            </div>
           </mat-card-content>
 
           <!-- More button -->

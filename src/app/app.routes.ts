@@ -4,7 +4,7 @@ import { guestGuard } from './application/guards/guest-guard';
 
 export const ROUTES_PARAMS = {
   auth: 'auth',
-  project: 'project',
+  project: 'projects',
   task: 'task',
   teams: 'teams',
   review: 'review',
@@ -23,7 +23,8 @@ export const routes: Routes = [
   },
   {
     path: ROUTES_PARAMS.project,
-    loadChildren: () => import('./project/project-route/project.routes').then((m) => m.projectRoutes),
+    loadChildren: () =>
+      import('./project/project-route/project.routes').then((m) => m.projectRoutes),
     canMatch: [authGuard],
   },
   {

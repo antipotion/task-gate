@@ -1,14 +1,29 @@
 @if (isMobileScreen()) {
   <app-mobile-shell>
     @if (routeTeamId()) {
-      <app-team-detail primary />
+      <app-team-detail [isMobile]="true" primary />
     } @else {
       <app-team-dashboard primary />
     }
+
+    <!-- Add team button -->
+    <button matFab fab (click)="onAddTeam()">
+      <mat-icon>add</mat-icon>
+    </button>
   </app-mobile-shell>
 } @else {
   <app-tablet-shell [withSecondary]="true">
     <app-team-dashboard primary />
     <app-team-detail secondary />
+
+    <!-- Add team button -->
+    <button matFab fab (click)="onAddTeam()">
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <button matFab extended fab-extended (click)="onAddTeam()">
+      <mat-icon>add</mat-icon>
+      Add Team
+    </button>
   </app-tablet-shell>
 }

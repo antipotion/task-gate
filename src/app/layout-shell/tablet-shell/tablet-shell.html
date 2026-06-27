@@ -11,7 +11,7 @@
   <header class="flex justify-between">
     <!-- Expand/collapse button -->
     @let isMenuExpanded = this.isMenuExpanded();
-    <button matIconButton class="ml-6" (click)="onToggleIsMenuExpanded()">
+    <button matIconButton class="ml-8" (click)="onToggleIsMenuExpanded()">
       <mat-icon [fontIcon]="isMenuExpanded ? 'menu_open' : 'menu'"></mat-icon>
     </button>
 
@@ -22,7 +22,7 @@
       </button>
 
       <!-- Logout button -->
-      <button matButton class="mat-error-state">
+      <button matButton class="mat-error-state" (click)="onLogout()">
         <mat-icon fontIcon="logout"></mat-icon>
         Logout
       </button>
@@ -32,7 +32,7 @@
   <div class="flex gap-6 h-full">
     <aside class="w-fit flex flex-col gap-8 items-center px-4">
       <!-- Create project button -->
-      <div class="flex w-full min-h-14 min-w-14">
+      <div class="flex w-full min-h-14 min-w-14 justify-center">
         @if (isMenuExpanded) {
           <ng-content select="[fab-extended]"></ng-content>
         } @else {
@@ -44,7 +44,11 @@
       <div class="flex flex-col gap-4 w-full">
         <!-- Project dashboard -->
         @if (isMenuExpanded) {
-          <div class="flex flex-col gap-1 mat-neutral-state">
+          <div
+            class="flex flex-col gap-1 mat-neutral-state mat-corner-full"
+            routerLink="/projects"
+            routerLinkActive="activeRoute"
+          >
             <button matButton class="nowrap" (click)="onClickProjectDashboard()">
               <mat-icon fontIcon="folder"></mat-icon>
               Project Dashboard
@@ -52,16 +56,22 @@
           </div>
         } @else {
           <div class="flex flex-col gap-1 items-center">
-            <button matIconButton (click)="onClickProjectDashboard()">
-              <mat-icon fontIcon="folder"></mat-icon>
-            </button>
+            <div routerLink="/projects" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+              <button matIconButton (click)="onClickProjectDashboard()">
+                <mat-icon fontIcon="folder"></mat-icon>
+              </button>
+            </div>
             <span class="mat-font-label-sm text-center">Projects</span>
           </div>
         }
 
         <!-- Team dashboard -->
         @if (isMenuExpanded) {
-          <div class="flex flex-col gap-1 mat-neutral-state">
+          <div
+            class="flex flex-col gap-1 mat-neutral-state mat-corner-full"
+            routerLink="/teams"
+            routerLinkActive="activeRoute"
+          >
             <button matButton class="nowrap" (click)="onClickTeamDashboard()">
               <mat-icon fontIcon="groups"></mat-icon>
               Team Dashboard
@@ -69,27 +79,12 @@
           </div>
         } @else {
           <div class="flex flex-col gap-1 items-center">
-            <button matIconButton (click)="onClickTeamDashboard()">
-              <mat-icon fontIcon="groups"></mat-icon>
-            </button>
+            <div routerLink="/teams" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+              <button matIconButton (click)="onClickTeamDashboard()">
+                <mat-icon fontIcon="groups"></mat-icon>
+              </button>
+            </div>
             <span class="mat-font-label-sm text-center">Teams</span>
-          </div>
-        }
-
-        <!-- Account -->
-        @if (isMenuExpanded) {
-          <div class="flex flex-col gap-1 mat-neutral-state">
-            <button matButton class="nowrap">
-              <mat-icon fontIcon="account_circle"></mat-icon>
-              Account Settings
-            </button>
-          </div>
-        } @else {
-          <div class="flex flex-col gap-1 items-center">
-            <button matIconButton>
-              <mat-icon fontIcon="account_circle"></mat-icon>
-            </button>
-            <span class="mat-font-label-sm text-center">Account</span>
           </div>
         }
       </div>

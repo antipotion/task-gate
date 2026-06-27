@@ -13,3 +13,7 @@
 .nowrap {
   white-space: nowrap;
 }
+
+.activeRoute {
+  background-color: var(--mat-sys-primary-container);
+}

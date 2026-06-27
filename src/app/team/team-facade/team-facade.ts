@@ -67,11 +67,7 @@ export class TeamFacade {
   }
 
   async getUsersById(userIds: Set<string>): Promise<UserModel[] | null> {
-    const userIdsArray = [];
-
-    for (const userId of userIds) {
-      userIdsArray.push(userId);
-    }
+    const userIdsArray = [...userIds];
 
     if (userIdsArray.length === 0) return null;
 

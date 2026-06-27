@@ -23,9 +23,7 @@
 
   <!-- Primary content -->
   <div class="mat-bg-surface-container-lowest h-[80vh] mat-corner-sm relative">
-    <div 
-      class="h-full overflow-y-auto p-4"
-    >
+    <div class="h-full overflow-y-auto p-4">
       <ng-content select="[primary]"></ng-content>
     </div>
 
@@ -36,29 +34,25 @@
   </div>
 
   <!-- Bottom bar -->
-  <aside class="grid grid-cols-3 h-full place-items-center pt-2 pb-4">
+  <aside class="grid grid-cols-2 h-full place-items-center pt-2 pb-2">
     <!-- Projects -->
     <div class="flex flex-col gap-0.5 items-center">
-      <button matIconButton>
-        <mat-icon fontIcon="folders"></mat-icon>
-      </button>
+      <div routerLink="/projects" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+        <button matIconButton (click)="onClickProjectDashboard()">
+          <mat-icon fontIcon="folders"></mat-icon>
+        </button>
+      </div>
       <span class="mat-font-label-sm">Projects</span>
     </div>
 
     <!-- Teams -->
     <div class="flex flex-col gap-0.5 items-center">
-      <button matIconButton>
-        <mat-icon fontIcon="groups"></mat-icon>
-      </button>
+      <div routerLink="/teams" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+        <button matIconButton (click)="onClickTeamDashboard()">
+          <mat-icon fontIcon="groups"></mat-icon>
+        </button>
+      </div>
       <span class="mat-font-label-sm">Teams</span>
-    </div>
-
-    <!-- Account -->
-    <div class="flex flex-col gap-0.5 items-center">
-      <button matIconButton>
-        <mat-icon fontIcon="account_circle"></mat-icon>
-      </button>
-      <span class="mat-font-label-sm">Account</span>
     </div>
   </aside>
 </div>

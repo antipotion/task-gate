@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -11,9 +11,9 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthFacade } from '../auth-facade';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-sign-up',
@@ -25,7 +25,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatProgressSpinnerModule,
   ],
   templateUrl: './sign-up.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sign-up.scss',
 })
 export class SignUp implements OnDestroy {

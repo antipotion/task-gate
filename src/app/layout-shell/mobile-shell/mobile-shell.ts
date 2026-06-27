@@ -1,23 +1,15 @@
-import {
-  Component,
-  DestroyRef,
-  inject,
-  input,
-  signal,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ROUTES_PARAMS } from '../../app.routes';
 import { ProjectFacade } from '../../project/project-facade/project-facade';
 
 @Component({
   selector: 'app-mobile-shell',
-  imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule],
+  imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule, RouterLink, RouterLinkActive],
   templateUrl: './mobile-shell.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mobile-shell.scss',
 })
 export class MobileShell {
@@ -27,6 +19,14 @@ export class MobileShell {
 
   readonly logoutLoading = signal<boolean>(false);
   readonly dontOverflow = input<boolean>(false);
+
+  onClickProjectDashboard(): void {
+    this._router.navigate([ROUTES_PARAMS.project]);
+  }
+
+  onClickTeamDashboard(): void {
+    this._router.navigate([ROUTES_PARAMS.teams]);
+  }
 
   async onLogout(): Promise<void> {
     this.logoutLoading.set(true);
