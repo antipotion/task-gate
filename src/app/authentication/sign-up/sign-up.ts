@@ -72,6 +72,8 @@ export class SignUp implements OnDestroy {
     const firstName: string = this.firstNameControl.getRawValue().trim();
     const lastName: string = this.lastNameControl.getRawValue().trim();
 
+    if (!email || !password || !firstName || !lastName) return;
+
     try {
       this.signUpLoading.set(true);
       await this._authFacade.signUpWithEmailAndPassword(email, password, firstName, lastName);

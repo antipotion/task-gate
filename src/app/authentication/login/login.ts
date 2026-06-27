@@ -1,12 +1,12 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
   inject,
   OnDestroy,
   signal,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -73,6 +73,8 @@ export class Login implements AfterViewInit, OnDestroy {
   async loginWithEmailAndPassword(): Promise<void> {
     const email: string = this.emailControl.getRawValue();
     const password: string = this.passwordControl.getRawValue();
+
+    if (!email || !password) return;
 
     this.loggingInLoading.set(true);
     await this._authFacade.loginWithEmailAndPassword(email, password);
