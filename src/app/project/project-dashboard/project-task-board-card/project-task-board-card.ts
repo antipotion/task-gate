@@ -2,10 +2,11 @@ import { TitleCasePipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { TaskFacade } from '../../task/task-facade';
 import { Task, TaskStatus } from '../../task/task.model';
+import { MatRippleModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-project-task-board-card',
-  imports: [TitleCasePipe],
+  imports: [TitleCasePipe, MatRippleModule],
   templateUrl: './project-task-board-card.html',
   styleUrl: './project-task-board-card.scss',
 })

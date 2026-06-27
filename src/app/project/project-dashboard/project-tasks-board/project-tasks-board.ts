@@ -1,4 +1,3 @@
-import { CdkListbox, CdkOption } from '@angular/cdk/listbox';
 import { Component, effect, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -8,11 +7,10 @@ import { StoreService } from '../../../application/store/store-service';
 import { PROJECT_ROUTE_PARAMS } from '../../project-route/project.routes';
 import { TaskStatus } from '../../task/task.model';
 import { ProjectTaskBoardCard } from '../project-task-board-card/project-task-board-card';
-import { MatRippleModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-project-tasks-board',
-  imports: [ProjectTaskBoardCard, CdkListbox, CdkOption, MatRippleModule],
+  imports: [ProjectTaskBoardCard],
   templateUrl: './project-tasks-board.html',
   styleUrl: './project-tasks-board.scss',
 })
