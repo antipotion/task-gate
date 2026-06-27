@@ -1,5 +1,5 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { TaskFacade } from '../../task/task-facade';
 import { Task, TaskStatus } from '../../task/task.model';
 
@@ -7,7 +7,6 @@ import { Task, TaskStatus } from '../../task/task.model';
   selector: 'app-project-task-board-card',
   imports: [TitleCasePipe],
   templateUrl: './project-task-board-card.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-task-board-card.scss',
 })
 export class ProjectTaskBoardCard {

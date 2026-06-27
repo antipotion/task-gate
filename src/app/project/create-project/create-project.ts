@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -33,7 +33,6 @@ type CreateProjectState = 'idle' | 'loading';
   ],
   templateUrl: './create-project.html',
   styleUrl: './create-project.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideNativeDateAdapter()],
 })
 export class CreateProject {

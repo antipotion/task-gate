@@ -61,6 +61,7 @@ export class FirestoreProjectRepository {
           subscriber.next(projects);
         },
         (error) => {
+          console.log('listenToProjects$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -81,6 +82,7 @@ export class FirestoreProjectRepository {
           subscriber.next(tasks);
         },
         (error) => {
+          console.error('listenToTasks$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -101,6 +103,7 @@ export class FirestoreProjectRepository {
           subscriber.next(teams);
         },
         (error) => {
+          console.error('listenToTeams$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -123,6 +126,7 @@ export class FirestoreProjectRepository {
           subscriber.next(user);
         },
         (error) => {
+          console.error('listenToUser$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -143,6 +147,7 @@ export class FirestoreProjectRepository {
           subscriber.next(reviews);
         },
         (error) => {
+          console.error('listenToReviews$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -166,6 +171,7 @@ export class FirestoreProjectRepository {
           subscriber.next(review);
         },
         (error) => {
+          console.error('listenToReviewById$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -192,6 +198,7 @@ export class FirestoreProjectRepository {
           subscriber.next(comments);
         },
         (error) => {
+          console.error('listenToComments$ ERROR', error);
           subscriber.error(error);
         },
       );

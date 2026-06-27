@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TaskFacade } from './task-facade';
 
@@ -7,7 +7,6 @@ import { TaskFacade } from './task-facade';
   imports: [RouterOutlet],
   templateUrl: './task.html',
   styleUrl: './task.scss',
-  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [TaskFacade],
 })
 export class Task {}

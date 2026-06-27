@@ -1,4 +1,4 @@
-import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -16,7 +16,6 @@ import { matchValueValidator } from '../../project-warning-dialog/project-warnin
     MatButtonModule,
   ],
   templateUrl: './task-warning-dialog.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './task-warning-dialog.scss',
 })
 export class TaskWarningDialog {

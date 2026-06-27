@@ -1,5 +1,5 @@
 import { CdkListbox, CdkOption } from '@angular/cdk/listbox';
-import { Component, effect, inject, Signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, effect, inject, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -13,7 +13,6 @@ import { ProjectTaskBoardCard } from '../project-task-board-card/project-task-bo
   selector: 'app-project-tasks-board',
   imports: [ProjectTaskBoardCard, CdkListbox, CdkOption],
   templateUrl: './project-tasks-board.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-tasks-board.scss',
 })
 export class ProjectTasksBoard {

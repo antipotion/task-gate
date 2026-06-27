@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthFacade } from '../../auth-facade';
@@ -9,7 +9,6 @@ import { AUTH_ROUTE_PARAMS } from '../../auth.routes';
   selector: 'app-role',
   imports: [MatButtonModule],
   templateUrl: './role.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './role.scss',
 })
 export class Role {

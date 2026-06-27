@@ -1,12 +1,4 @@
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  signal,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -38,7 +30,6 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
     MatMenuModule,
   ],
   templateUrl: './task-details.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './task-details.scss',
 })
 export class TaskDetails {

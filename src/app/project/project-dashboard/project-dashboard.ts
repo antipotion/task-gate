@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, SlicePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
-import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,7 +25,6 @@ import { ProjectStatusModel } from '../project-model/project.model';
     SlicePipe,
   ],
   templateUrl: './project-dashboard.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-dashboard.scss',
 })
 export class ProjectDashboard {

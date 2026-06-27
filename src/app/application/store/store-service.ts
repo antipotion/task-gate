@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { concat, filter, switchMap } from 'rxjs';
+import { concat, filter, of, switchMap } from 'rxjs';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 import { Task } from '../../project/task/task.model';
 import { TeamModel } from '../../team/team-model/team.model';
@@ -28,8 +28,11 @@ export class StoreService {
 
   readonly projects = toSignal(
     toObservable(this.teamsList).pipe(
-      filter((teams): teams is Array<TeamModel> => !!teams),
-      switchMap((teams) => this._repo.listenToProjects$(teams)),
+      switchMap((teams) => {
+        if (!teams) return of(null);
+
+        return this._repo.listenToProjects$(teams);
+      }),
     ),
     { initialValue: null },
   );

@@ -1,14 +1,5 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  OnDestroy,
-  signal,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
@@ -24,7 +15,6 @@ import { Task } from '../task/task.model';
   selector: 'app-project-task-category',
   imports: [TitleCasePipe, MatIconModule, NgClass, MatButtonModule, MatRippleModule],
   templateUrl: './project-task-category.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-task-category.scss',
 })
 export class ProjectTaskCategory implements OnDestroy {

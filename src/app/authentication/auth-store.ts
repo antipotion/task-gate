@@ -1,6 +1,6 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, switchMap } from 'rxjs';
+import { of, switchMap } from 'rxjs';
 import { FirebaseAuth } from '../infrastructure/auth/firebase-auth';
 import { FirestoreProjectRepository } from '../infrastructure/firestore/firestore-project-repository';
 import { SignupSessionStorage } from '../infrastructure/signup-session-storage/signup-session-storage';
@@ -16,10 +16,15 @@ export class AuthStore {
 
   readonly isAuthenticated = computed(() => this._firebaseAuth.isAuthenticated());
   readonly userId = computed<string | null>(() => this._firebaseAuth.userId());
-  readonly userData = toSignal(
+  readonly userData = toSignal<UserModel | null>(
     toObservable(this.userId).pipe(
-      filter((userId): userId is string => !!userId),
-      switchMap((userId) => this._repo.listenToUser$(userId)),
+      switchMap((userId) => {
+        if (!userId) {
+          return of(null);
+        }
+
+        return this._repo.listenToUser$(userId);
+      }),
     ),
     { initialValue: null },
   );

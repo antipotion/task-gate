@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -9,7 +9,6 @@ import { TaskFacade } from '../task-facade';
   selector: 'app-task-dashboard',
   imports: [MatProgressSpinnerModule, MatCardModule, DatePipe],
   templateUrl: './task-dashboard.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './task-dashboard.scss',
 })
 export class TaskDashboard {

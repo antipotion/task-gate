@@ -1,5 +1,5 @@
 import { NgClass, TitleCasePipe } from '@angular/common';
-import { Component, computed, effect, inject, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -14,7 +14,6 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
   selector: 'app-task-review-list',
   imports: [MatIconModule, MatCardModule, MatButtonModule, NgClass, TitleCasePipe],
   templateUrl: './task-review-list.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './task-review-list.scss',
 })
 export class TaskReviewList {
