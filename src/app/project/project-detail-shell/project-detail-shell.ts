@@ -72,15 +72,18 @@ export class ProjectDetailShell {
 
       try {
         await this._projectFacade.addTask(projectId, result);
-        this._snackBar.open('Task created successfully', 'Dismiss', {
+
+        const snackbarRef = this._snackBar.open('Task created successfully', 'Dismiss', {
           duration: 3000,
         });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
       } catch (error) {
         console.error('TASK CREATION ERROR', error);
-        this._snackBar.open('Task creation failed', 'Dismiss', {
+        const snackbarRef = this._snackBar.open('Task creation failed', 'Dismiss', {
           duration: 3000,
           panelClass: 'mat-error-state',
         });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
       }
     });
   }
