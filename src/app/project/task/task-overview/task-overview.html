@@ -35,5 +35,25 @@
         None
       }
     </p>
+
+    <!-- Creator -->
+    <p class="mat-font-label-sm">Creator</p>
+    <p class="mat-font-label-sm">
+      @if (creatorName(); as creatorName) {
+        {{ creatorName }}
+      } @else {
+        None
+      }
+    </p>
+
+    <!-- Assignee -->
+    <p class="mat-font-label-sm">Assignee</p>
+    <p class="mat-font-label-sm">
+      @if (assigneeName(); as assigneeName) {
+        {{ assigneeName }}
+      } @else {
+        None
+      }
+    </p>
   </div>
 </section>

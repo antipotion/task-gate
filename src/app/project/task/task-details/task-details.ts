@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, resource, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -47,6 +47,41 @@ export class TaskDetails {
   readonly isLoading = signal<boolean>(false);
   readonly reviews = this._taskFacade.reviewDataList();
   readonly isMobile = input<boolean>(false);
+
+  private readonly _userResource = resource({
+    params: () => {
+      const activeTask = this.activeTask();
+      if (!activeTask) return;
+
+      const creatorId = activeTask.creatorId;
+      const assigneeId = activeTask.assigneeId;
+      if (!creatorId || !assigneeId) return;
+
+      return new Set<string>([creatorId, assigneeId]);
+    },
+    loader: ({ params }) => this._taskFacade.getUsersById(params),
+  });
+  private readonly _userMap = computed<Map<string, string> | null>(() => {
+    const userResource = this._userResource.value();
+    if (!userResource) return null;
+
+    return new Map<string, string>(
+      userResource.map((user) => [user.id, `${user.firstName} ${user.lastName}`]),
+    );
+  });
+
+  readonly creatorName = computed<string | null>(() => {
+    const activeTask = this.activeTask();
+    if (!activeTask) return null;
+
+    return this._userMap()?.get(activeTask.creatorId) ?? null;
+  });
+  readonly assigneeName = computed<string | null>(() => {
+    const activeTask = this.activeTask();
+    if (!activeTask) return null;
+
+    return this._userMap()?.get(activeTask.assigneeId) ?? null;
+  });
 
   constructor() {
     effect(() => {

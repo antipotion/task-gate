@@ -37,8 +37,8 @@
     </div>
 
     <app-task-header
-      [taskName]="$safeNavigationMigration(activeTaskData?.name)"
-      [taskStatus]="$safeNavigationMigration(activeTaskData?.status)"
+      [taskName]="activeTaskData?.name"
+      [taskStatus]="activeTaskData?.status"
       [taskStartDate]="activeTaskData?.startDate ?? null"
       [taskDeadline]="activeTaskData?.deadline ?? null"
     />
@@ -46,10 +46,12 @@
       [taskStartDate]="activeTaskData?.startDate ?? null"
       [taskDeadline]="activeTaskData?.deadline ?? null"
       [taskDescription]="activeTaskData?.description ?? null"
+      [creatorName]="creatorName()"
+      [assigneeName]="assigneeName()"
     />
     <app-task-action
-      [taskId]="$safeNavigationMigration(activeTaskData?.id)"
-      [taskStatus]="$safeNavigationMigration(activeTaskData?.status)"
+      [taskId]="activeTaskData?.id"
+      [taskStatus]="activeTaskData?.status"
       [taskNextAction]="nextTaskAction()"
       [reviews]="reviews()"
       (nextActionTriggered)="transitionTask($event)"
