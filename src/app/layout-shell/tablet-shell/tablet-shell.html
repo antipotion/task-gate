@@ -11,7 +11,7 @@
   <header class="flex justify-between">
     <!-- Expand/collapse button -->
     @let isMenuExpanded = this.isMenuExpanded();
-    <button matIconButton class="ml-8" (click)="onToggleIsMenuExpanded()">
+    <button matIconButton class="ml-6" (click)="onToggleIsMenuExpanded()">
       <mat-icon [fontIcon]="isMenuExpanded ? 'menu_open' : 'menu'"></mat-icon>
     </button>
 
@@ -30,7 +30,7 @@
   </header>
 
   <div class="flex gap-6 h-full">
-    <aside class="w-fit flex flex-col gap-8 items-center px-4">
+    <aside class="w-fit flex flex-col gap-8 items-center px-2">
       <!-- Create project button -->
       <div class="flex w-full min-h-14 min-w-14 justify-center">
         @if (isMenuExpanded) {
