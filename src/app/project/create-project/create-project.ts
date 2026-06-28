@@ -55,7 +55,7 @@ export class CreateProject {
 
   openSnackBar(message: string): void {
     const snackbarRef = this._snackBar.open(message, 'Dismiss', {
-      duration: 5000,
+      duration: 3000,
     });
 
     snackbarRef.onAction().subscribe(() => {
@@ -104,10 +104,8 @@ export class CreateProject {
       // Reset the form
       this.projectForm.reset();
 
-      // NOTE: Assumption for the navigation is that the parent is the project dashboard component route.
-      // if this is violated -> change the `relativeTo` to align it
-      // or make the path explicit
       this._router.navigate([ROUTES_PARAMS.project, projectId]);
+      this.openSnackBar('Project created successfully');
     } catch (error) {
       console.error('Error creating project:', error);
 
