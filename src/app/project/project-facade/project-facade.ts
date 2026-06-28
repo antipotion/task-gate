@@ -1,8 +1,10 @@
 import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
 import { StoreService } from '../../application/store/store-service';
+import { UserModel } from '../../authentication/auth-model/auth.model';
 import { AuthStore } from '../../authentication/auth-store/auth-store';
 import { NavigationService } from '../../navigation/navigation-service';
+import { TeamFacade } from '../../team/team-facade/team-facade';
 import { TeamModel } from '../../team/team-model/team.model';
 import type {
   DeadlinePressureModel,
@@ -27,6 +29,7 @@ export class ProjectFacade {
   private readonly _taskFacade = inject(TaskFacade);
   private readonly _historyService = inject(HistoryService);
   private readonly _navigationService = inject(NavigationService);
+  private readonly _teamFacade = inject(TeamFacade);
 
   readonly isMobileScreen = computed<boolean>(() => this._navigationService.isMobileScreen());
 
@@ -159,5 +162,9 @@ export class ProjectFacade {
 
   async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
     return this._taskFacade.addTask(projectId, task);
+  }
+
+  async getUsersById(userIds: Set<string>): Promise<UserModel[] | null> {
+    return this._teamFacade.getUsersById(userIds);
   }
 }
