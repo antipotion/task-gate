@@ -78,7 +78,7 @@ export class ReviewDetail {
       if (!taskId) return;
 
       this._reviewFacade.selectTaskId(taskId);
-    })
+    });
   }
 
   getUserById(userId: string | undefined): Promise<UserModel | null> {
@@ -89,7 +89,9 @@ export class ReviewDetail {
 
   onBack(): void {
     const taskid = this.currentReviewData()?.taskId;
-    if (!taskid) return;
+    if (!taskid) {
+      throw new Error('taskId is not present');
+    }
 
     this._router.navigate([ROUTES_PARAMS.task, taskid]);
   }
@@ -115,7 +117,11 @@ export class ReviewDetail {
         throw new Error('senderId not present');
       }
 
-      await this._reviewFacade.closeReview(reviewId, action);
+      await this._reviewFacade
+        .closeReview(reviewId, action)
+        .catch((error) => console.error('CLOSE REVIEW ERROR', error));
+      this._reviewFacade.advanceTaskState(action);
+      this._router.navigate([ROUTES_PARAMS.task, taskId]);
 
       const judgement = action === 'APPROVE' ? 'approved' : 'rejected';
 
@@ -144,9 +150,6 @@ export class ReviewDetail {
       );
       snacbarRef.onAction().subscribe(() => snacbarRef.dismiss());
     }
-
-    this._reviewFacade.advanceTaskState(action);
-    this._router.navigate([ROUTES_PARAMS.task, taskId]);
   }
 
   onShowDiscussion(): void {

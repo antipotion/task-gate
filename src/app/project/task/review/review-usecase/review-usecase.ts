@@ -17,7 +17,9 @@ export class ReviewUsecase {
     const userId = this._authStore.userId();
     if (!userId) throw new Error('UserId does not exists');
 
-    const activeTask: Task | undefined = this._store.getTaskById(data.taskId)();
+    const taskId = data.taskId;
+    this._store.setTaskId(taskId);
+    const activeTask: Task | null = this._store.taskDataById();
     if (!activeTask) throw new Error('Task does not exists');
 
     const completeData: Omit<ReviewModelDTO, 'id' | 'submittedAt'> = {

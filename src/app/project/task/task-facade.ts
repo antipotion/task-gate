@@ -31,11 +31,11 @@ export class TaskFacade {
 
   private readonly selectedTaskId = signal<string | null>(null);
 
-  readonly activeTask = computed<Task | undefined>(() => {
+  readonly activeTask = computed<Task | null>(() => {
     const taskId = this.selectedTaskId();
-    if (!taskId) return;
+    if (!taskId) return null;
 
-    return this._storeService.getTaskById(taskId)();
+    return this._storeService.taskDataById();
   });
   readonly userid = computed(() => this._authStore.userId());
 

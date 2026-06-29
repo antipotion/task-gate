@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { concat, filter, of, switchMap } from 'rxjs';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
@@ -39,20 +39,16 @@ export class StoreService {
 
   readonly taskDataById = toSignal<Task | null>(
     toObservable(this._taskId).pipe(
-      filter((taskId): taskId is string => !!taskId),
-      switchMap((taskId) => this._repo.listenToTask$(taskId)),
+      switchMap((taskId) => {
+        if (!taskId) {
+          return of(null);
+        }
+
+        return this._repo.listenToTask$(taskId);
+      }),
     ),
     { initialValue: null },
   );
-
-  getTaskById(taskId: string): Signal<Task | undefined> {
-    return computed(() => {
-      const tasks = this.tasks();
-      if (!tasks) return;
-
-      return tasks.find((task) => task.id === taskId);
-    });
-  }
 
   setProjectId(projectId: string): void {
     this._projectId.set(projectId);
