@@ -6,9 +6,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../../app.routes';
+import { NotificationDTOModel } from '../../../../notification/notification.model';
 import { REVIEW_ROUTE_PARAMS } from '../review.routes';
 import { CommentFacade } from './comment-facade';
 
@@ -29,6 +31,7 @@ export class Comment {
   private readonly _commentFacade = inject(CommentFacade);
   private readonly _route = inject(ActivatedRoute);
   private readonly _router = inject(Router);
+  private readonly _snackbar = inject(MatSnackBar);
 
   private readonly _reviewId = toSignal<string | null>(
     this._route.paramMap.pipe(map((params) => params.get(REVIEW_ROUTE_PARAMS.reviewId))),
@@ -89,9 +92,44 @@ export class Comment {
     const content = this.commentControl.value;
     if (!content) return;
 
-    this.commentForm.reset();
+    try {
+      const senderId = this.userId();
+      if (!senderId) {
+        throw new Error('senderId not present');
+      }
+      const receiverId = this.reviewData()?.reviewerId;
+      if (!receiverId) {
+        throw new Error('receiverId not prsent');
+      }
+      const commentId = await this._commentFacade.addComment(reviewId, taskId, content);
+      if (!commentId) {
+        throw new Error('Add comment failed');
+      }
 
-    await this._commentFacade.addComment(reviewId, taskId, content);
+      const notificationPayload: Omit<NotificationDTOModel, 'createdAt'> = {
+        shortDescription: 'A new comment is now available.',
+        resourceUrl: `${ROUTES_PARAMS.review}/${reviewId}/${REVIEW_ROUTE_PARAMS.discussion}`,
+        resourceType: 'discussion',
+        receiverId,
+        senderId,
+        isRead: false,
+      };
+
+      await this._commentFacade
+        .addNotification(notificationPayload)
+        .catch((error) => console.error('ADD COMMENT NOTIFICATION ERROR', error));
+    } catch (error) {
+      console.error('SEND COMMENT ERROR', error);
+
+      const snacbarRef = this._snackbar.open('Failed to add comment', 'Dismiss', {
+        duration: 3000,
+        panelClass: 'mat-error-state',
+      });
+
+      snacbarRef.onAction().subscribe(() => snacbarRef.dismiss());
+    } finally {
+      this.commentForm.reset();
+    }
   }
 
   async getUserById(userId: string): Promise<string | null> {

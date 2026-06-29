@@ -20,6 +20,7 @@
       <!-- Comments -->
       @for (comment of comments; track comment.id) {
         @if (comment.authorId === userId) {
+          <!-- User owns the comment -->
           <div [id]="comment.id" class="flex gap-2 justify-end max-w-[60ch] self-end">
             <div class="flex flex-col gap-1">
               <p class="mat-font-label-sm mat-text-on-surface-variant text-end">You</p>

@@ -194,7 +194,7 @@ export class FirestoreProjectRepository {
             const createdA = a.createdAt;
             const createdB = b.createdAt;
 
-            return createdA.getTime() - createdB.getTime();
+            return createdA?.getTime() - createdB?.getTime();
           });
 
           subscriber.next(comments);
@@ -226,7 +226,7 @@ export class FirestoreProjectRepository {
             const createdA = a.createdAt;
             const createdB = b.createdAt;
 
-            return createdA.getTime() - createdB.getTime();
+            return createdA?.getTime() - createdB?.getTime();
           });
 
           subscriber.next(notifications);
