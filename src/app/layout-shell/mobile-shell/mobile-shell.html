@@ -10,9 +10,49 @@
 <div class="mat-bg-surface-container w-full h-screen pt-2 pb-4 px-2 grid grid-rows-[auto_1fr_auto]">
   <header class="flex items-center justify-end py-1">
     <!-- Notification button -->
-    <button matIconButton>
-      <mat-icon fontIcon="notifications"></mat-icon>
+    @let notifications = this.notifications();
+    <button
+      matIconButton
+      [ngClass]="{
+        withNotification: notifications && notifications.length > 0,
+      }"
+      [matMenuTriggerFor]="notificationMenu"
+      ariaDescription="notifications"
+    >
+      <mat-icon
+        fontIcon="notifications"
+        [matBadge]="notifications?.length"
+        [matBadgeHidden]="!notifications || notifications.length === 0"
+        [ariaHidden]="false"
+      ></mat-icon>
     </button>
+
+    <mat-menu #notificationMenu="matMenu">
+      @for (notification of notifications; track notification.id) {
+        <button mat-menu-item (click)="onClickNoticationFeed(notification)">
+          <div class="grid grid-cols-[auto_1fr_auto] gap-2 items-center max-w-64">
+            <mat-icon>
+              @switch (notification.resourceType) {
+                @case ('project') {
+                  folder
+                }
+                @case ('task') {
+                  assignment
+                }
+                @case ('review') {
+                  fact_check
+                }
+                @case ('discussion') {
+                  comment
+                }
+              }
+            </mat-icon>
+            <p>{{ notification.shortDescription }}</p>
+            <p>{{ notification.createdAt | date: 'shortDate' }}</p>
+          </div>
+        </button>
+      }
+    </mat-menu>
 
     <!-- Logout button -->
     <button matButton class="mat-error-state" (click)="onLogout()">

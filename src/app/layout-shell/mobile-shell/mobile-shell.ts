@@ -1,14 +1,28 @@
-import { Component, DestroyRef, inject, input, signal } from '@angular/core';
+import { DatePipe, NgClass } from '@angular/common';
+import { Component, computed, DestroyRef, inject, input, signal } from '@angular/core';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ROUTES_PARAMS } from '../../app.routes';
+import { NotificationModel } from '../../notification/notification.model';
 import { ProjectFacade } from '../../project/project-facade/project-facade';
 
 @Component({
   selector: 'app-mobile-shell',
-  imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule, RouterLink, RouterLinkActive],
+  imports: [
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    RouterLink,
+    RouterLinkActive,
+    MatMenuModule,
+    NgClass,
+    MatBadgeModule,
+    DatePipe,
+  ],
   templateUrl: './mobile-shell.html',
   styleUrl: './mobile-shell.scss',
 })
@@ -19,6 +33,7 @@ export class MobileShell {
 
   readonly logoutLoading = signal<boolean>(false);
   readonly dontOverflow = input<boolean>(false);
+  readonly notifications = computed(() => this._projectFacade.notifications());
 
   onClickProjectDashboard(): void {
     this._router.navigate([ROUTES_PARAMS.project]);
@@ -34,5 +49,11 @@ export class MobileShell {
     this._router.navigate([ROUTES_PARAMS.auth]);
 
     this._destroyRef.onDestroy(() => this.logoutLoading.set(false));
+  }
+
+  async onClickNoticationFeed(notification: NotificationModel): Promise<void> {
+    await this._projectFacade.updateNotification(notification);
+
+    this._router.navigateByUrl(notification.resourceUrl);
   }
 }
