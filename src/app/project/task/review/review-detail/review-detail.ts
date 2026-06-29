@@ -2,10 +2,12 @@ import { Component, computed, effect, inject, input, signal } from '@angular/cor
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../../app.routes';
 import { UserModel } from '../../../../authentication/auth-model/auth.model';
+import { NotificationDTOModel } from '../../../../notification/notification.model';
 import { TaskActionModel } from '../../task.model';
 import { ReviewFacade } from '../review-facade/review-facade';
 import { ReviewHero } from '../review-hero/review-hero';
@@ -22,6 +24,7 @@ export class ReviewDetail {
   private readonly _reviewFacade = inject(ReviewFacade);
   private readonly _route = inject(ActivatedRoute);
   private readonly _router = inject(Router);
+  private readonly _snackbar = inject(MatSnackBar);
 
   private readonly _reviewId = toSignal(
     this._route.paramMap.pipe(map((params) => params.get(REVIEW_ROUTE_PARAMS.reviewId))),
@@ -31,6 +34,7 @@ export class ReviewDetail {
   readonly currentReviewData = computed(() => this._reviewFacade.review());
   readonly submittedBy = signal<string | null>(null);
   readonly reviewer = signal<string | null>(null);
+  readonly taskId = computed(() => this.currentReviewData()?.taskId);
 
   constructor() {
     // CurrentReviewData
@@ -68,6 +72,13 @@ export class ReviewDetail {
       const reviewer = `${reviewerData.firstName} ${reviewerData.lastName}`;
       this.reviewer.set(reviewer);
     });
+
+    effect(() => {
+      const taskId = this.taskId();
+      if (!taskId) return;
+
+      this._reviewFacade.selectTaskId(taskId);
+    })
   }
 
   getUserById(userId: string | undefined): Promise<UserModel | null> {
@@ -84,13 +95,55 @@ export class ReviewDetail {
   }
 
   async onJudgement(action: Extract<TaskActionModel, 'APPROVE' | 'REJECT'>): Promise<void> {
-    const taskId = this.currentReviewData()?.taskId;
+    const currentReview = this.currentReviewData();
+    if (!currentReview) return;
+
+    const taskId = currentReview.taskId;
     const reviewId = this._reviewId();
     if (!taskId || !reviewId) {
       throw new Error('taskId or reviewId is missing cannot process review judgement');
     }
 
-    await this._reviewFacade.closeReview(reviewId, action);
+    try {
+      const receiverId = currentReview.submittedById;
+      if (!receiverId) {
+        throw new Error('receiverId not present');
+      }
+
+      const senderId = this._reviewFacade.userId();
+      if (!senderId) {
+        throw new Error('senderId not present');
+      }
+
+      await this._reviewFacade.closeReview(reviewId, action);
+
+      const judgement = action === 'APPROVE' ? 'approved' : 'rejected';
+
+      const notificationPayload: Omit<NotificationDTOModel, 'createdAt'> = {
+        shortDescription: `A review has been ${judgement}.`,
+        resourceUrl: `${ROUTES_PARAMS.review}/${reviewId}`,
+        resourceType: 'review',
+        receiverId,
+        senderId,
+        isRead: false,
+      };
+
+      await this._reviewFacade
+        .addNotification(notificationPayload)
+        .catch((error) => console.error('REVIEW JUDGEMENT NOTIFICATION ERROR', error));
+    } catch (error) {
+      console.error('REVIEW JUDGEMENT ERROR', error);
+
+      const snacbarRef = this._snackbar.open(
+        'An error occured while submitting judgement',
+        'Dismiss',
+        {
+          duration: 3000,
+          panelClass: 'mat-error-state',
+        },
+      );
+      snacbarRef.onAction().subscribe(() => snacbarRef.dismiss());
+    }
 
     this._reviewFacade.advanceTaskState(action);
     this._router.navigate([ROUTES_PARAMS.task, taskId]);

@@ -6,6 +6,8 @@ import { TaskFacade } from '../../task-facade';
 import { TaskActionModel } from '../../task.model';
 import { ReviewStore } from '../review-store/review-store';
 import { ReviewUsecase } from '../review-usecase/review-usecase';
+import { NotificationUsecase } from '../../../../notification/notification-usecase/notification-usecase';
+import { NotificationDTOModel } from '../../../../notification/notification.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,9 +18,11 @@ export class ReviewFacade {
   private readonly _taskFacade = inject(TaskFacade);
   private readonly _reviewUsecase = inject(ReviewUsecase);
   private readonly _navigationService = inject(NavigationService);
+  private readonly _notificationUsecase = inject(NotificationUsecase);
 
   readonly review = computed(() => this._reviewStore.review());
   readonly isMobileScreen = computed(() => this._navigationService.isMobileScreen());
+  readonly userId = computed(() => this._authStore.userId());
 
   async getUserById(userId: string): Promise<UserModel | null> {
     return this._authStore.getUserById(userId);
@@ -49,5 +53,9 @@ export class ReviewFacade {
 
   setReviewid(reviewId: string): void {
     this._reviewStore.setReviewId(reviewId);
+  }
+
+  async addNotification(data: Omit<NotificationDTOModel, 'createdAt'>): Promise<void> {
+    return this._notificationUsecase.addNotification(data);
   }
 }
