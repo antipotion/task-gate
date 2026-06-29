@@ -2,7 +2,10 @@ import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
 import { StoreService } from '../../application/store/store-service';
 import { UserModel } from '../../authentication/auth-model/auth.model';
+import { AuthStore } from '../../authentication/auth-store/auth-store';
 import { NavigationService } from '../../navigation/navigation-service';
+import { NotificationUsecase } from '../../notification/notification-usecase/notification-usecase';
+import { NotificationDTOModel } from '../../notification/notification.model';
 import { TeamFacade } from '../../team/team-facade/team-facade';
 import { ReviewStore } from './review/review-store/review-store';
 import { ReviewUsecase } from './review/review-usecase/review-usecase';
@@ -20,6 +23,8 @@ export class TaskFacade {
   private readonly _reviewStore = inject(ReviewStore);
   private readonly _navigationService = inject(NavigationService);
   private readonly _teamFacade = inject(TeamFacade);
+  private readonly _authStore = inject(AuthStore);
+  private readonly _notificationUsecase = inject(NotificationUsecase);
 
   readonly tasks = computed<Task[] | null>(() => this._storeService.tasks());
   readonly isMobileScreen = computed<boolean>(() => this._navigationService.isMobileScreen());
@@ -32,6 +37,7 @@ export class TaskFacade {
 
     return this._storeService.getTaskById(taskId)();
   });
+  readonly userid = computed(() => this._authStore.userId());
 
   readonly taskReviews = computed(() => this._reviewStore.taskReviews());
 
@@ -86,5 +92,9 @@ export class TaskFacade {
 
   async getUsersById(userIds: Set<string>): Promise<UserModel[] | null> {
     return this._teamFacade.getUsersById(userIds);
+  }
+
+  async addNotification(data: Omit<NotificationDTOModel, 'createdAt'>): Promise<void> {
+    return this._notificationUsecase.addNotification(data);
   }
 }

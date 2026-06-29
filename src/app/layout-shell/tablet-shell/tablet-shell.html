@@ -37,7 +37,7 @@
       <mat-menu #notificationMenu="matMenu">
         @for (notification of notifications; track notification.id) {
           <button mat-menu-item (click)="onClickNoticationFeed(notification)">
-            <div class="grid grid-cols-[auto_1fr_auto] gap-1 items-center max-w-64">
+            <div class="grid grid-cols-[auto_1fr_auto] gap-2 items-center max-w-64">
               <mat-icon>
                 @switch (notification.resourceType) {
                   @case ('project') {

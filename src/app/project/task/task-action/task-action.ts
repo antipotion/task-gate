@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../../app.routes';
+import { NotificationDTOModel } from '../../../notification/notification.model';
 import { ReviewModel } from '../review/review.model';
 import { TaskFacade } from '../task-facade';
 import { TaskActionModel, type TaskStatus as TaskStatusModel } from '../task.model';
@@ -89,6 +90,33 @@ export class TaskAction {
 
     try {
       const reviewId = await this._taskFacade.submitReview(data);
+      const senderId = this._taskFacade.userid();
+      if (!senderId) {
+        throw new Error('senderId not present');
+      }
+
+      if (!reviewId) {
+        throw new Error('reviewId not present');
+      }
+
+      const receiverId = this.currentReview()?.reviewerId;
+      if (!receiverId) {
+        throw new Error('reviewerId not present');
+      }
+
+      const notificationPayload: Omit<NotificationDTOModel, 'createdAt'> = {
+        shortDescription: 'A review is now ready to be checked.',
+        resourceType: 'review',
+        resourceUrl: `${ROUTES_PARAMS.review}/${reviewId}`,
+        receiverId,
+        senderId,
+        isRead: false,
+      };
+
+      await this._taskFacade
+        .addNotification(notificationPayload)
+        .catch((error) => console.error('REVIEW CREATION NOTIFICAITON ERROR', error));
+
       this.onNextActionTrigger();
 
       const snackbarRef = this._snackbar.open('Review created successfully', 'Dismiss', {
