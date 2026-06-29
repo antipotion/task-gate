@@ -37,7 +37,7 @@ export class TaskAction {
 
   readonly taskId = input.required<string | undefined>();
   readonly taskStatus = input.required<TaskStatusModel | undefined>();
-  readonly taskNextAction = input.required<TaskActionModel | null>();
+  readonly taskNextAction = input.required<TaskActionModel[] | null>();
   readonly reviews = input.required<ReviewModel[] | null>();
   readonly nextActionTriggered = output<TaskActionModel>();
   readonly currentReview = computed(() => this.reviews()?.find((review) => !review.closedDate));
@@ -52,7 +52,7 @@ export class TaskAction {
     const taskNextAction = this.taskNextAction();
     if (!taskNextAction) return;
 
-    this.nextActionTriggered.emit(taskNextAction);
+    this.nextActionTriggered.emit(taskNextAction[0]);
   }
 
   onSubmitUrl(): void {

@@ -43,7 +43,7 @@ export class TaskDetails {
     this._route.paramMap.pipe(map((params) => params.get(TASK_ROUTE_PARAMS.taskId))),
   );
   readonly activeTask = computed(() => this._taskFacade.taskDataById());
-  readonly nextTaskAction = signal<TaskActionModel | null>(null);
+  readonly nextTaskAction = signal<TaskActionModel[] | null>(null);
   readonly isLoading = signal<boolean>(false);
   readonly reviews = this._taskFacade.reviewDataList();
   readonly isMobile = input<boolean>(false);

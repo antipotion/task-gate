@@ -38,10 +38,9 @@ export class TaskFacade {
     return this._storeService.taskDataById();
   });
   readonly userid = computed(() => this._authStore.userId());
-
   readonly taskReviews = computed(() => this._reviewStore.taskReviews());
-
   readonly taskDataById = computed(() => this._storeService.taskDataById());
+  readonly userData = computed(() => this._authStore.userData());
 
   selectTaskId(taskId: string): void {
     this.selectedTaskId.set(taskId);
@@ -59,13 +58,26 @@ export class TaskFacade {
     return this._taskUseCase.deleteTask(taskId);
   }
 
-  nextTaskState(task: Task): TaskActionModel | undefined {
-    return getAvailableActions(task);
+  nextTaskState(task: Task): TaskActionModel[] | undefined {
+    const userRole = this.userData()?.role;
+    const userId = this.userid();
+    if (!userRole) {
+      throw new Error('userRole is not present');
+    }
+    if (!userId) {
+      throw new Error('userId is not present');
+    }
+
+    return getAvailableActions(task, userRole, userId);
   }
 
   advanceTaskState(task: Task, action: TaskActionModel): void {
     const taskId = task.id;
-    const advancedTask = transitionTask(task, action);
+    const context = this.userData();
+    if (!context) {
+      throw new Error('context is present');
+    }
+    const advancedTask = transitionTask(task, action, context);
 
     this.updatetask(taskId, task, advancedTask);
   }
