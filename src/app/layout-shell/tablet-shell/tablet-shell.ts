@@ -36,6 +36,7 @@ export class TabletShell {
   readonly isMenuExpanded = signal<boolean>(false);
   readonly logoutLoading = signal<boolean>(false);
   readonly notifications = computed(() => this._projectFacade.notifications());
+  readonly visitNotificationLoading = signal<boolean>(false);
 
   onToggleIsMenuExpanded(): void {
     this.isMenuExpanded.update((value) => !value);
@@ -58,8 +59,11 @@ export class TabletShell {
   }
 
   async onClickNoticationFeed(notification: NotificationModel): Promise<void> {
-    await this._projectFacade.updateNotification(notification);
+    this.visitNotificationLoading.set(true);
 
+    await this._projectFacade.updateNotification(notification);
     this._router.navigateByUrl(notification.resourceUrl);
+
+    this.visitNotificationLoading.set(false);
   }
 }
