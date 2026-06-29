@@ -24,6 +24,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { db } from '../../../environment/firebase.config';
 import { UserModel } from '../../authentication/auth-model/auth.model';
+import { NotificationDTOModel, NotificationModel } from '../../notification/notification.model';
 import type { Project } from '../../project/project-model/project.model';
 import { CommentModel, CommentModelDTO } from '../../project/task/review/comment/comment.model';
 import { ReviewModel, ReviewModelDTO } from '../../project/task/review/review.model';
@@ -41,6 +42,7 @@ export class FirestoreProjectRepository {
   private readonly _teamsCollection = collection(this._db, 'teams');
   private readonly _reviewsCollection = collection(this._db, 'reviews');
   private readonly _commentsCollection = collection(this._db, 'comments');
+  private readonly _notificaitonsCollection = collection(this._db, 'notifications');
 
   listenToProjects$(teams: TeamModel[]): Observable<Project[]> {
     const teamIds = teams.map((team) => team.id);
@@ -199,6 +201,38 @@ export class FirestoreProjectRepository {
         },
         (error) => {
           console.error('listenToComments$ ERROR', error);
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
+  listenToNotifications$(userId: string): Observable<NotificationModel[] | null> {
+    const notificationQuery = query(
+      this._notificaitonsCollection,
+      where('receiverId', '==', userId),
+      where('isRead', '==', false),
+    );
+
+    return new Observable<NotificationModel[] | null>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        notificationQuery,
+        (snapshot) => {
+          const notifications = snapshot.docs.map((doc) => this._mapToNotification(doc));
+
+          notifications.sort((a, b) => {
+            const createdA = a.createdAt;
+            const createdB = b.createdAt;
+
+            return createdA.getTime() - createdB.getTime();
+          });
+
+          subscriber.next(notifications);
+        },
+        (error) => {
+          console.error('listenToNotifications$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -443,6 +477,21 @@ export class FirestoreProjectRepository {
     };
   }
 
+  private _mapToNotification(doc: QueryDocumentSnapshot<DocumentData>): NotificationModel {
+    const data = doc.data();
+
+    return {
+      id: doc.id,
+      resourceUrl: data['resourceUrl'],
+      resourceType: data['resourceType'],
+      senderId: data['senderId'],
+      receiverId: data['receiverId'],
+      shortDescription: data['shortDescription'],
+      isRead: data['isRead'],
+      createdAt: data['createdAt']?.toDate(),
+    };
+  }
+
   async getUserById(userId: string): Promise<UserModel | null> {
     const docRef = doc(this._usersCollection, userId);
     const snapshot = await getDoc(docRef);
@@ -465,5 +514,22 @@ export class FirestoreProjectRepository {
     const users = snapshot.docs.map((doc) => this._mapToUser(doc));
 
     return users;
+  }
+
+  async addNotification(data: Omit<NotificationDTOModel, 'createdAt'>): Promise<void> {
+    const withCreatedAt: NotificationDTOModel = {
+      ...data,
+      createdAt: serverTimestamp(),
+    };
+
+    await addDoc(this._notificaitonsCollection, withCreatedAt);
+  }
+
+  async updateNotification(data: NotificationModel): Promise<void> {
+    const notificationId = data.id;
+    const notificationRef = doc(this._notificaitonsCollection, notificationId);
+    const isRead = data.isRead;
+
+    return updateDoc(notificationRef, { isRead });
   }
 }

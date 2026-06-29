@@ -6,13 +6,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
+import { ROUTES_PARAMS } from '../../app.routes';
 import { MobileShell } from '../../layout-shell/mobile-shell/mobile-shell';
 import { TabletShell } from '../../layout-shell/tablet-shell/tablet-shell';
+import { NotificationDTOModel } from '../../notification/notification.model';
 import { ProjectDetails } from '../project-dashboard/project-details/project-details';
 import { ProjectFacade } from '../project-facade/project-facade';
 import { PROJECT_ROUTE_PARAMS } from '../project-route/project.routes';
 import { ProjectTaskCategory } from '../project-task-category/project-task-category';
 import { CreateTask } from '../task/create-task/create-task';
+import { Task } from '../task/task.model';
 
 export interface TeamMembersDialogData {
   teamMembers: string[];
@@ -71,7 +74,24 @@ export class ProjectDetailShell {
       if (!result) return;
 
       try {
-        await this._projectFacade.addTask(projectId, result);
+        const taskId = await this._projectFacade.addTask(projectId, result);
+        const receiverId = (result as Task).assigneeId;
+
+        const senderId = this._projectFacade.userId();
+        if (!senderId) return;
+
+        const notificationPayload: Omit<NotificationDTOModel, 'createdAt'> = {
+          shortDescription: 'A task has been assigned to you.',
+          resourceUrl: `${ROUTES_PARAMS.task}/${taskId}`,
+          resourceType: 'task',
+          receiverId,
+          senderId,
+          isRead: false,
+        };
+
+        await this._projectFacade
+          .addNotification(notificationPayload)
+          .catch((error) => console.error('TASK CREATION NOTIFICATION ERROR', error));
 
         const snackbarRef = this._snackBar.open('Task created successfully', 'Dismiss', {
           duration: 3000,

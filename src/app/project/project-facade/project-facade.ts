@@ -4,6 +4,9 @@ import { StoreService } from '../../application/store/store-service';
 import { UserModel } from '../../authentication/auth-model/auth.model';
 import { AuthStore } from '../../authentication/auth-store/auth-store';
 import { NavigationService } from '../../navigation/navigation-service';
+import { NotificationStore } from '../../notification/notification-store/notification-store';
+import { NotificationUsecase } from '../../notification/notification-usecase/notification-usecase';
+import { NotificationDTOModel, NotificationModel } from '../../notification/notification.model';
 import { TeamFacade } from '../../team/team-facade/team-facade';
 import { TeamModel } from '../../team/team-model/team.model';
 import type {
@@ -30,6 +33,8 @@ export class ProjectFacade {
   private readonly _historyService = inject(HistoryService);
   private readonly _navigationService = inject(NavigationService);
   private readonly _teamFacade = inject(TeamFacade);
+  private readonly _notificationUsecase = inject(NotificationUsecase);
+  private readonly _notificationStore = inject(NotificationStore);
 
   readonly isMobileScreen = computed<boolean>(() => this._navigationService.isMobileScreen());
 
@@ -42,6 +47,8 @@ export class ProjectFacade {
   });
   readonly tasks = computed(() => this._taskFacade.tasks());
   readonly projects = computed(() => this._storeService.projects());
+  readonly userId = computed(() => this._authStore.userId());
+  readonly notifications = computed(() => this._notificationStore.notifications());
 
   private readonly selectedProjectId = signal<string | null>(null);
 
@@ -166,5 +173,13 @@ export class ProjectFacade {
 
   async getUsersById(userIds: Set<string>): Promise<UserModel[] | null> {
     return this._teamFacade.getUsersById(userIds);
+  }
+
+  async addNotification(data: Omit<NotificationDTOModel, 'createdAt'>): Promise<void> {
+    return this._notificationUsecase.addNotification(data);
+  }
+
+  async updateNotification(data: NotificationModel): Promise<void> {
+    return this._notificationUsecase.updateNotification(data);
   }
 }
