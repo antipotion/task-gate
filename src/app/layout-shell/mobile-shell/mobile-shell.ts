@@ -34,6 +34,7 @@ export class MobileShell {
   readonly logoutLoading = signal<boolean>(false);
   readonly dontOverflow = input<boolean>(false);
   readonly notifications = computed(() => this._projectFacade.notifications());
+  readonly visitNotificationLoading = signal<boolean>(false);
 
   onClickProjectDashboard(): void {
     this._router.navigate([ROUTES_PARAMS.project]);
@@ -52,8 +53,11 @@ export class MobileShell {
   }
 
   async onClickNoticationFeed(notification: NotificationModel): Promise<void> {
-    await this._projectFacade.updateNotification(notification);
+    this.visitNotificationLoading.set(true);
 
+    await this._projectFacade.updateNotification(notification);
     this._router.navigateByUrl(notification.resourceUrl);
+
+    this.visitNotificationLoading.set(false);
   }
 }
