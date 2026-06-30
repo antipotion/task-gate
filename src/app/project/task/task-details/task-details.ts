@@ -148,17 +148,27 @@ export class TaskDetails {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       const activeTask = this.activeTask();
       if (!activeTask) return;
 
-      try {
-        const taskId = this.taskId();
-        if (!taskId) return;
+      const taskId = this.taskId();
+      if (!taskId) return;
 
-        this._taskFacade.updatetask(taskId, activeTask, result);
+      try {
+        await this._taskFacade.updatetask(taskId, activeTask, result);
+
+        const snackbarRef = this._snackBar.open('Task edited successfully', 'Dismiss', {
+          duration: 3000,
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
       } catch (error) {
-        this.openSnackBar('Task edit failed');
+        console.error('TASK EDIT ERROR', error);
+        const snackbarRef = this._snackBar.open('Task edit failed', 'Dismiss', {
+          duration: 3000,
+          panelClass: 'mat-error-state',
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
       }
     });
   }
@@ -193,7 +203,7 @@ export class TaskDetails {
       data: taskName,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       const projectId = this.activeTask()?.projectId;
       if (!projectId) return;
 
@@ -201,8 +211,23 @@ export class TaskDetails {
       if (!taskid) return;
 
       if (!result) return;
-      this._taskFacade.deleteTask(taskid);
-      this._router.navigate([ROUTES_PARAMS.project, projectId]);
+      try {
+        await this._taskFacade.deleteTask(taskid);
+        this._router.navigate([ROUTES_PARAMS.project, projectId]);
+
+        const snackbarRef = this._snackBar.open('Task deleted successfully', 'Dismiss', {
+          duration: 3000,
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      } catch (error) {
+        console.error('TASK DELETION ERROR', error);
+
+        const snackbarRef = this._snackBar.open('Task deletion failed', 'Dismiss', {
+          duration: 3000,
+          panelClass: 'mat-error-state',
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      }
     });
   }
 
