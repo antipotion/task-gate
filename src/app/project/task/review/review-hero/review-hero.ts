@@ -14,6 +14,7 @@ export class ReviewHero {
   readonly closeStatus = input.required<Extract<TaskStatus, 'APPROVED' | 'REJECTED'> | null>();
   readonly submittedBy = input.required<string | null>();
   readonly reviewer = input.required<string | null>();
+  readonly reviewId = input.required<string | null>();
 
   readonly backEvent = output<void>();
 

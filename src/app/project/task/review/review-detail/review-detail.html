@@ -2,6 +2,7 @@
 
 <section class="flex flex-col gap-8">
   <app-review-hero
+    [reviewId]="currentReviewData?.id ?? null"
     [closeStatus]="currentReviewData?.closeStatus ?? null"
     [submittedBy]="submittedBy()"
     [reviewer]="reviewer()"
