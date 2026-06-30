@@ -145,6 +145,21 @@ export class FirestoreProjectRepository {
         reviewQuery,
         (snapshot: QuerySnapshot<DocumentData>) => {
           const reviews = snapshot.docs.map((doc) => this._mapToReview(doc));
+          // Sort in descending order
+          // 'null' closedDate is treated as latest
+          reviews.sort((a, b) => {
+            const closedDateA = a.closedDate;
+            const closedDateB = b.closedDate;
+            //
+            // Both undefined
+            if (!closedDateA && !closedDateB) return 0;
+
+            // Undefined goes first
+            if (!closedDateA) return -1;
+            if (!closedDateB) return 1;
+
+            return closedDateB.getTime() - closedDateA.getTime();
+          });
 
           subscriber.next(reviews);
         },

@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
 import { StoreService } from '../../application/store/store-service';
 import { UserModel } from '../../authentication/auth-model/auth.model';
@@ -41,6 +41,15 @@ export class TaskFacade {
   readonly taskReviews = computed(() => this._reviewStore.taskReviews());
   readonly taskDataById = computed(() => this._storeService.taskDataById());
   readonly userData = computed(() => this._authStore.userData());
+
+  constructor() {
+    effect(() => {
+      const taskId = this.selectedTaskId();
+      if (!taskId) return;
+
+      this._storeService.setTaskId(taskId);
+    });
+  }
 
   selectTaskId(taskId: string): void {
     this.selectedTaskId.set(taskId);

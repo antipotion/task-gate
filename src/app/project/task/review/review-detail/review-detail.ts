@@ -120,6 +120,7 @@ export class ReviewDetail {
       await this._reviewFacade
         .closeReview(reviewId, action)
         .catch((error) => console.error('CLOSE REVIEW ERROR', error));
+      
       this._reviewFacade.advanceTaskState(action);
       this._router.navigate([ROUTES_PARAMS.task, taskId]);
 
