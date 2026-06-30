@@ -54,6 +54,7 @@ export class TaskDetails {
   readonly isLoading = signal<boolean>(false);
   readonly reviews = this._taskFacade.reviewDataList();
   readonly isMobile = input<boolean>(false);
+  readonly userId = computed(() => this._taskFacade.userId());
 
   private readonly _userResource = resource({
     params: () => {

@@ -90,7 +90,7 @@ export class TaskAction {
 
     try {
       const reviewId = await this._taskFacade.submitReview(data);
-      const senderId = this._taskFacade.userid();
+      const senderId = this._taskFacade.userId();
       if (!senderId) {
         throw new Error('senderId not present');
       }

@@ -37,7 +37,7 @@ export class TaskFacade {
 
     return this._storeService.taskDataById();
   });
-  readonly userid = computed(() => this._authStore.userId());
+  readonly userId = computed(() => this._authStore.userId());
   readonly taskReviews = computed(() => this._reviewStore.taskReviews());
   readonly taskDataById = computed(() => this._storeService.taskDataById());
   readonly userData = computed(() => this._authStore.userData());
@@ -69,7 +69,7 @@ export class TaskFacade {
 
   nextTaskState(task: Task): TaskActionModel[] | undefined {
     const userRole = this.userData()?.role;
-    const userId = this.userid();
+    const userId = this.userId();
     if (!userRole) {
       throw new Error('userRole is not present');
     }
