@@ -4,6 +4,7 @@ import { TaskStatus } from '../task.model';
 export interface ReviewModel {
   id: string;
   taskId: string;
+  projectId: string;
   proofUrls: string[];
   submittedById: string;
   submittedAt: Date | FieldValue;
@@ -15,6 +16,7 @@ export interface ReviewModel {
 export interface ReviewModelDTO {
   id: string;
   taskId: string;
+  projectId: string;
   proofUrls: string[];
   submittedById: string;
   submittedAt: Date | FieldValue;

@@ -24,6 +24,7 @@ export class ReviewUsecase {
 
     const completeData: Omit<ReviewModelDTO, 'id' | 'submittedAt'> = {
       taskId: activeTask.id,
+      projectId: activeTask.projectId,
       proofUrls: data.proofUrls,
       submittedById: userId,
       reviewerId: activeTask.creatorId,

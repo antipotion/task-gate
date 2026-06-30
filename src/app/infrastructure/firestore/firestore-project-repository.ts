@@ -437,6 +437,7 @@ export class FirestoreProjectRepository {
     return {
       id: doc.id,
       taskId: data['taskId'],
+      projectId: data['projectId'],
       proofUrls: data['proofUrls'],
       submittedById: data['submittedById'],
       submittedAt: data['submittedAt']?.toDate(),
@@ -453,6 +454,7 @@ export class FirestoreProjectRepository {
     return {
       id: doc.id,
       taskId: data['taskId'],
+      projectId: data['projectId'],
       proofUrls: data['proofUrls'],
       submittedById: data['submittedById'],
       submittedAt: data['submittedAt']?.toDate(),

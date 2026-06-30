@@ -36,10 +36,15 @@ export class TaskUseCase {
   }
 
   async updateTask(taskId: string, original: Task, dto: Partial<Task>): Promise<void> {
-    const changes: Partial<Task> = diff(original, dto);
+    let changes: Partial<Task> = diff(original, dto);
 
     // Guard if there are no changes
     if (Object.keys(changes).length === 0) return;
+
+    const assigneeId = dto.assigneeId ?? '';
+    if (!assigneeId) {
+      changes = { ...dto, assigneeId: assigneeId };
+    }
 
     return this._repo.updateTask(taskId, changes);
   }

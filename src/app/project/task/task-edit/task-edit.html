@@ -1,4 +1,4 @@
-<form [formGroup]="taskEditForm" (ngSubmit)="onSave()">
+<form [formGroup]="taskEditForm">
   <h2 mat-dialog-title>Edit Task</h2>
   <mat-dialog-content>
     <!--Task name-->
@@ -30,9 +30,25 @@
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+
+    @let teamMembers = this.teamMembers();
+    <!-- Assignee Options -->
+    <mat-form-field class="w-full">
+      <mat-label>Task assignee</mat-label>
+      <mat-select formControlName="assigneeId">
+        @if (teamMembers) {
+          <mat-option [value]="">None</mat-option>
+          @for (memberId of teamMembersId(); track memberId) {
+            <mat-option [value]="memberId">{{ teamMembers?.get(memberId) }}</mat-option>
+          }
+        }
+      </mat-select>
+    </mat-form-field>
   </mat-dialog-content>
   <mat-dialog-actions>
-    <button matButton [mat-dialog-close]="taskEditForm.getRawValue()">Save</button>
+    <button matButton [mat-dialog-close]="taskEditForm.value" [disabled]="taskEditForm.pristine">
+      Save
+    </button>
     <button matButton class="cancel-btn" (click)="onCancel()">Cancel</button>
   </mat-dialog-actions>
 </form>

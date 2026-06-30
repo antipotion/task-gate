@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { Loading } from '../../../loading/loading';
+import { ProjectFacade } from '../../project-facade/project-facade';
 import { TaskAction } from '../task-action/task-action';
 import { TaskEdit } from '../task-edit/task-edit';
 import { TaskFacade } from '../task-facade';
@@ -34,10 +35,16 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
 })
 export class TaskDetails {
   private readonly _taskFacade = inject(TaskFacade);
+  private readonly _projectFacade = inject(ProjectFacade);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _dialog = inject(MatDialog);
   private readonly _snackBar = inject(MatSnackBar);
+
+  private readonly _team = resource({
+    params: () => this._projectFacade.activeProject()?.teamId,
+    loader: ({ params }) => this._projectFacade.getTeamById(params),
+  });
 
   readonly taskId = toSignal(
     this._route.paramMap.pipe(map((params) => params.get(TASK_ROUTE_PARAMS.taskId))),
@@ -55,8 +62,11 @@ export class TaskDetails {
 
       const creatorId = activeTask.creatorId;
       const assigneeId = activeTask.assigneeId;
-      if (!creatorId || !assigneeId) return;
+      if (!creatorId) return;
 
+      if (!assigneeId) {
+        return new Set<string>([creatorId]);
+      }
       return new Set<string>([creatorId, assigneeId]);
     },
     loader: ({ params }) => this._taskFacade.getUsersById(params),
@@ -105,15 +115,36 @@ export class TaskDetails {
 
       this._taskFacade.setTaskIdForReviews(taskId);
     });
+
+    effect(() => {
+      const projectId = this.activeTask()?.projectId;
+      if (!projectId) return;
+
+      this._projectFacade.selectProject(projectId);
+    });
   }
 
   openTaskEditDialog(): void {
+    const activeTask = this.activeTask();
+    if (!activeTask) return;
+
+    const team = this._team;
+    if (!team) return;
+    if (!team.hasValue()) {
+      console.error('Team is not present');
+    }
+    const teamMembers = team.value()?.memberIds;
+    const projectId = activeTask.projectId;
+
     const dialogRef = this._dialog.open(TaskEdit, {
       data: {
-        name: this.activeTask()?.name,
-        description: this.activeTask()?.description,
-        startDate: this.activeTask()?.startDate,
-        deadline: this.activeTask()?.deadline,
+        name: activeTask.name,
+        description: activeTask.description,
+        startDate: activeTask.startDate,
+        deadline: activeTask.deadline,
+        assigneeId: activeTask.assigneeId ?? '',
+        projectId,
+        teamMembers,
       },
     });
 
