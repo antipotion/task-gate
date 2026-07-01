@@ -9,10 +9,11 @@ import { UserModel } from '../../authentication/auth-model/auth.model';
 import { TeamFacade } from '../team-facade/team-facade';
 import { TeamModel } from '../team-model/team.model';
 import { TEAM_ROUTE_PARAMS } from '../team.routes';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-team-detail',
-  imports: [MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './team-detail.html',
   styleUrl: './team-detail.scss',
 })

@@ -1,4 +1,6 @@
 @let currentTeam = this.currentTeam();
+@let members = this.membersName();
+@let ownerName = this.ownerName();
 
 <div class="flex flex-col gap-8">
   <!-- Header -->
@@ -27,7 +29,11 @@
         <p class="mat-font-label-sm">Owner</p>
         <div class="flex gap-2 items-center">
           <mat-icon>person</mat-icon>
-          <p>{{ ownerName() }}</p>
+          @if (ownerName) {
+            <p>{{ ownerName }}</p>
+          } @else {
+            <div class="min-h-6 w-40 bg-gray-100 mat-corner-full animate-pulse"></div>
+          }
         </div>
       </div>
 
@@ -36,14 +42,22 @@
         <p class="mat-font-label-sm">Members</p>
 
         <div class="flex flex-col gap-4">
-          @let members = this.membersName();
-          @if (members?.length === 0) {
-            <p class="mat-text-on-surface-variant">There are currently no members in this team.</p>
-          }
-          @for (member of members; track member) {
-            <div class="flex gap-2 items-center">
-              <mat-icon>person</mat-icon>
-              <p>{{ member }}</p>
+          @if (members) {
+            @if (members?.length === 0) {
+              <p class="mat-text-on-surface-variant">
+                There are currently no members in this team.
+              </p>
+            }
+            @for (member of members; track member) {
+              <div class="flex gap-2 items-center">
+                <mat-icon>person</mat-icon>
+                <p>{{ member }}</p>
+              </div>
+            }
+          } @else {
+            <div class="flex gap-4">
+              <mat-spinner diameter="24"></mat-spinner>
+              <p>Loading members...</p>
             </div>
           }
         </div>
