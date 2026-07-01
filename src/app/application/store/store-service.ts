@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { concat, of, switchMap } from 'rxjs';
+import { combineLatest, concat, of, switchMap } from 'rxjs';
+import { AuthStore } from '../../authentication/auth-store/auth-store';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 import { Task } from '../../project/task/task.model';
 import { TeamModel } from '../../team/team-model/team.model';
@@ -12,14 +13,20 @@ import { TeamStore } from '../../team/team-store/team-store';
 export class StoreService {
   private readonly _repo = inject(FirestoreProjectRepository);
   private readonly _teamStore = inject(TeamStore);
+  private readonly _authStore = inject(AuthStore);
 
   private readonly _projectId = signal<string | null>(null);
   private readonly _taskId = signal<string | null>(null);
+  private readonly _userId = computed(() => this._authStore.userId());
 
   readonly tasks = toSignal(
-    toObservable(this._projectId).pipe(
-      switchMap((projectId) => {
+    combineLatest([toObservable(this._projectId), toObservable(this._userId)]).pipe(
+      switchMap(([projectId, userId]) => {
         if (!projectId) {
+          return of(null);
+        }
+
+        if (!userId) {
           return of(null);
         }
 
@@ -32,9 +39,13 @@ export class StoreService {
   readonly teamsList = computed(() => this._teamStore.teamsList());
 
   readonly projects = toSignal(
-    toObservable(this.teamsList).pipe(
-      switchMap((teams) => {
+    combineLatest([toObservable(this.teamsList), toObservable(this._userId)]).pipe(
+      switchMap(([teams, userId]) => {
         if (!teams) return of(null);
+
+        if (!userId) {
+          return of(null);
+        }
 
         return this._repo.listenToProjects$(teams);
       }),
@@ -43,9 +54,13 @@ export class StoreService {
   );
 
   readonly taskDataById = toSignal<Task | null>(
-    toObservable(this._taskId).pipe(
-      switchMap((taskId) => {
+    combineLatest([toObservable(this._taskId), toObservable(this._userId)]).pipe(
+      switchMap(([taskId, userId]) => {
         if (!taskId) {
+          return of(null);
+        }
+
+        if (!userId) {
           return of(null);
         }
 

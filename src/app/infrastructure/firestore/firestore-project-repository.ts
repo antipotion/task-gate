@@ -260,13 +260,20 @@ export class FirestoreProjectRepository {
     const taskDoc = doc(this._tasksCollection, taskId);
 
     return new Observable<Task | null>((subscriber) => {
-      const unsubscribe = onSnapshot(taskDoc, (snapshot) => {
-        if (!snapshot.exists()) {
-          subscriber.next(null);
-        }
-        const task = this._mapToSingleTask(snapshot);
-        subscriber.next(task);
-      });
+      const unsubscribe = onSnapshot(
+        taskDoc,
+        (snapshot) => {
+          if (!snapshot.exists()) {
+            subscriber.next(null);
+          }
+          const task = this._mapToSingleTask(snapshot);
+          subscriber.next(task);
+        },
+        (error) => {
+          console.error('listenToTask$ ERROR', error);
+          subscriber.error(error);
+        },
+      );
       return () => unsubscribe();
     });
   }
