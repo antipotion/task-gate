@@ -82,6 +82,10 @@ p {
   font: var(--mat-sys-body-medium);
   letter-spacing: var(--mat-sys-body-medium-tracking);
 }
+.mat-font-body-lg {
+  font: var(--mat-sys-body-large);
+  letter-spacing: var(--mat-sys-body-large-tracking);
+}
 
 // Shape
 .mat-corner-sm {

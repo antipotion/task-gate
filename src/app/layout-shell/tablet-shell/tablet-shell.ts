@@ -50,6 +50,10 @@ export class TabletShell {
     this._router.navigate([ROUTES_PARAMS.teams]);
   }
 
+  onClickAbout(): void {
+    this._router.navigate([ROUTES_PARAMS.about]);
+  }
+
   async onLogout(): Promise<void> {
     this.logoutLoading.set(true);
     await this._projectFacade.logout();

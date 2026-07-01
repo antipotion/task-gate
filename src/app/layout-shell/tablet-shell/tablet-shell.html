@@ -136,6 +136,29 @@
             <span class="mat-font-label-sm text-center">Teams</span>
           </div>
         }
+
+        <!-- About -->
+        @if (isMenuExpanded) {
+          <div
+            class="flex flex-col gap-1 mat-neutral-state mat-corner-full"
+            routerLink="/about"
+            routerLinkActive="activeRoute"
+          >
+            <button matButton class="nowrap" (click)="onClickAbout()">
+              <mat-icon fontIcon="info"></mat-icon>
+              About
+            </button>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-1 items-center">
+            <div routerLink="/about" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+              <button matIconButton (click)="onClickAbout()">
+                <mat-icon fontIcon="info"></mat-icon>
+              </button>
+            </div>
+            <span class="mat-font-label-sm text-center">About</span>
+          </div>
+        }
       </div>
     </aside>
 

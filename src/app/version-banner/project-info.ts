@@ -13,5 +13,5 @@ export interface ProjectInfoModel {
 export const PROJECT_INFO: ProjectInfoModel = {
   projectName: 'Task Gate',
   projectVersion: `v${pVersion}`,
-  projectStatus: 'active development',
+  projectStatus: 'stable',
 };

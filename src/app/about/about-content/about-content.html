@@ -1,0 +1,83 @@
+<section class="flex flex-col gap-8 w-full">
+  <!-- Author information -->
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Author Information </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="mt-4">
+      <div class="flex flex-col md:grid md:grid-cols-2 gap-2 w-fit md:items-center">
+        <p>Name:</p>
+        <a matButton [href]="authorWebsite" target="_blank" class="w-fit" ariaLabel="Author name">
+          {{ authorName }}
+        </a>
+        <p>Email:</p>
+        <a
+          matButton
+          [href]="authorEmailLink"
+          target="_blank"
+          class="w-fit"
+          ariaLabel="Author email"
+        >
+          {{ authorEmail }}
+        </a>
+        <p>Socials:</p>
+        <div>
+          @for (social of socialLinks; track $index) {
+            <a
+              [href]="social.socialLink"
+              target="_blank"
+              matIconButton
+              [ariaLabel]="social.ariaLabel"
+              class="mat-primary-container-state"
+            >
+              <fa-icon [icon]="getSocialIcon(social.accountType)"></fa-icon>
+            </a>
+          }
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Project information -->
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title> Project Information </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="mt-4">
+      <div class="flex flex-col md:grid md:grid-cols-2 gap-2 w-fit md:w-120 md:items-center">
+        <p>Project name:</p>
+        <p class="mat-font-body-lg">{{ projectInfo.projectName }}</p>
+        <p>Project version:</p>
+        <p class="mat-font-body-lg">{{ projectInfo.projectVersion }}</p>
+        <p>Project status:</p>
+        <div
+          class="mat-corner-full py-1 px-2 w-fit"
+          [ngClass]="{
+            'bg-teal-100': projectInfo.projectStatus === 'active development',
+            'bg-amber-100': projectInfo.projectStatus === 'maintenance',
+            'bg-emerald-100': projectInfo.projectStatus === 'stable',
+            'bg-slate-100': projectInfo.projectStatus === 'paused',
+          }"
+        >
+          <p>{{ projectInfo.projectStatus | titlecase }}</p>
+        </div>
+        <p>Source file:</p>
+        <a
+          matButton
+          [href]="projectSourceLinks.sourceLink"
+          target="_blank"
+          ariaLabel="Source code"
+          class="mat-primary-container-state w-fit"
+        >
+          <mat-icon>code</mat-icon>
+          Source Code
+        </a>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Copyright -->
+  <div class="text-center">
+    <p>&copy; {{ getCurrentYear }} Antipotion. Licensed under the MIT License</p>
+  </div>
+</section>
