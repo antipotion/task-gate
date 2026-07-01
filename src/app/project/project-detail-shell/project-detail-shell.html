@@ -1,3 +1,5 @@
+@let isOwner = this.isOwner();
+
 @if (isMobile()) {
   <app-mobile-shell>
     @if (routeProjectCategoryList()) {
@@ -6,22 +8,29 @@
       <app-project-details primary />
     }
 
-    <button matFab fab (click)="openAddTaskDialog()">
-      <mat-icon>add</mat-icon>
-    </button>
+    @if (isOwner) {
+      <button matFab fab (click)="openAddTaskDialog()">
+        <mat-icon>add</mat-icon>
+      </button>
+    }
   </app-mobile-shell>
 } @else {
   <app-tablet-shell [withSecondary]="true">
     <app-project-details primary />
     <app-project-task-category secondary />
-    <!-- Add task fab buttons -->
-    <button matFab fab (click)="openAddTaskDialog()">
-      <mat-icon>add</mat-icon>
-    </button>
 
-    <button matFab fab-extended extended class="grow" (click)="openAddTaskDialog()">
-      <mat-icon>add</mat-icon>
-      Add Task
-    </button>
+    @if (isOwner) {
+      <!-- Add task fab buttons -->
+      <button matFab fab (click)="openAddTaskDialog()">
+        <mat-icon>add</mat-icon>
+      </button>
+    }
+
+    @if (isOwner) {
+      <button matFab fab-extended extended class="grow" (click)="openAddTaskDialog()">
+        <mat-icon>add</mat-icon>
+        Add Task
+      </button>
+    }
   </app-tablet-shell>
 }

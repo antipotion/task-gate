@@ -45,6 +45,7 @@ export class ProjectDetailShell {
     params: () => this._project()?.teamId,
     loader: ({ params }) => this._projectFacade.getTeamById(params),
   });
+  private readonly _userId = computed(() => this._projectFacade.userId());
 
   readonly isMobile = computed<boolean>(() => this._projectFacade.isMobileScreen());
   readonly routeProjectId = toSignal(
@@ -54,6 +55,16 @@ export class ProjectDetailShell {
   readonly routeProjectCategoryList = toSignal(
     this._route.paramMap.pipe(map((params) => params.get(PROJECT_ROUTE_PARAMS.taskCategory))),
   );
+  readonly isOwner = computed<boolean>(() => {
+    const projectCreatorId = this._project()?.creatorId;
+    const userId = this._userId();
+
+    if (projectCreatorId === userId) {
+      return true;
+    }
+
+    return false;
+  });
 
   async openAddTaskDialog(): Promise<void> {
     const project = this._project();
