@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, SlicePipe, TitleCasePipe, UpperCasePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -41,6 +41,17 @@ export class ProjectDashboard {
     this.isLoading.set(true);
     this._router.navigate([projectId], { relativeTo: this._route });
     this.isLoading.set(false);
+  }
+
+  constructor() {
+    effect(() => {
+      this.isLoading.set(true);
+      
+      const projects = this.projects()
+      if (!projects) return;
+
+      this.isLoading.set(false);
+    });
   }
 
   async getProjectStatus(projectId: string): Promise<ProjectStatusModel | null> {
