@@ -1,6 +1,6 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, switchMap } from 'rxjs';
+import { filter, of, switchMap } from 'rxjs';
 import { FirestoreProjectRepository } from '../../../../infrastructure/firestore/firestore-project-repository';
 import { ReviewModel } from '../review.model';
 
@@ -15,8 +15,13 @@ export class ReviewStore {
 
   readonly taskReviews: Signal<ReviewModel[] | null> = toSignal(
     toObservable(this._taskId).pipe(
-      filter((taskId): taskId is string => !!taskId),
-      switchMap((taskId) => this._repo.listenToReviews$(taskId)),
+      switchMap((taskId) => {
+        if (!taskId) {
+          return of(null);
+        }
+
+        return this._repo.listenToReviews$(taskId);
+      }),
     ),
     { initialValue: null },
   );
