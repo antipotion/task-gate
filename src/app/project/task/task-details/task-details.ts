@@ -213,6 +213,8 @@ export class TaskDetails {
 
       if (!result) return;
       try {
+        this.isLoading.set(true);
+
         await this._taskFacade.deleteTask(taskid);
         this._router.navigate([ROUTES_PARAMS.project, projectId]);
 
@@ -228,6 +230,8 @@ export class TaskDetails {
           panelClass: 'mat-error-state',
         });
         snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      } finally {
+        this.isLoading.set(false);
       }
     });
   }
