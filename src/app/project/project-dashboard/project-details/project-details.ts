@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../app.routes';
@@ -39,6 +40,7 @@ export class ProjectDetails {
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _dialog = inject(MatDialog);
+  private readonly _snackbar = inject(MatSnackBar);
 
   private readonly _projectId = toSignal(
     this._route.paramMap.pipe(map((params) => params.get(PROJECT_ROUTE_PARAMS.projectId))),
@@ -60,6 +62,7 @@ export class ProjectDetails {
   readonly overdueTasksCount = computed<number | null>(() =>
     this._projectFacade.tasksOverdueCount(),
   );
+  readonly userId = computed(() => this._projectFacade.userId());
 
   constructor() {
     effect(() => {
@@ -135,7 +138,24 @@ export class ProjectDetails {
 
     dialogRef.afterClosed().subscribe((result) => {
       // TODO: Handle the result of the operation (e.g. Success | Error)
-      this._projectFacade.updateProject(projectId, result);
+      if (!result) return;
+
+      try {
+        this._projectFacade.updateProject(projectId, result);
+
+        const snackbarRef = this._snackbar.open('Project updated successfully', 'Dismiss', {
+          duration: 3000,
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      } catch (error) {
+        console.error('PROJECT EDIT ERROR', error);
+
+        const snackbarRef = this._snackbar.open('Project update failed', 'Dismiss', {
+          duration: 3000,
+          panelClass: 'mat-error-state',
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      }
     });
   }
 
@@ -158,7 +178,21 @@ export class ProjectDetails {
       if (!result) return;
 
       this.isLoading.set(true);
-      await this._projectFacade.deleteProject(projectId);
+      try {
+        await this._projectFacade.deleteProject(projectId);
+        const snackbarRef = this._snackbar.open('Project deleted successfully', 'Dismiss', {
+          duration: 3000,
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      } catch (error) {
+        console.error('PROJECT DELETE ERROR', error);
+        
+        const snackbarRef = this._snackbar.open('Project deletion failed', 'Dismiss', {
+          duration: 3000,
+          panelClass: 'mat-error-state',
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      }
       this._router.navigate([ROUTES_PARAMS.project]);
       this.isLoading.set(false);
     });

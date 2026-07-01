@@ -14,25 +14,27 @@
         <p class="mat-font-title-md">Project Detail</p>
       </div>
 
-      <div class="flex">
-        <button matIconButton [matMenuTriggerFor]="actionMenu">
-          <mat-icon fontIcon="more_vert"></mat-icon>
-        </button>
-
-        <mat-menu #actionMenu="matMenu">
-          <!-- Edit Project Dialog -->
-          <button mat-menu-item (click)="openEditDialog()">
-            <mat-icon fontIcon="edit"></mat-icon>
-            Edit
+      @if (projectData?.creatorId === userId()) {
+        <div class="flex">
+          <button matIconButton [matMenuTriggerFor]="actionMenu">
+            <mat-icon fontIcon="more_vert"></mat-icon>
           </button>
 
-          <!-- Delete button -->
-          <button mat-menu-item class="mat-error-state" (click)="onDelete()">
-            <mat-icon fontIcon="delete"></mat-icon>
-            Delete
-          </button>
-        </mat-menu>
-      </div>
+          <mat-menu #actionMenu="matMenu">
+            <!-- Edit Project Dialog -->
+            <button mat-menu-item (click)="openEditDialog()">
+              <mat-icon fontIcon="edit"></mat-icon>
+              Edit
+            </button>
+
+            <!-- Delete button -->
+            <button mat-menu-item class="mat-error-state" (click)="onDelete()">
+              <mat-icon fontIcon="delete"></mat-icon>
+              Delete
+            </button>
+          </mat-menu>
+        </div>
+      }
     </div>
 
     <!-- Contents -->
