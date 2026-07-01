@@ -32,7 +32,10 @@
           @if (ownerName) {
             <p>{{ ownerName }}</p>
           } @else {
-            <div class="min-h-6 w-40 bg-gray-100 mat-corner-full animate-pulse"></div>
+            <div class="flex gap-4">
+              <mat-spinner diameter="24"></mat-spinner>
+              <p>Loading owner...</p>
+            </div>
           }
         </div>
       </div>
