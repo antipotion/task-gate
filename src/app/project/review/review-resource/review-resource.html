@@ -1,0 +1,15 @@
+<section class="flex flex-col gap-4">
+  <div class="flex justify-between">
+    <h2 class="mat-font-title-md">Resources</h2>
+    <mat-icon fontIcon="expand_more"></mat-icon>
+  </div>
+
+  <!-- Contents -->
+  <div class="flex flex-col gap-2">
+    @for (proof of proofUrls(); track $index) {
+      <p>
+        Link: <a matButton target="_blank" [href]="proof">{{ proof }}</a>
+      </p>
+    }
+  </div>
+</section>
