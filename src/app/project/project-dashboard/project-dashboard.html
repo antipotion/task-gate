@@ -57,22 +57,24 @@
                     <p class="mat-font-label-sm">{{ projectStatus | titlecase }}</p>
                   </div>
 
-                  <!-- Project deadline pressure -->
-                  @let projectDeadlinePressure =
-                    getProjectDeadlinePressure(project.startDate, project.deadline);
-                  <div
-                    class="px-2 py-1 mat-corner-full w-fit"
-                    [ngClass]="{
-                      'bg-gray-200': projectDeadlinePressure === 'unknown',
-                      'bg-green-200': projectDeadlinePressure === 'healthy',
-                      'bg-teal-200': projectDeadlinePressure === 'stable',
-                      'bg-amber-200': projectDeadlinePressure === 'warning',
-                      'bg-orange-200': projectDeadlinePressure === 'critical',
-                      'bg-red-200': projectDeadlinePressure === 'overdue',
-                    }"
-                  >
-                    <p class="mat-font-label-sm">{{ projectDeadlinePressure | titlecase }}</p>
-                  </div>
+                  @if (projectStatus !== 'completed') {
+                    <!-- Project deadline pressure -->
+                    @let projectDeadlinePressure =
+                      getProjectDeadlinePressure(project.startDate, project.deadline);
+                    <div
+                      class="px-2 py-1 mat-corner-full w-fit"
+                      [ngClass]="{
+                        'bg-gray-200': projectDeadlinePressure === 'unknown',
+                        'bg-green-200': projectDeadlinePressure === 'healthy',
+                        'bg-teal-200': projectDeadlinePressure === 'stable',
+                        'bg-amber-200': projectDeadlinePressure === 'warning',
+                        'bg-orange-200': projectDeadlinePressure === 'critical',
+                        'bg-red-200': projectDeadlinePressure === 'overdue',
+                      }"
+                    >
+                      <p class="mat-font-label-sm">{{ projectDeadlinePressure | titlecase }}</p>
+                    </div>
+                  }
                 </div>
               </mat-card>
             </div>
