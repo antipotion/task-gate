@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ROUTES_PARAMS } from '../../app.routes';
+import { Logo } from '../../asset/logo/logo';
 import { NotificationModel } from '../../notification/notification.model';
 import { ProjectFacade } from '../../project/project-facade/project-facade';
 
@@ -22,6 +23,7 @@ import { ProjectFacade } from '../../project/project-facade/project-facade';
     NgClass,
     MatBadgeModule,
     DatePipe,
+    Logo,
   ],
   templateUrl: './mobile-shell.html',
   styleUrl: './mobile-shell.scss',
@@ -43,7 +45,7 @@ export class MobileShell {
   onClickTeamDashboard(): void {
     this._router.navigate([ROUTES_PARAMS.teams]);
   }
-  
+
   onClickAbout(): void {
     this._router.navigate([ROUTES_PARAMS.about]);
   }
