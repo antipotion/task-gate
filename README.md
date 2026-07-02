@@ -1,12 +1,42 @@
+![Angular](https://img.shields.io/badge/Angular-22-red)
+![Firebase](https://img.shields.io/badge/Firebase-Backend-orange)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-v1-blue)
+
 # Task Gate
 
-Task Gate is a modern task management web application focused on clean architecture, responsive user experience, and maintainable frontend engineering practices.
+Task Gate is a task management platform centered around structured submission workflows rather than simple task completion. Instead of marking work as complete, team members submit their output for review, where reviewers can approve, reject, and discuss revisions before work progresses. Combined with role-based permissions and real-time synchronization, this creates a collaborative workflow designed for teams that require explicit review and approval processes.
 
-Built as a portfolio and engineering showcase project, it demonstrates modern frontend architecture, reactive data handling, role-based workflows, and production deployment practices.
+Built as a portfolio and engineering showcase project, Task Gate demonstrates modern frontend architecture, reactive data handling, scalable application design, and production deployment practices.
+
+## Screenshots
+
+### Project Dashboard
+![Project Dashboard](public/screenshots/taskgate-project-dashboard.png)
+
+### Project Detail
+![Project Detail](public/screenshots/taskgate-project-detail.png)
+
+### Task Detail
+![Task Detail](public/screenshots/taskgate-task-detail.png)
+
+### Review Detail
+![Review Detail](public/screenshots/taskgate-review-detail.png)
+
+### Team Dashboard
+![Team Dashboard](public/screenshots/taskgate-team-dashboard.png)
 
 ## Live Demo
 
 [Live Website](https://taskgate.antipotion.com)
+
+## Case Study
+
+[Case Study](https://antipotion.com/task-gate)
+
+## Why I Built TaskGate
+
+Many task management tools focus on simple status tracking. Task Gate explores a workflow centered around explicit work submissions, review cycles, and permission-driven progression while serving as a playground for scalable Angular architecture.
 
 ---
 
@@ -14,7 +44,7 @@ Built as a portfolio and engineering showcase project, it demonstrates modern fr
 
 ## Frontend
 
-- Angular 21+
+- Angular 21+ (Upgraded to v22)
 - TypeScript (Strict Mode)
 - SCSS
 - RxJS
@@ -32,17 +62,19 @@ Built as a portfolio and engineering showcase project, it demonstrates modern fr
 
 ## Deployment
 
-- Cloudflare Pages
+- Firebase
 
 ---
 
 # Features
 
-- Real-time task updates
+- Real-time progress updates
 - Submission-based progression
 - Team collaboration workflows
-- Role and permission management
+- Role-based access control for members, reviewers, and project owners
 - Reactive data synchronization
+- Notification system for assignment, submission events, and discussions
+- Comment system
 
 ---
 
@@ -55,7 +87,7 @@ This project was built to:
 - Explore UI system consistency
 - Simulate production-level application structure
 - Serve as a public portfolio project for recruiters and collaborators
-- Build application from idea to MVP
+- Build an application from concept to MVP
 
 ---
 
@@ -110,11 +142,13 @@ Build artifacts will be generated inside the `dist/` directory.
 ```txt
 src/
 ├── app/
-│   ├── application/
-│   ├── authentication/
-│   ├── infrastructure/
-│   ├── project/
-│   ├── team/
+│   ├── application/            // shared application services
+│   ├── authentication/         // login and session management
+│   ├── infrastructure/         // external infrastructures
+│   ├── layout-shell/           // mobile and tablet layout shell
+│   ├── notification/           
+│   ├── project/                // core workflow and project domain
+│   ├── team/                   // team management
 └── environment/
 ```
 
@@ -124,11 +158,19 @@ src/
 
 # Architectural Highlights
 
-- Feature-based modular structure
-- Reactive observable pipelines
+- Signal + RxJS interoperability
 - Centralized domain modeling
 - Strongly typed API contracts
 - Scalable component composition
+- Feature-first architecture
+- Firebase adapter isolation
+- Route-level lazy loading
+- Strongly typed Firestore models
+- Repository pattern
+- Reactive state management
+- Role-based workflow
+- Responsive tablet+/mobile layouts
+- Lazy loading
 
 ---
 
@@ -144,28 +186,15 @@ The goal is not only functionality, but also coherence and maintainability as th
 
 Some features and refinements are still in progress, including:
 
-- Additional accessibility improvements
-- Responsive UX refinements
-- Expanded task management capabilities
-- Performance optimizations
-- Basic business guarantee coverage for relationships of domain and entities but working feature set
-- No comment system yet
-- No notification system yet
-- No review system yet
-- No view team functionality yet
+- Built as a showcase project, with no production data-handling guarantee for commercial use
 
 ---
 
 # Roadmap
 
-Planned future improvements include:
+Task Gate has reached its v1 milestone and is now considered feature-complete.
 
-- Interaction and workflow refinements
-- Full implementation of projects and tasks domains
-- Advanced filtering and search
-- Comment system
-- Notification system
-- Review system
+Future updates will primarily focus on maintenance, bug fixes, and incremental improvements rather than major feature additions.
 
 ---
 
