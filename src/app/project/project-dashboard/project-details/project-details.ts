@@ -1,20 +1,21 @@
-import { Component, computed, inject, signal, Signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { Loading } from '../../../loading/loading';
-import { ProjectFacade } from '../../project-facade';
+import { ProjectFacade } from '../../project-facade/project-facade';
+import { ProjectStatusModel, type Project } from '../../project-model/project.model';
+import { PROJECT_ROUTE_PARAMS } from '../../project-route/project.routes';
 import { ProjectWarningDialog } from '../../project-warning-dialog/project-warning-dialog';
-import { ProjectStatusModel, type Project } from '../../project.model';
-import { PROJECT_ROUTE_PARAMS } from '../../project.routes';
-import { CreateTask } from '../../task/create-task/create-task';
-import { TaskFacade } from '../../task/task-facade';
-import { ProjectActivityFeed } from '../project-activity-feed/project-activity-feed';
+import { Task } from '../../task/task.model';
 import { ProjectHeader } from '../project-header/project-header';
-import { ProjectMetrics } from '../project-metrics/project-metrics';
 import { ProjectOverview } from '../project-overview/project-overview';
 import { ProjectTasksBoard } from '../project-tasks-board/project-tasks-board';
 import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
@@ -24,32 +25,31 @@ import { EditProjectDialog } from './edit-project-dialog/edit-project-dialog';
   imports: [
     ProjectHeader,
     ProjectOverview,
-    ProjectMetrics,
     ProjectTasksBoard,
-    ProjectActivityFeed,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
     Loading,
+    MatMenuModule,
   ],
   templateUrl: './project-details.html',
   styleUrl: './project-details.scss',
 })
 export class ProjectDetails {
   private readonly _projectFacade = inject(ProjectFacade);
-  private readonly _taskFacade = inject(TaskFacade);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _dialog = inject(MatDialog);
+  private readonly _snackbar = inject(MatSnackBar);
 
-  private readonly _projectId =
-    this._route.snapshot.paramMap.get(PROJECT_ROUTE_PARAMS.projectId) || '';
+  private readonly _projectId = toSignal(
+    this._route.paramMap.pipe(map((params) => params.get(PROJECT_ROUTE_PARAMS.projectId))),
+    { initialValue: null },
+  );
 
   readonly userFullName = computed<string | null>(() => this._projectFacade.userFullName());
   readonly project = computed<Project | null>(() => this._projectFacade.activeProject());
-  readonly projectStatus: Signal<ProjectStatusModel | null> = this._projectFacade.getProjectStatus(
-    this._projectId,
-  );
+  readonly projectStatus = signal<ProjectStatusModel | null>(null);
   readonly projectDeadlinePressure = computed(() => {
     const project = this.project();
 
@@ -59,9 +59,59 @@ export class ProjectDetails {
     );
   });
   readonly isLoading = signal<boolean>(false);
+  readonly overdueTasksCount = computed<number | null>(() =>
+    this._projectFacade.tasksOverdueCount(),
+  );
+  readonly userId = computed(() => this._projectFacade.userId());
 
-  ngOnInit(): void {
-    this._projectFacade.selectProject(this._projectId);
+  constructor() {
+    effect(() => {
+      const projectId = this._projectId();
+      if (!projectId) return;
+
+      this._projectFacade.selectProject(projectId);
+
+      const projectStatus = this._projectFacade.getProjectStatus(projectId);
+      this.projectStatus.set(projectStatus());
+    });
+
+    // Validate and update the project status for dashboard read
+    effect(() => {
+      const tasks = this._projectFacade.tasks();
+      const projectId = this._projectId();
+      const project = this.project();
+      if (!tasks || !projectId || !project) return;
+
+      // During navigation, the route's projectId updates before the task listener
+      // emits the new project's tasks. A debugger inspection showed that the effect
+      // can briefly observe the previous project's task list while projectId already
+      // points to the new project.
+      //
+      // projectId is the invariant linking tasks to a project. If no tasks match the
+      // current projectId, the task list is stale and the status computation is
+      // deferred until the new snapshot arrives.
+      const computedProjectStatus = computeProjectDashboardStatus(projectId, tasks);
+      if (project.status === computedProjectStatus || !computedProjectStatus) return;
+
+      this._projectFacade.updateProject(projectId, { ...project, status: computedProjectStatus });
+    });
+
+    // Validate and update the team name for dashboard read
+    effect(async () => {
+      const project = this.project();
+      if (!project) return;
+      const projectId = project.id;
+
+      const teamId = project.teamId;
+      const projectTeamName = project.teamName;
+      const currentTeamData = await this._projectFacade.getTeamById(teamId);
+      if (!currentTeamData) return;
+      const currentTeamName = currentTeamData?.name;
+
+      if (projectTeamName === currentTeamName) return;
+
+      this._projectFacade.updateProject(projectId, { ...project, teamName: currentTeamName });
+    });
   }
 
   onBack(): void {
@@ -75,6 +125,9 @@ export class ProjectDetails {
 
   openEditDialog(): void {
     const project = this.project();
+    const projectId = this._projectId();
+    if (!projectId) return;
+
     const dialogRef = this._dialog.open(EditProjectDialog, {
       data: {
         name: this.project()?.name,
@@ -85,17 +138,24 @@ export class ProjectDetails {
 
     dialogRef.afterClosed().subscribe((result) => {
       // TODO: Handle the result of the operation (e.g. Success | Error)
-      this._projectFacade.updateProject(this._projectId, result);
-    });
-  }
-
-  openAddTaskDialog(): void {
-    const dialogRef = this._dialog.open(CreateTask);
-
-    dialogRef.afterClosed().subscribe((result) => {
       if (!result) return;
-      // TODO: Handle the result of the operation (e.g. Success | Error)
-      this._taskFacade.addTask(this._projectId, result);
+
+      try {
+        this._projectFacade.updateProject(projectId, result);
+
+        const snackbarRef = this._snackbar.open('Project updated successfully', 'Dismiss', {
+          duration: 3000,
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      } catch (error) {
+        console.error('PROJECT EDIT ERROR', error);
+
+        const snackbarRef = this._snackbar.open('Project update failed', 'Dismiss', {
+          duration: 3000,
+          panelClass: 'mat-error-state',
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      }
     });
   }
 
@@ -118,9 +178,48 @@ export class ProjectDetails {
       if (!result) return;
 
       this.isLoading.set(true);
-      await this._projectFacade.deleteProject(projectId);
+      try {
+        await this._projectFacade.deleteProject(projectId);
+        const snackbarRef = this._snackbar.open('Project deleted successfully', 'Dismiss', {
+          duration: 3000,
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      } catch (error) {
+        console.error('PROJECT DELETE ERROR', error);
+        
+        const snackbarRef = this._snackbar.open('Project deletion failed', 'Dismiss', {
+          duration: 3000,
+          panelClass: 'mat-error-state',
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      }
       this._router.navigate([ROUTES_PARAMS.project]);
       this.isLoading.set(false);
     });
   }
+
+  getProjectProgress(): number | null {
+    return this._projectFacade.getProjectProgress();
+  }
+}
+
+function computeProjectDashboardStatus(
+  projectId: string,
+  tasks: Task[],
+): ProjectStatusModel | null {
+  const projectTasks = tasks.filter((task) => task.projectId === projectId);
+
+  // No matching tasks indicates the current task list belongs to a previous
+  // project while the new Firestore listener is still synchronizing.
+  if (projectTasks.length === 0) return null;
+
+  if (projectTasks.every((task) => task.status === 'TODO')) {
+    return 'not started';
+  }
+
+  if (projectTasks.every((task) => task.status === 'APPROVED')) {
+    return 'completed';
+  }
+
+  return 'in progress';
 }

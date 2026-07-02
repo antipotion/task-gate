@@ -1,15 +1,8 @@
-<div class="p-4">
-  <button matIconButton (click)="onBack()">
-    <mat-icon fontIcon="arrow_back"></mat-icon>
-  </button>
-</div>
-
-<form [formGroup]="joinTeamForm" class="py-32">
-  <div class="flex flex-col items-center gap-2">
-    <p>Enter your team id</p>
-
+<form [formGroup]="joinTeamForm" (ngSubmit)="onJoinTeam()">
+  <h2 mat-dialog-title>Join a team</h2>
+  <mat-dialog-content>
     <!-- Team name -->
-    <mat-form-field>
+    <mat-form-field class="w-full">
       <mat-label>Team Id</mat-label>
       <input matInput formControlName="teamId" />
 
@@ -17,7 +10,9 @@
         <mat-error>Team name is required.</mat-error>
       }
     </mat-form-field>
-
-    <button matButton="filled" (click)="onJoinTeam()">Join team</button>
-  </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button matButton="filled" type="submit">Join team</button>
+    <button matButton type="button" class="mat-error-state" (click)="onNoClick()">Cancel</button>
+  </mat-dialog-actions>
 </form>

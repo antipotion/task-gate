@@ -1,23 +1,27 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { HistoryService } from '../../application/history/history-service';
-import { StoreService } from '../../application/store/store-service';
-import { AuthStore } from '../../authentication/auth-store';
+import { UserModel } from '../../authentication/auth-model/auth.model';
+import { AuthStore } from '../../authentication/auth-store/auth-store';
+import { NavigationService } from '../../navigation/navigation-service';
+import { TeamModel } from '../team-model/team.model';
+import { TeamStore } from '../team-store/team-store';
 import { TeamUsecase } from '../team-usecase/team-usecase';
-import { TeamModel } from '../team.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TeamFacade {
-  private readonly _store = inject(StoreService);
   private readonly _historyService = inject(HistoryService);
   private readonly _teamUseCase = inject(TeamUsecase);
   private readonly _authStore = inject(AuthStore);
+  private readonly _teamStore = inject(TeamStore);
+  private readonly _navigationService = inject(NavigationService);
 
   private readonly _teamName = signal<string | null>(null);
+
   readonly team = signal<TeamModel | null>(null);
-  readonly teams = toSignal<TeamModel[] | null>(this._store.teams$, { initialValue: null });
+  readonly teams = computed(() => this._teamStore.teamsList());
+  readonly isMobileScreen = computed(() => this._navigationService.isMobileScreen());
 
   goBack(): void {
     this._historyService.goBack();
@@ -56,5 +60,17 @@ export class TeamFacade {
 
   setTeamName(teamName: string): void {
     this._teamName.set(teamName);
+  }
+
+  async getUserById(userId: string): Promise<UserModel | null> {
+    return this._authStore.getUserById(userId);
+  }
+
+  async getUsersById(userIds: Set<string>): Promise<UserModel[] | null> {
+    const userIdsArray = [...userIds];
+
+    if (userIdsArray.length === 0) return null;
+
+    return this._teamStore.getUsersById(userIdsArray);
   }
 }

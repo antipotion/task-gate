@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthFacade } from '../../auth-facade';
-import { RoleModel } from '../../auth.model';
-import { AUTH_ROUTE_PARAMS } from '../../auth.routes';
+import { AuthFacade } from '../../auth-facade/auth-facade';
+import { RoleModel } from '../../auth-model/auth.model';
+import { AUTH_ROUTE_PARAMS } from '../../auth-routes/auth.routes';
 
 @Component({
   selector: 'app-role',

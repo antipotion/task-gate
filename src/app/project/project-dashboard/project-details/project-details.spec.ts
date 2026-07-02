@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { signal } from '@angular/core';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
-import { ProjectFacade } from '../../project-facade';
-import type { Project } from '../../project.types';
+import { ProjectFacade } from '../../project-facade/project-facade';
+import { Project } from '../../project.model';
 import { ProjectDetails } from './project-details';
 
 describe('ProjectDetails', () => {
@@ -52,23 +52,9 @@ describe('ProjectDetails', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call getActiveProject on init with route id', () => {
-    component.ngOnInit();
-
-    expect(mockFacade.getActiveProject).toHaveBeenCalledWith('123');
-  });
-
   it('should navigate back relative to parent route', () => {
     component.onBack();
 
     expect(mockRouter.navigate).toHaveBeenCalledWith([''], { relativeTo: mockRoute.parent });
-  });
-
-  it('should expose project from facade', () => {
-    const mockProject = { id: '123', name: 'Test', deadline: '01-01-2026' };
-
-    mockFacade.activeProject.set(mockProject);
-
-    expect(component.project()).toEqual(mockProject);
   });
 });

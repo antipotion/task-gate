@@ -1,11 +1,13 @@
-import { computed, inject, Injectable, Signal } from '@angular/core';
-import { AuthStore } from '../../../../authentication/auth-store';
-import { UserModel } from '../../../../authentication/auth.model';
+import { computed, inject, Injectable } from '@angular/core';
+import { UserModel } from '../../../../authentication/auth-model/auth.model';
+import { AuthStore } from '../../../../authentication/auth-store/auth-store';
+import { NavigationService } from '../../../../navigation/navigation-service';
 import { TaskFacade } from '../../task-facade';
 import { TaskActionModel } from '../../task.model';
 import { ReviewStore } from '../review-store/review-store';
 import { ReviewUsecase } from '../review-usecase/review-usecase';
-import { ReviewModel } from '../review.model';
+import { NotificationUsecase } from '../../../../notification/notification-usecase/notification-usecase';
+import { NotificationDTOModel } from '../../../../notification/notification.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,12 +17,12 @@ export class ReviewFacade {
   private readonly _authStore = inject(AuthStore);
   private readonly _taskFacade = inject(TaskFacade);
   private readonly _reviewUsecase = inject(ReviewUsecase);
+  private readonly _navigationService = inject(NavigationService);
+  private readonly _notificationUsecase = inject(NotificationUsecase);
 
-  getCurrentReview(reviewId: string | null, taskId: string | null): Signal<ReviewModel | null> {
-    if (!reviewId || !taskId) return computed(() => null);
-
-    return this._reviewStore.getCurrentReview(reviewId, taskId);
-  }
+  readonly review = computed(() => this._reviewStore.review());
+  readonly isMobileScreen = computed(() => this._navigationService.isMobileScreen());
+  readonly userId = computed(() => this._authStore.userId());
 
   async getUserById(userId: string): Promise<UserModel | null> {
     return this._authStore.getUserById(userId);
@@ -47,5 +49,13 @@ export class ReviewFacade {
     action: Extract<TaskActionModel, 'APPROVE' | 'REJECT'>,
   ): Promise<void> {
     return this._reviewUsecase.closeReview(reviewId, action);
+  }
+
+  setReviewid(reviewId: string): void {
+    this._reviewStore.setReviewId(reviewId);
+  }
+
+  async addNotification(data: Omit<NotificationDTOModel, 'createdAt'>): Promise<void> {
+    return this._notificationUsecase.addNotification(data);
   }
 }

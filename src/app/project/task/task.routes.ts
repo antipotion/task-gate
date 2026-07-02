@@ -1,32 +1,32 @@
 import type { Routes } from '@angular/router';
-import { REVIEW_ROUTE_PARAMS } from './review/review.routes';
-import { Task } from './task';
 
 export const TASK_ROUTE_PARAMS = {
   taskId: 'taskId',
+  reviewList: 'reviewList',
+} as const;
+
+const TASK_ROUTE_HELPERS = {
+  taskReviewList: `:${TASK_ROUTE_PARAMS.taskId}/${TASK_ROUTE_PARAMS.reviewList}`,
 } as const;
 
 export const TaskRoutes: Routes = [
   {
     path: '',
-    component: Task,
     children: [
       {
         path: '',
-        loadComponent: () => import('./task-dashboard/task-dashboard').then((m) => m.TaskDashboard),
+        loadComponent: () =>
+          import('./task-detail-shell/task-detail-shell').then((m) => m.TaskDetailShell),
       },
       {
         path: `:${TASK_ROUTE_PARAMS.taskId}`,
-        children: [
-          {
-            path: '',
-            loadComponent: () => import('./task-details/task-details').then((m) => m.TaskDetails),
-          },
-          {
-            path: REVIEW_ROUTE_PARAMS.review,
-            loadChildren: () => import('./review/review.routes').then((m) => m.reviewRoutes),
-          },
-        ],
+        loadComponent: () =>
+          import('./task-detail-shell/task-detail-shell').then((m) => m.TaskDetailShell),
+      },
+      {
+        path: TASK_ROUTE_HELPERS.taskReviewList,
+        loadComponent: () =>
+          import('./task-detail-shell/task-detail-shell').then((m) => m.TaskDetailShell),
       },
     ],
   },

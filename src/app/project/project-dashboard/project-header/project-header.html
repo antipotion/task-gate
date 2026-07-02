@@ -12,7 +12,7 @@
     }
 
     <!-- Badges -->
-    <div class="flex gap-2">
+    <div class="flex gap-1">
       <!-- Status badge -->
       <div
         class="w-fit px-2 py-1 mat-corner-full"
@@ -31,32 +31,22 @@
         </p>
       </div>
 
-      <!-- Health badge -->
-      <div
-        class="w-fit px-2 py-1 mat-corner-full"
-        [ngClass]="{
-          'bg-gray-200': projectDeadlinePressure === 'unknown',
-          'bg-green-200': projectDeadlinePressure === 'healthy',
-          'bg-teal-200': projectDeadlinePressure === 'stable',
-          'bg-amber-200': projectDeadlinePressure === 'warning',
-          'bg-orange-200': projectDeadlinePressure === 'critical',
-          'bg-red-200': projectDeadlinePressure === 'overdue',
-        }"
-      >
-        <p class="mat-font-label-sm">{{ projectDeadlinePressure | titlecase }}</p>
-      </div>
-    </div>
-
-    <!-- Project Owner -->
-    <div class="flex gap-2">
-      <p>Project Owner:</p>
-      <p>{{ userFullName() }}</p>
-    </div>
-
-    <!-- Project Members -->
-    <div class="flex gap-2">
-      <p>Project Members:</p>
-      <p>Member Names</p>
+      @if (projectStatus !== 'completed') {
+        <!-- Health badge -->
+        <div
+          class="w-fit px-2 py-1 mat-corner-full"
+          [ngClass]="{
+            'bg-gray-200': projectDeadlinePressure === 'unknown',
+            'bg-green-200': projectDeadlinePressure === 'healthy',
+            'bg-teal-200': projectDeadlinePressure === 'stable',
+            'bg-amber-200': projectDeadlinePressure === 'warning',
+            'bg-orange-200': projectDeadlinePressure === 'critical',
+            'bg-red-200': projectDeadlinePressure === 'overdue',
+          }"
+        >
+          <p class="mat-font-label-sm">{{ projectDeadlinePressure | titlecase }}</p>
+        </div>
+      }
     </div>
   </div>
 </section>

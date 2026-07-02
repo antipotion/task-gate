@@ -1,8 +1,8 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { CommentStore } from './comment-store';
 import { CommentUsecase } from './comment-usecase';
-import { AuthStore } from '../../../authentication/auth-store';
-import { UserModel } from '../../../authentication/auth.model';
+import { UserModel } from '../../../authentication/auth-model/auth.model';
+import { AuthStore } from '../../../authentication/auth-store/auth-store';
 
 @Injectable({
   providedIn: 'root',

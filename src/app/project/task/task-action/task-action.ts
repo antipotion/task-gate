@@ -7,9 +7,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../../app.routes';
+import { NotificationDTOModel } from '../../../notification/notification.model';
 import { ReviewModel } from '../review/review.model';
-import { REVIEW_ROUTE_PARAMS } from '../review/review.routes';
 import { TaskFacade } from '../task-facade';
 import { TaskActionModel, type TaskStatus as TaskStatusModel } from '../task.model';
 
@@ -31,11 +33,11 @@ import { TaskActionModel, type TaskStatus as TaskStatusModel } from '../task.mod
 export class TaskAction {
   private readonly _taskFacade = inject(TaskFacade);
   private readonly _router = inject(Router);
-  private readonly _route = inject(ActivatedRoute);
+  private readonly _snackbar = inject(MatSnackBar);
 
   readonly taskId = input.required<string | undefined>();
   readonly taskStatus = input.required<TaskStatusModel | undefined>();
-  readonly taskNextAction = input.required<TaskActionModel | null>();
+  readonly taskNextAction = input.required<TaskActionModel[] | null>();
   readonly reviews = input.required<ReviewModel[] | null>();
   readonly nextActionTriggered = output<TaskActionModel>();
   readonly currentReview = computed(() => this.reviews()?.find((review) => !review.closedDate));
@@ -50,7 +52,7 @@ export class TaskAction {
     const taskNextAction = this.taskNextAction();
     if (!taskNextAction) return;
 
-    this.nextActionTriggered.emit(taskNextAction);
+    this.nextActionTriggered.emit(taskNextAction[0]);
   }
 
   onSubmitUrl(): void {
@@ -86,10 +88,52 @@ export class TaskAction {
       proofUrls: urlLinks,
     };
 
-    const reviewId = await this._taskFacade.submitReview(data);
-    this.onNextActionTrigger();
+    try {
+      const reviewId = await this._taskFacade.submitReview(data);
+      const senderId = this._taskFacade.userId();
+      if (!senderId) {
+        throw new Error('senderId not present');
+      }
 
-    this._router.navigate([REVIEW_ROUTE_PARAMS.review, reviewId], { relativeTo: this._route });
+      if (!reviewId) {
+        throw new Error('reviewId not present');
+      }
+
+      const receiverId = this.currentReview()?.reviewerId;
+      if (!receiverId) {
+        throw new Error('reviewerId not present');
+      }
+
+      const notificationPayload: Omit<NotificationDTOModel, 'createdAt'> = {
+        shortDescription: 'A review is now ready to be checked.',
+        resourceType: 'review',
+        resourceUrl: `${ROUTES_PARAMS.review}/${reviewId}`,
+        receiverId,
+        senderId,
+        isRead: false,
+      };
+
+      await this._taskFacade
+        .addNotification(notificationPayload)
+        .catch((error) => console.error('REVIEW CREATION NOTIFICAITON ERROR', error));
+
+      this.onNextActionTrigger();
+
+      const snackbarRef = this._snackbar.open('Review created successfully', 'Dismiss', {
+        duration: 3000,
+      });
+      snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+
+      this._router.navigate([ROUTES_PARAMS.review, reviewId]);
+    } catch (error) {
+      console.error('SUBMIT PROGRESS ERROR', error);
+
+      const snackbarRef = this._snackbar.open('Review creation failed', 'Dismiss', {
+        duration: 3000,
+        panelClass: 'mat-error-state',
+      });
+      snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+    }
   }
 
   onViewCurrentReview(): void {
@@ -98,8 +142,6 @@ export class TaskAction {
 
     const currentReviewId: string = currentReview.id;
 
-    this._router.navigate([REVIEW_ROUTE_PARAMS.review, currentReviewId], {
-      relativeTo: this._route,
-    });
+    this._router.navigate([ROUTES_PARAMS.review, currentReviewId]);
   }
 }

@@ -1,47 +1,88 @@
-import { inject, Injectable } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { filter, map, shareReplay, switchMap, type Observable } from 'rxjs';
-import { AuthStore } from '../../authentication/auth-store';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { combineLatest, concat, of, switchMap } from 'rxjs';
+import { AuthStore } from '../../authentication/auth-store/auth-store';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
-import type { Project } from '../../project/project.model';
 import { Task } from '../../project/task/task.model';
-import { TeamModel } from '../../team/team.model';
+import { TeamModel } from '../../team/team-model/team.model';
+import { TeamStore } from '../../team/team-store/team-store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StoreService {
   private readonly _repo = inject(FirestoreProjectRepository);
+  private readonly _teamStore = inject(TeamStore);
   private readonly _authStore = inject(AuthStore);
 
-  readonly tasks$: Observable<Task[]> = this._repo
-    .listenToTasks$()
-    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+  private readonly _projectId = signal<string | null>(null);
+  private readonly _taskId = signal<string | null>(null);
+  private readonly _userId = computed(() => this._authStore.userId());
 
-  readonly teams$ = toObservable(this._authStore.userId).pipe(
-    filter((userId): userId is string => !!userId),
-    switchMap((userId) => {
-      return this._repo.listenToTeams$(userId);
-    }),
-    shareReplay({ bufferSize: 1, refCount: true }),
+  readonly tasks = toSignal(
+    combineLatest([toObservable(this._projectId), toObservable(this._userId)]).pipe(
+      switchMap(([projectId, userId]) => {
+        if (!projectId) {
+          return of(null);
+        }
+
+        if (!userId) {
+          return of(null);
+        }
+
+        return concat(this._repo.listenToTasks$(projectId));
+      }),
+    ),
+    { initialValue: null },
   );
 
-  readonly projects$: Observable<Project[]> = this.teams$.pipe(
-    switchMap((teams) => this._repo.listenToProjects$(teams)),
-    shareReplay({ bufferSize: 1, refCount: true }),
+  readonly teamsList = computed(() => this._teamStore.teamsList());
+
+  readonly projects = toSignal(
+    combineLatest([toObservable(this.teamsList), toObservable(this._userId)]).pipe(
+      switchMap(([teams, userId]) => {
+        if (!teams) return of(null);
+
+        if (!userId) {
+          return of(null);
+        }
+
+        return this._repo.listenToProjects$(teams);
+      }),
+    ),
+    { initialValue: null },
   );
 
-  getProjectById$(projectId: string): Observable<Project | undefined> {
-    return this.projects$.pipe(
-      map((projects) => projects.find((project) => project.id === projectId)),
-    );
+  readonly taskDataById = toSignal<Task | null>(
+    combineLatest([toObservable(this._taskId), toObservable(this._userId)]).pipe(
+      switchMap(([taskId, userId]) => {
+        if (!taskId) {
+          return of(null);
+        }
+
+        if (!userId) {
+          return of(null);
+        }
+
+        return this._repo.listenToTask$(taskId);
+      }),
+    ),
+    { initialValue: null },
+  );
+
+  setProjectId(projectId: string): void {
+    this._projectId.set(projectId);
   }
 
-  getTaskById$(taskId: string): Observable<Task | undefined> {
-    return this.tasks$.pipe(map((tasks) => tasks.find((task) => task.id === taskId)));
+  getTeamById(teamId: string): Promise<TeamModel | null> {
+    return this._repo.getTeamById(teamId);
   }
 
-  getTeamById(teamId: string): Observable<TeamModel | undefined> {
-    return this.teams$.pipe(map((teams) => teams.find((team) => team.id === teamId)));
+  setTaskId(taskId: string): void {
+    this._taskId.set(taskId);
+  }
+
+  async getProjectTasks(projectId: string): Promise<Task[]> {
+    return this._repo.getProjectTasks(projectId);
   }
 }

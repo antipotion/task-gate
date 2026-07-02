@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
+import { CanMatchFn, Router } from '@angular/router';
 import { auth } from '../../../environment/firebase.config';
 import { ROUTES_PARAMS } from '../../app.routes';
 

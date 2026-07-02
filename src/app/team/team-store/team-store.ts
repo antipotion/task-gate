@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { filter, switchMap } from 'rxjs';
-import { AuthStore } from '../../authentication/auth-store';
+import { of, switchMap } from 'rxjs';
+import { UserModel } from '../../authentication/auth-model/auth.model';
+import { AuthStore } from '../../authentication/auth-store/auth-store';
 import { FirestoreProjectRepository } from '../../infrastructure/firestore/firestore-project-repository';
 
 @Injectable({
@@ -13,9 +14,16 @@ export class TeamStore {
 
   readonly teamsList = toSignal(
     toObservable(this._authStore.userId).pipe(
-      filter((userId): userId is string => !!userId),
-      switchMap((userId) => this._repo.listenToTeams$(userId)),
+      switchMap((userId) => {
+        if (!userId) return of(null);
+
+        return this._repo.listenToTeams$(userId);
+      }),
     ),
-    { initialValue: [] },
+    { initialValue: null },
   );
+
+  async getUsersById(userIds: string[]): Promise<UserModel[] | null> {
+    return this._repo.getUsersById(userIds);
+  }
 }

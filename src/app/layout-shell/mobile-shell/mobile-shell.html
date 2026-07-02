@@ -1,0 +1,124 @@
+@if (logoutLoading()) {
+  <div
+    class="flex flex-col gap-4 items-center justify-center fixed h-full w-full z-999 mat-bg-surface-container"
+  >
+    <mat-spinner></mat-spinner>
+    <p>Logging out...</p>
+  </div>
+}
+
+@if (visitNotificationLoading()) {
+  <div
+    class="flex flex-col gap-4 items-center justify-center fixed h-full w-full z-999 mat-bg-surface-container"
+  >
+    <mat-spinner></mat-spinner>
+    <p>Loading...</p>
+  </div>
+}
+
+<div class="mat-bg-surface-container w-full h-screen pt-2 pb-4 px-2 grid grid-rows-[auto_1fr_auto]">
+  <header class="flex items-center justify-between py-1">
+    <!-- Logo -->
+    <div class="flex gap-2">
+      <app-logo [ariaHidden]="true" class="transparent-bg h-12 svg-logo" />
+    </div>
+
+    <div class="flex gap-2">
+      <!-- Notification button -->
+      @let notifications = this.notifications();
+      <button
+        matIconButton
+        [ngClass]="{
+          withNotification: notifications && notifications.length > 0,
+        }"
+        [matMenuTriggerFor]="notificationMenu"
+        ariaDescription="notifications"
+      >
+        <mat-icon
+          fontIcon="notifications"
+          [matBadge]="notifications?.length"
+          [matBadgeHidden]="!notifications || notifications.length === 0"
+          [ariaHidden]="false"
+        ></mat-icon>
+      </button>
+
+      <mat-menu #notificationMenu="matMenu">
+        @for (notification of notifications; track notification.id) {
+          <button mat-menu-item (click)="onClickNoticationFeed(notification)">
+            <div class="grid grid-cols-[auto_1fr_auto] gap-2 items-center max-w-64">
+              <mat-icon>
+                @switch (notification.resourceType) {
+                  @case ('project') {
+                    folder
+                  }
+                  @case ('task') {
+                    assignment
+                  }
+                  @case ('review') {
+                    fact_check
+                  }
+                  @case ('discussion') {
+                    comment
+                  }
+                }
+              </mat-icon>
+              <p>{{ notification.shortDescription }}</p>
+              <p>{{ notification.createdAt | date: 'shortDate' }}</p>
+            </div>
+          </button>
+        }
+      </mat-menu>
+
+      <!-- Logout button -->
+      <button matButton class="mat-error-state" (click)="onLogout()">
+        <mat-icon fontIcon="logout"></mat-icon>
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <!-- Primary content -->
+  <div class="mat-bg-surface-container-lowest h-[80vh] mat-corner-sm relative">
+    <div class="h-full overflow-y-auto p-4">
+      <ng-content select="[primary]"></ng-content>
+    </div>
+
+    <!-- Fab button -->
+    <div class="absolute bottom-[2%] right-[4%]">
+      <ng-content select="[fab]"></ng-content>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <aside class="grid grid-cols-3 h-full place-items-center pt-2 pb-2">
+    <!-- Projects -->
+    <div class="flex flex-col gap-0.5 items-center">
+      <div routerLink="/projects" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+        <button matIconButton (click)="onClickProjectDashboard()">
+          <mat-icon fontIcon="folders"></mat-icon>
+        </button>
+      </div>
+      <span class="mat-font-label-sm">Projects</span>
+    </div>
+
+    <!-- Teams -->
+    <div class="flex flex-col gap-0.5 items-center">
+      <div routerLink="/teams" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+        <button matIconButton (click)="onClickTeamDashboard()">
+          <mat-icon fontIcon="groups"></mat-icon>
+        </button>
+      </div>
+      <span class="mat-font-label-sm">Teams</span>
+    </div>
+
+    <!-- About -->
+    <div class="flex flex-col gap-0.5 items-center">
+      <div routerLink="/about" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+        <button matIconButton (click)="onClickAbout()">
+          <mat-icon fontIcon="info"></mat-icon>
+        </button>
+      </div>
+      <span class="mat-font-label-sm">Teams</span>
+    </div>
+  </aside>
+</div>

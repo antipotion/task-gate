@@ -1,6 +1,6 @@
+import { TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { PROJECT_INFO } from './project-info';
-import { TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-version-banner',

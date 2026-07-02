@@ -1,18 +1,21 @@
 @let teams = teamsList();
-<section>
+<section class="flex flex-col gap-8">
   <app-team-dashboard-header />
 
   @if (!teams) {
-    <div class="flex flex-col w-full items-center gap-4 mt-4">
+    <div class="flex flex-col w-full items-center gap-4">
       <mat-spinner></mat-spinner>
       <p>Fetching teams...</p>
     </div>
   } @else {
-    <div class="flex flex-col gap-4 px-4">
+    <div class="flex flex-col gap-4">
       @for (team of teams; track team.id) {
         <mat-card class="gap-4">
           <mat-card-content>
-            <h2 class="mat-font-title-md">{{ team.name }}</h2>
+            <div class="grid grid-cols-[auto_1fr] gap-2">
+              <mat-icon>groups</mat-icon>
+              <h2 class="mat-font-title-md truncate">{{ team.name }}</h2>
+            </div>
           </mat-card-content>
 
           <!-- More button -->
@@ -21,7 +24,7 @@
               <mat-icon fontIcon="settings"></mat-icon>
             </button>
 
-            <button matButton="outlined">View team</button>
+            <button matButton="outlined" (click)="onViewTeam(team.id)">View team</button>
           </mat-card-actions>
         </mat-card>
 

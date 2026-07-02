@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from "@angular/router";
+import { RouterOutlet } from '@angular/router';
 import { TaskFacade } from './task-facade';
 
 @Component({
@@ -7,6 +7,6 @@ import { TaskFacade } from './task-facade';
   imports: [RouterOutlet],
   templateUrl: './task.html',
   styleUrl: './task.scss',
-  providers: [TaskFacade]
+  providers: [TaskFacade],
 })
 export class Task {}

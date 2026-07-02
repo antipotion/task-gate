@@ -1,35 +1,50 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../../app.routes';
-import { UserModel } from '../../../../authentication/auth.model';
-import { Comment } from '../../../review/comment/comment';
-import { ReviewResource } from '../../../review/review-resource/review-resource';
+import { UserModel } from '../../../../authentication/auth-model/auth.model';
+import { NotificationDTOModel } from '../../../../notification/notification.model';
 import { TaskActionModel } from '../../task.model';
-import { TASK_ROUTE_PARAMS } from '../../task.routes';
 import { ReviewFacade } from '../review-facade/review-facade';
 import { ReviewHero } from '../review-hero/review-hero';
+import { ReviewResource } from '../review-resource/review-resource';
 import { REVIEW_ROUTE_PARAMS } from '../review.routes';
 
 @Component({
   selector: 'app-review-detail',
-  imports: [ReviewHero, ReviewResource, Comment, MatButtonModule],
+  imports: [ReviewHero, ReviewResource, MatButtonModule, MatIconModule],
   templateUrl: './review-detail.html',
   styleUrl: './review-detail.scss',
 })
-export class ReviewDetail implements OnInit {
+export class ReviewDetail {
   private readonly _reviewFacade = inject(ReviewFacade);
   private readonly _route = inject(ActivatedRoute);
   private readonly _router = inject(Router);
+  private readonly _snackbar = inject(MatSnackBar);
 
-  private readonly _taskId = this._route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.taskId);
-  private readonly _reviewId = this._route.snapshot.paramMap.get(REVIEW_ROUTE_PARAMS.reviewId);
+  private readonly _reviewId = toSignal(
+    this._route.paramMap.pipe(map((params) => params.get(REVIEW_ROUTE_PARAMS.reviewId))),
+  );
 
-  readonly currentReviewData = this._reviewFacade.getCurrentReview(this._reviewId, this._taskId);
+  readonly isMobile = input<boolean>(false);
+  readonly currentReviewData = computed(() => this._reviewFacade.review());
   readonly submittedBy = signal<string | null>(null);
   readonly reviewer = signal<string | null>(null);
+  readonly taskId = computed(() => this.currentReviewData()?.taskId);
 
   constructor() {
+    // CurrentReviewData
+    effect(() => {
+      const reviewId = this._reviewId();
+      if (!reviewId) return;
+
+      this._reviewFacade.setReviewid(reviewId);
+    });
+
     // SubmittedByData
     effect(async () => {
       const submittedById = this.currentReviewData()?.submittedById;
@@ -57,13 +72,13 @@ export class ReviewDetail implements OnInit {
       const reviewer = `${reviewerData.firstName} ${reviewerData.lastName}`;
       this.reviewer.set(reviewer);
     });
-  }
 
-  ngOnInit(): void {
-    const taskId = this._taskId;
-    if (!taskId) return;
+    effect(() => {
+      const taskId = this.taskId();
+      if (!taskId) return;
 
-    this._reviewFacade.selectTaskId(taskId);
+      this._reviewFacade.selectTaskId(taskId);
+    });
   }
 
   getUserById(userId: string | undefined): Promise<UserModel | null> {
@@ -74,21 +89,71 @@ export class ReviewDetail implements OnInit {
 
   onBack(): void {
     const taskid = this.currentReviewData()?.taskId;
-    if (!taskid) return;
+    if (!taskid) {
+      throw new Error('taskId is not present');
+    }
 
     this._router.navigate([ROUTES_PARAMS.task, taskid]);
   }
 
   async onJudgement(action: Extract<TaskActionModel, 'APPROVE' | 'REJECT'>): Promise<void> {
-    const taskId = this._taskId;
-    const reviewId = this._reviewId;
+    const currentReview = this.currentReviewData();
+    if (!currentReview) return;
+
+    const taskId = currentReview.taskId;
+    const reviewId = this._reviewId();
     if (!taskId || !reviewId) {
       throw new Error('taskId or reviewId is missing cannot process review judgement');
     }
 
-    await this._reviewFacade.closeReview(reviewId, action);
+    try {
+      const receiverId = currentReview.submittedById;
+      if (!receiverId) {
+        throw new Error('receiverId not present');
+      }
 
-    this._reviewFacade.advanceTaskState(action);
-    this._router.navigate([ROUTES_PARAMS.task, taskId]);
+      const senderId = this._reviewFacade.userId();
+      if (!senderId) {
+        throw new Error('senderId not present');
+      }
+
+      await this._reviewFacade
+        .closeReview(reviewId, action)
+        .catch((error) => console.error('CLOSE REVIEW ERROR', error));
+      
+      this._reviewFacade.advanceTaskState(action);
+      this._router.navigate([ROUTES_PARAMS.task, taskId]);
+
+      const judgement = action === 'APPROVE' ? 'approved' : 'rejected';
+
+      const notificationPayload: Omit<NotificationDTOModel, 'createdAt'> = {
+        shortDescription: `A review has been ${judgement}.`,
+        resourceUrl: `${ROUTES_PARAMS.review}/${reviewId}`,
+        resourceType: 'review',
+        receiverId,
+        senderId,
+        isRead: false,
+      };
+
+      await this._reviewFacade
+        .addNotification(notificationPayload)
+        .catch((error) => console.error('REVIEW JUDGEMENT NOTIFICATION ERROR', error));
+    } catch (error) {
+      console.error('REVIEW JUDGEMENT ERROR', error);
+
+      const snacbarRef = this._snackbar.open(
+        'An error occured while submitting judgement',
+        'Dismiss',
+        {
+          duration: 3000,
+          panelClass: 'mat-error-state',
+        },
+      );
+      snacbarRef.onAction().subscribe(() => snacbarRef.dismiss());
+    }
+  }
+
+  onShowDiscussion(): void {
+    this._router.navigate([REVIEW_ROUTE_PARAMS.discussion], { relativeTo: this._route });
   }
 }

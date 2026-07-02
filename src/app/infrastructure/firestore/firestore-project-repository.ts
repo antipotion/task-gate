@@ -6,7 +6,10 @@ import {
   collection,
   deleteDoc,
   doc,
+  documentId,
+  DocumentSnapshot,
   getDoc,
+  getDocs,
   onSnapshot,
   query,
   QueryDocumentSnapshot,
@@ -20,12 +23,13 @@ import {
 } from 'firebase/firestore';
 import { Observable, of } from 'rxjs';
 import { db } from '../../../environment/firebase.config';
-import { UserModel } from '../../authentication/auth.model';
-import type { Project } from '../../project/project.model';
-import { CommentModel } from '../../project/review/comment/comment.model';
-import { ReviewModel } from '../../project/task/review/review.model';
+import { UserModel } from '../../authentication/auth-model/auth.model';
+import { NotificationDTOModel, NotificationModel } from '../../notification/notification.model';
+import type { Project } from '../../project/project-model/project.model';
+import { CommentModel, CommentModelDTO } from '../../project/task/review/comment/comment.model';
+import { ReviewModel, ReviewModelDTO } from '../../project/task/review/review.model';
 import type { Task } from '../../project/task/task.model';
-import { TeamModel } from '../../team/team.model';
+import { TeamModel } from '../../team/team-model/team.model';
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +42,7 @@ export class FirestoreProjectRepository {
   private readonly _teamsCollection = collection(this._db, 'teams');
   private readonly _reviewsCollection = collection(this._db, 'reviews');
   private readonly _commentsCollection = collection(this._db, 'comments');
+  private readonly _notificaitonsCollection = collection(this._db, 'notifications');
 
   listenToProjects$(teams: TeamModel[]): Observable<Project[]> {
     const teamIds = teams.map((team) => team.id);
@@ -58,6 +63,7 @@ export class FirestoreProjectRepository {
           subscriber.next(projects);
         },
         (error) => {
+          console.log('listenToProjects$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -66,16 +72,19 @@ export class FirestoreProjectRepository {
     });
   }
 
-  listenToTasks$(): Observable<Task[]> {
+  listenToTasks$(projectId: string): Observable<Task[]> {
+    const taskQuery = query(this._tasksCollection, where('projectId', '==', projectId));
+
     return new Observable<Task[]>((subscriber) => {
       const unsubscribe = onSnapshot(
-        this._tasksCollection,
+        taskQuery,
         (snapshot) => {
           const tasks = snapshot.docs.map((doc) => this._mapToTask(doc));
 
           subscriber.next(tasks);
         },
         (error) => {
+          console.error('listenToTasks$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -96,6 +105,7 @@ export class FirestoreProjectRepository {
           subscriber.next(teams);
         },
         (error) => {
+          console.error('listenToTeams$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -118,6 +128,7 @@ export class FirestoreProjectRepository {
           subscriber.next(user);
         },
         (error) => {
+          console.error('listenToUser$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -134,10 +145,50 @@ export class FirestoreProjectRepository {
         reviewQuery,
         (snapshot: QuerySnapshot<DocumentData>) => {
           const reviews = snapshot.docs.map((doc) => this._mapToReview(doc));
+          // Sort in descending order
+          // 'null' closedDate is treated as latest
+          reviews.sort((a, b) => {
+            const closedDateA = a.closedDate;
+            const closedDateB = b.closedDate;
+            //
+            // Both undefined
+            if (!closedDateA && !closedDateB) return 0;
+
+            // Undefined goes first
+            if (!closedDateA) return -1;
+            if (!closedDateB) return 1;
+
+            return closedDateB.getTime() - closedDateA.getTime();
+          });
 
           subscriber.next(reviews);
         },
         (error) => {
+          console.error('listenToReviews$ ERROR', error);
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
+  listenToReviewById$(reviewId: string): Observable<ReviewModel | null> {
+    const reviewDoc = doc(this._reviewsCollection, reviewId);
+
+    return new Observable<ReviewModel | null>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        reviewDoc,
+        (snapshot) => {
+          if (!snapshot.exists()) {
+            subscriber.next(null);
+          }
+          const review = this._mapToSingleReview(snapshot);
+
+          subscriber.next(review);
+        },
+        (error) => {
+          console.error('listenToReviewById$ ERROR', error);
           subscriber.error(error);
         },
       );
@@ -154,16 +205,84 @@ export class FirestoreProjectRepository {
         commentQuery,
         (snapshot: QuerySnapshot<DocumentData>) => {
           const comments = snapshot.docs.map((doc) => this._mapToComment(doc));
+          comments.sort((a, b) => {
+            const createdA = a.createdAt;
+            const createdB = b.createdAt;
+
+            return createdA?.getTime() - createdB?.getTime();
+          });
 
           subscriber.next(comments);
         },
         (error) => {
+          console.error('listenToComments$ ERROR', error);
           subscriber.error(error);
         },
       );
 
       return () => unsubscribe();
     });
+  }
+
+  listenToNotifications$(userId: string): Observable<NotificationModel[] | null> {
+    const notificationQuery = query(
+      this._notificaitonsCollection,
+      where('receiverId', '==', userId),
+      where('isRead', '==', false),
+    );
+
+    return new Observable<NotificationModel[] | null>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        notificationQuery,
+        (snapshot) => {
+          const notifications = snapshot.docs.map((doc) => this._mapToNotification(doc));
+
+          notifications.sort((a, b) => {
+            const createdA = a.createdAt;
+            const createdB = b.createdAt;
+
+            return createdA?.getTime() - createdB?.getTime();
+          });
+
+          subscriber.next(notifications);
+        },
+        (error) => {
+          console.error('listenToNotifications$ ERROR', error);
+          subscriber.error(error);
+        },
+      );
+
+      return () => unsubscribe();
+    });
+  }
+
+  listenToTask$(taskId: string): Observable<Task | null> {
+    const taskDoc = doc(this._tasksCollection, taskId);
+
+    return new Observable<Task | null>((subscriber) => {
+      const unsubscribe = onSnapshot(
+        taskDoc,
+        (snapshot) => {
+          if (!snapshot.exists()) {
+            subscriber.next(null);
+          }
+          const task = this._mapToSingleTask(snapshot);
+          subscriber.next(task);
+        },
+        (error) => {
+          console.error('listenToTask$ ERROR', error);
+          subscriber.error(error);
+        },
+      );
+      return () => unsubscribe();
+    });
+  }
+
+  async getProjectTasks(projectId: string): Promise<Task[]> {
+    const taskQuery = query(this._tasksCollection, where('projectId', '==', projectId));
+    const snapshot = await getDocs(taskQuery);
+
+    return snapshot.docs.map((doc) => this._mapToTask(doc));
   }
 
   async addProject(data: Omit<Project, 'id'>): Promise<string> {
@@ -223,28 +342,43 @@ export class FirestoreProjectRepository {
     return updateDoc(teamRef, { memberIds: arrayRemove(userId) });
   }
 
+  async getTeamById(teamId: string): Promise<TeamModel | null> {
+    const docRef = doc(this._teamsCollection, teamId);
+    const snapshot = await getDoc(docRef);
+    if (!snapshot.exists()) return null;
+
+    const data = snapshot.data();
+
+    return {
+      id: snapshot.id,
+      name: data['name'],
+      creatorId: data['creatorId'],
+      memberIds: data['memberIds'],
+    };
+  }
+
   async deleteTeam(teamId: string): Promise<void> {
     const ref = doc(this._teamsCollection, teamId);
 
     return deleteDoc(ref);
   }
 
-  async addReview(data: Omit<ReviewModel, 'id' | 'submittedAt'>): Promise<string> {
-    const withSubmittedAt: Omit<ReviewModel, 'id'> = { ...data, submittedAt: serverTimestamp() };
+  async addReview(data: Omit<ReviewModelDTO, 'id' | 'submittedAt'>): Promise<string> {
+    const withSubmittedAt: Omit<ReviewModelDTO, 'id'> = { ...data, submittedAt: serverTimestamp() };
 
     const result = await addDoc(this._reviewsCollection, withSubmittedAt);
     return result.id;
   }
 
-  async closeReview(reviewId: string, data: Pick<ReviewModel, 'closeStatus'>): Promise<void> {
+  async closeReview(reviewId: string, data: Pick<ReviewModelDTO, 'closeStatus'>): Promise<void> {
     const reviewRef = doc(this._reviewsCollection, reviewId);
     const withClosedDate = { ...data, closedDate: serverTimestamp() };
 
     return await updateDoc(reviewRef, { ...withClosedDate });
   }
 
-  async addComment(data: Omit<CommentModel, 'id' | 'createdAt'>): Promise<string> {
-    const withCreatedAt: Omit<CommentModel, 'id'> = { ...data, createdAt: serverTimestamp() };
+  async addComment(data: Omit<CommentModelDTO, 'id' | 'createdAt'>): Promise<string> {
+    const withCreatedAt: Omit<CommentModelDTO, 'id'> = { ...data, createdAt: serverTimestamp() };
 
     const result = await addDoc(this._commentsCollection, withCreatedAt);
     return result.id;
@@ -258,9 +392,11 @@ export class FirestoreProjectRepository {
       name: data['name'],
       creatorId: data['creatorId'],
       teamId: data['teamId'],
+      teamName: data['teamName'],
       description: data['description'] ?? null,
       startDate: data['startDate']?.toDate() ?? null,
       deadline: data['deadline']?.toDate() ?? null,
+      status: data['status'] ?? 'not started',
     };
   }
 
@@ -308,6 +444,24 @@ export class FirestoreProjectRepository {
     return {
       id: doc.id,
       taskId: data['taskId'],
+      projectId: data['projectId'],
+      proofUrls: data['proofUrls'],
+      submittedById: data['submittedById'],
+      submittedAt: data['submittedAt']?.toDate(),
+      reviewerId: data['reviewerId'],
+      closedDate: data['closedDate']?.toDate() ?? null,
+      closeStatus: data['closeStatus'],
+    };
+  }
+
+  private _mapToSingleReview(doc: DocumentSnapshot<DocumentData>): ReviewModel | null {
+    const data = doc.data();
+    if (!data) return null;
+
+    return {
+      id: doc.id,
+      taskId: data['taskId'],
+      projectId: data['projectId'],
       proofUrls: data['proofUrls'],
       submittedById: data['submittedById'],
       submittedAt: data['submittedAt']?.toDate(),
@@ -330,6 +484,38 @@ export class FirestoreProjectRepository {
     };
   }
 
+  private _mapToSingleTask(doc: DocumentSnapshot<DocumentData>): Task | null {
+    const data = doc.data();
+    if (!data) return null;
+
+    return {
+      id: doc.id,
+      name: data['name'],
+      assigneeId: data['assigneeId'],
+      creatorId: data['creatorId'],
+      deadline: data['deadline']?.toDate(),
+      description: data['description'],
+      projectId: data['projectId'],
+      startDate: data['startDate']?.toDate(),
+      status: data['status'],
+    };
+  }
+
+  private _mapToNotification(doc: QueryDocumentSnapshot<DocumentData>): NotificationModel {
+    const data = doc.data();
+
+    return {
+      id: doc.id,
+      resourceUrl: data['resourceUrl'],
+      resourceType: data['resourceType'],
+      senderId: data['senderId'],
+      receiverId: data['receiverId'],
+      shortDescription: data['shortDescription'],
+      isRead: data['isRead'],
+      createdAt: data['createdAt']?.toDate(),
+    };
+  }
+
   async getUserById(userId: string): Promise<UserModel | null> {
     const docRef = doc(this._usersCollection, userId);
     const snapshot = await getDoc(docRef);
@@ -343,5 +529,31 @@ export class FirestoreProjectRepository {
       lastName: data['lastName'],
       role: data['role'],
     };
+  }
+
+  async getUsersById(userIds: string[]): Promise<UserModel[] | null> {
+    const userQuery = query(this._usersCollection, where(documentId(), 'in', userIds));
+    const snapshot = await getDocs(userQuery);
+
+    const users = snapshot.docs.map((doc) => this._mapToUser(doc));
+
+    return users;
+  }
+
+  async addNotification(data: Omit<NotificationDTOModel, 'createdAt'>): Promise<void> {
+    const withCreatedAt: NotificationDTOModel = {
+      ...data,
+      createdAt: serverTimestamp(),
+    };
+
+    await addDoc(this._notificaitonsCollection, withCreatedAt);
+  }
+
+  async updateNotification(data: NotificationModel): Promise<void> {
+    const notificationId = data.id;
+    const notificationRef = doc(this._notificaitonsCollection, notificationId);
+    const isRead = data.isRead;
+
+    return updateDoc(notificationRef, { isRead });
   }
 }

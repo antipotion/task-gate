@@ -11,13 +11,20 @@ import {
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthFacade } from '../auth-facade';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../app.routes';
+import { AuthFacade } from '../auth-facade/auth-facade';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatButtonModule, MatInputModule, MatProgressSpinnerModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatInputModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.scss',
 })
@@ -66,6 +73,8 @@ export class SignUp implements OnDestroy {
     const firstName: string = this.firstNameControl.getRawValue().trim();
     const lastName: string = this.lastNameControl.getRawValue().trim();
 
+    if (!email || !password || !firstName || !lastName) return;
+
     try {
       this.signUpLoading.set(true);
       await this._authFacade.signUpWithEmailAndPassword(email, password, firstName, lastName);
@@ -74,7 +83,7 @@ export class SignUp implements OnDestroy {
     }
 
     if (this._authFacade.user()) {
-      this._router.navigate(['project']);
+      this._router.navigate([ROUTES_PARAMS.project]);
     }
   }
 

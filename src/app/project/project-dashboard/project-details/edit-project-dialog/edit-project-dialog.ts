@@ -6,7 +6,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import type { Project } from '../../../project.model';
+import type { Project } from '../../../project-model/project.model';
 
 @Component({
   selector: 'app-edit-project-dialog',

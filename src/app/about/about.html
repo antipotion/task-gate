@@ -1,0 +1,9 @@
+@if (isMobile()) {
+  <app-mobile-shell>
+    <app-about-content primary />
+  </app-mobile-shell>
+} @else {
+  <app-tablet-shell>
+    <app-about-content primary />
+  </app-tablet-shell>
+}

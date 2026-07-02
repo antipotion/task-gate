@@ -1,49 +1,59 @@
 <section class="flex flex-col gap-4">
-  <div class="flex justify-between">
-    <h2 class="mat-font-title-md">Project Overview</h2>
-    <mat-icon fontIcon="expand_more"></mat-icon>
+  <!-- Project description -->
+  <div>
+    <p class="line-clamp-3">
+      @if (description(); as description) {
+        {{ description }}
+      } @else {
+        No description
+      }
+    </p>
   </div>
 
   <!-- Contents -->
-  <div class="flex flex-col gap-2">
-    <!-- Project Description -->
-    <div>
-      <p>
-        @if (description(); as description) {
-          {{ description }}
+  <!-- Project details card -->
+  <div class="grid grid-cols-2 gap-2 mat-bg-surface-container-low p-4 mat-corner-sm">
+    <!-- Project Owner -->
+    <p class="mat-font-label-sm">Project Owner</p>
+    <p class="mat-font-label-sm">{{ projectOwnerFullName() }}</p>
+
+    <!-- Start Date -->
+    <p class="mat-font-label-sm">Start Date</p>
+    <p class="mat-font-label-sm">
+      @if (startDate(); as startDate) {
+        {{ startDate | date }}
+      } @else {
+        No Data
+      }
+    </p>
+
+    <!-- Deadline -->
+    <p class="mat-font-label-sm">Deadline</p>
+    <p class="mat-font-label-sm">
+      @if (deadline(); as deadline) {
+        {{ deadline | date }}
+      } @else {
+        No Data
+      }
+    </p>
+
+    <!-- Progress -->
+    <p class="mat-font-label-sm">Progress</p>
+    <mat-progress-bar mode="determinate" [value]="currentProgress()"></mat-progress-bar>
+
+    <!-- Overdue -->
+    <p class="mat-font-label-sm">Overdue</p>
+    <p class="mat-font-label-sm">
+      @let overdueTaskCount = this.overdueTasksCount();
+      @if (overdueTaskCount) {
+        @if (overdueTaskCount >= 2) {
+          {{ overdueTaskCount }} tasks
         } @else {
-          No description
+          {{ overdueTaskCount }} task
         }
-      </p>
-    </div>
-
-    <!-- Project Dates -->
-    <div class="flex flex-col gap-1">
-      <!-- Start Date -->
-      <div>
-        <mat-chip>
-          <p class="mat-font-label-sm">
-            @if (startDate(); as startDate) {
-              Start Date: {{ startDate | date }}
-            } @else {
-              Start Date: No Data
-            }
-          </p>
-        </mat-chip>
-      </div>
-
-      <!-- Deadline -->
-      <div>
-        <mat-chip>
-          <p class="mat-font-label-sm">
-            @if (deadline(); as deadline) {
-              Deadline: {{ deadline | date }}
-            } @else {
-              Deadline: No Data
-            }
-          </p>
-        </mat-chip>
-      </div>
-    </div>
+      } @else {
+        No data available.
+      }
+    </p>
   </div>
 </section>

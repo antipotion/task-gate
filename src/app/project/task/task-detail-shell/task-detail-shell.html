@@ -1,0 +1,14 @@
+@if (isMobileScreen()) {
+  <app-mobile-shell>
+    @if (this.routeReviewList()) {
+      <app-task-review-list [isMobile]="true" primary />
+    } @else {
+      <app-task-details [isMobile]="true" primary />
+    }
+  </app-mobile-shell>
+} @else {
+  <app-tablet-shell [withSecondary]="true">
+    <app-task-details primary />
+    <app-task-review-list secondary />
+  </app-tablet-shell>
+}

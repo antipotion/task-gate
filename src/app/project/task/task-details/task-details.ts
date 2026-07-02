@@ -1,22 +1,20 @@
-import { Component, computed, effect, inject, signal, type OnInit } from '@angular/core';
+import { Component, computed, effect, inject, input, resource, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { ROUTES_PARAMS } from '../../../app.routes';
 import { Loading } from '../../../loading/loading';
+import { ProjectFacade } from '../../project-facade/project-facade';
 import { TaskAction } from '../task-action/task-action';
-import { TaskComment } from '../task-comment/task-comment';
-import { TaskDependency } from '../task-dependency/task-dependency';
 import { TaskEdit } from '../task-edit/task-edit';
 import { TaskFacade } from '../task-facade';
 import { TaskHeader } from '../task-header/task-header';
-import { TaskHistory } from '../task-history/task-history';
 import { TaskOverview } from '../task-overview/task-overview';
-import { TaskReviewList } from '../task-review-list/task-review-list';
-import { TaskSubtask } from '../task-subtask/task-subtask';
-import { TaskTime } from '../task-time/task-time';
 import { TaskWarningDialog } from '../task-warning-dialog/task-warning-dialog';
 import { TaskActionModel } from '../task.model';
 import { TASK_ROUTE_PARAMS } from '../task.routes';
@@ -27,32 +25,74 @@ import { TASK_ROUTE_PARAMS } from '../task.routes';
     TaskHeader,
     TaskOverview,
     TaskAction,
-    TaskDependency,
-    TaskSubtask,
-    TaskTime,
-    TaskComment,
-    TaskHistory,
     MatIconModule,
     MatButtonModule,
     Loading,
-    TaskReviewList,
+    MatMenuModule,
   ],
   templateUrl: './task-details.html',
   styleUrl: './task-details.scss',
 })
-export class TaskDetails implements OnInit {
+export class TaskDetails {
   private readonly _taskFacade = inject(TaskFacade);
+  private readonly _projectFacade = inject(ProjectFacade);
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
   private readonly _dialog = inject(MatDialog);
   private readonly _snackBar = inject(MatSnackBar);
 
-  readonly taskId = this._route.snapshot.paramMap.get(TASK_ROUTE_PARAMS.taskId) || '';
+  private readonly _team = resource({
+    params: () => this._projectFacade.activeProject()?.teamId,
+    loader: ({ params }) => this._projectFacade.getTeamById(params),
+  });
 
-  readonly activeTask = computed(() => this._taskFacade.activeTask());
-  readonly nextTaskAction = signal<TaskActionModel | null>(null);
+  readonly taskId = toSignal(
+    this._route.paramMap.pipe(map((params) => params.get(TASK_ROUTE_PARAMS.taskId))),
+  );
+  readonly activeTask = computed(() => this._taskFacade.taskDataById());
+  readonly nextTaskAction = signal<TaskActionModel[] | null>(null);
   readonly isLoading = signal<boolean>(false);
   readonly reviews = this._taskFacade.reviewDataList();
+  readonly isMobile = input<boolean>(false);
+  readonly userId = computed(() => this._taskFacade.userId());
+
+  private readonly _userResource = resource({
+    params: () => {
+      const activeTask = this.activeTask();
+      if (!activeTask) return;
+
+      const creatorId = activeTask.creatorId;
+      const assigneeId = activeTask.assigneeId;
+      if (!creatorId) return;
+
+      if (!assigneeId) {
+        return new Set<string>([creatorId]);
+      }
+      return new Set<string>([creatorId, assigneeId]);
+    },
+    loader: ({ params }) => this._taskFacade.getUsersById(params),
+  });
+  private readonly _userMap = computed<Map<string, string> | null>(() => {
+    const userResource = this._userResource.value();
+    if (!userResource) return null;
+
+    return new Map<string, string>(
+      userResource.map((user) => [user.id, `${user.firstName} ${user.lastName}`]),
+    );
+  });
+
+  readonly creatorName = computed<string | null>(() => {
+    const activeTask = this.activeTask();
+    if (!activeTask) return null;
+
+    return this._userMap()?.get(activeTask.creatorId) ?? null;
+  });
+  readonly assigneeName = computed<string | null>(() => {
+    const activeTask = this.activeTask();
+    if (!activeTask) return null;
+
+    return this._userMap()?.get(activeTask.assigneeId) ?? null;
+  });
 
   constructor() {
     effect(() => {
@@ -63,31 +103,73 @@ export class TaskDetails implements OnInit {
       this.nextTaskAction.set(result ?? null);
     });
 
-    this._taskFacade.setTaskId(this.taskId);
-  }
+    effect(() => {
+      const taskId = this.taskId();
+      if (!taskId) return;
 
-  ngOnInit(): void {
-    this._taskFacade.selectTaskId(this.taskId);
+      this._taskFacade.setTaskIdData(taskId);
+    });
+
+    effect(() => {
+      const taskId = this.taskId();
+      if (!taskId) return;
+
+      this._taskFacade.setTaskIdForReviews(taskId);
+    });
+
+    effect(() => {
+      const projectId = this.activeTask()?.projectId;
+      if (!projectId) return;
+
+      this._projectFacade.selectProject(projectId);
+    });
   }
 
   openTaskEditDialog(): void {
+    const activeTask = this.activeTask();
+    if (!activeTask) return;
+
+    const team = this._team;
+    if (!team) return;
+    if (!team.hasValue()) {
+      console.error('Team is not present');
+    }
+    const teamMembers = team.value()?.memberIds;
+    const projectId = activeTask.projectId;
+
     const dialogRef = this._dialog.open(TaskEdit, {
       data: {
-        name: this.activeTask()?.name,
-        description: this.activeTask()?.description,
-        startDate: this.activeTask()?.startDate,
-        deadline: this.activeTask()?.deadline,
+        name: activeTask.name,
+        description: activeTask.description,
+        startDate: activeTask.startDate,
+        deadline: activeTask.deadline,
+        assigneeId: activeTask.assigneeId ?? '',
+        projectId,
+        teamMembers,
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       const activeTask = this.activeTask();
       if (!activeTask) return;
 
+      const taskId = this.taskId();
+      if (!taskId) return;
+
       try {
-        this._taskFacade.updatetask(this.taskId, activeTask, result);
+        await this._taskFacade.updatetask(taskId, activeTask, result);
+
+        const snackbarRef = this._snackBar.open('Task edited successfully', 'Dismiss', {
+          duration: 3000,
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
       } catch (error) {
-        this.openSnackBar('Task edit failed');
+        console.error('TASK EDIT ERROR', error);
+        const snackbarRef = this._snackBar.open('Task edit failed', 'Dismiss', {
+          duration: 3000,
+          panelClass: 'mat-error-state',
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
       }
     });
   }
@@ -122,13 +204,35 @@ export class TaskDetails implements OnInit {
       data: taskName,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(async (result) => {
       const projectId = this.activeTask()?.projectId;
       if (!projectId) return;
 
+      const taskid = this.taskId();
+      if (!taskid) return;
+
       if (!result) return;
-      this._taskFacade.deleteTask(this.taskId);
-      this._router.navigate([ROUTES_PARAMS.project, projectId]);
+      try {
+        this.isLoading.set(true);
+
+        await this._taskFacade.deleteTask(taskid);
+        this._router.navigate([ROUTES_PARAMS.project, projectId]);
+
+        const snackbarRef = this._snackBar.open('Task deleted successfully', 'Dismiss', {
+          duration: 3000,
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      } catch (error) {
+        console.error('TASK DELETION ERROR', error);
+
+        const snackbarRef = this._snackBar.open('Task deletion failed', 'Dismiss', {
+          duration: 3000,
+          panelClass: 'mat-error-state',
+        });
+        snackbarRef.onAction().subscribe(() => snackbarRef.dismiss());
+      } finally {
+        this.isLoading.set(false);
+      }
     });
   }
 
@@ -137,5 +241,11 @@ export class TaskDetails implements OnInit {
     if (!task) throw new Error("Task does not exist can't transition");
 
     this._taskFacade.advanceTaskState(task, action);
+  }
+
+  onShowReviewList(): void {
+    const taskId = this.taskId();
+
+    this._router.navigate([ROUTES_PARAMS.task, taskId, TASK_ROUTE_PARAMS.reviewList]);
   }
 }

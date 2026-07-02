@@ -1,0 +1,196 @@
+@if (logoutLoading()) {
+  <div
+    class="flex flex-col gap-4 items-center justify-center fixed h-full w-full z-999 mat-bg-surface-container"
+  >
+    <mat-spinner></mat-spinner>
+    <p>Logging out...</p>
+  </div>
+}
+
+@if (visitNotificationLoading()) {
+  <div
+    class="flex flex-col gap-4 items-center justify-center fixed h-full w-full z-999 mat-bg-surface-container"
+  >
+    <mat-spinner></mat-spinner>
+    <p>Loading...</p>
+  </div>
+}
+
+<div class="mat-bg-surface-container h-full p-4 flex flex-col gap-2">
+  <header class="flex justify-between items-center">
+    <div class="flex gap-10 items-center">
+      <!-- Expand/collapse button -->
+      @let isMenuExpanded = this.isMenuExpanded();
+      <button matIconButton class="ml-6" (click)="onToggleIsMenuExpanded()">
+        <mat-icon [fontIcon]="isMenuExpanded ? 'menu_open' : 'menu'"></mat-icon>
+      </button>
+
+      <!-- Logo -->
+      <div class="flex gap-2">
+        <app-logo [ariaHidden]="true" class="transparent-bg h-12 svg-logo" />
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <!-- Notification button -->
+      @let notifications = this.notifications();
+      <button
+        matIconButton
+        [ngClass]="{
+          withNotification: notifications && notifications.length > 0,
+        }"
+        [matMenuTriggerFor]="notificationMenu"
+        ariaDescription="notifications"
+      >
+        <mat-icon
+          fontIcon="notifications"
+          [matBadge]="notifications?.length"
+          [matBadgeHidden]="!notifications || notifications.length === 0"
+          [ariaHidden]="false"
+        ></mat-icon>
+      </button>
+
+      <mat-menu #notificationMenu="matMenu">
+        @for (notification of notifications; track notification.id) {
+          <button mat-menu-item (click)="onClickNoticationFeed(notification)">
+            <div class="grid grid-cols-[auto_1fr_auto] gap-2 items-center max-w-64">
+              <mat-icon>
+                @switch (notification.resourceType) {
+                  @case ('project') {
+                    folder
+                  }
+                  @case ('task') {
+                    assignment
+                  }
+                  @case ('review') {
+                    fact_check
+                  }
+                  @case ('discussion') {
+                    comment
+                  }
+                }
+              </mat-icon>
+              <p>{{ notification.shortDescription }}</p>
+              <p>{{ notification.createdAt | date: 'shortDate' }}</p>
+            </div>
+          </button>
+        }
+      </mat-menu>
+
+      <!-- Logout button -->
+      <button matButton class="mat-error-state" (click)="onLogout()">
+        <mat-icon fontIcon="logout"></mat-icon>
+        Logout
+      </button>
+    </div>
+  </header>
+
+  <div class="flex gap-6 h-full">
+    <aside class="w-fit flex flex-col gap-8 items-center px-2">
+      <!-- Create project button -->
+      <div class="flex w-full min-h-14 min-w-14 justify-center">
+        @if (isMenuExpanded) {
+          <ng-content select="[fab-extended]"></ng-content>
+        } @else {
+          <ng-content select="[fab]"></ng-content>
+        }
+      </div>
+
+      <!-- Page main sections -->
+      <div class="flex flex-col gap-4 w-full">
+        <!-- Project dashboard -->
+        @if (isMenuExpanded) {
+          <div
+            class="flex flex-col gap-1 mat-neutral-state mat-corner-full"
+            routerLink="/projects"
+            routerLinkActive="activeRoute"
+          >
+            <button matButton class="nowrap" (click)="onClickProjectDashboard()">
+              <mat-icon fontIcon="folder"></mat-icon>
+              Project Dashboard
+            </button>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-1 items-center">
+            <div routerLink="/projects" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+              <button matIconButton (click)="onClickProjectDashboard()">
+                <mat-icon fontIcon="folder"></mat-icon>
+              </button>
+            </div>
+            <span class="mat-font-label-sm text-center">Projects</span>
+          </div>
+        }
+
+        <!-- Team dashboard -->
+        @if (isMenuExpanded) {
+          <div
+            class="flex flex-col gap-1 mat-neutral-state mat-corner-full"
+            routerLink="/teams"
+            routerLinkActive="activeRoute"
+          >
+            <button matButton class="nowrap" (click)="onClickTeamDashboard()">
+              <mat-icon fontIcon="groups"></mat-icon>
+              Team Dashboard
+            </button>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-1 items-center">
+            <div routerLink="/teams" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+              <button matIconButton (click)="onClickTeamDashboard()">
+                <mat-icon fontIcon="groups"></mat-icon>
+              </button>
+            </div>
+            <span class="mat-font-label-sm text-center">Teams</span>
+          </div>
+        }
+
+        <!-- About -->
+        @if (isMenuExpanded) {
+          <div
+            class="flex flex-col gap-1 mat-neutral-state mat-corner-full"
+            routerLink="/about"
+            routerLinkActive="activeRoute"
+          >
+            <button matButton class="nowrap" (click)="onClickAbout()">
+              <mat-icon fontIcon="info"></mat-icon>
+              About
+            </button>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-1 items-center">
+            <div routerLink="/about" routerLinkActive="activeRoute" class="px-4 mat-corner-full">
+              <button matIconButton (click)="onClickAbout()">
+                <mat-icon fontIcon="info"></mat-icon>
+              </button>
+            </div>
+            <span class="mat-font-label-sm text-center">About</span>
+          </div>
+        }
+      </div>
+    </aside>
+
+    <div
+      class="grid w-full gap-4"
+      [ngClass]="{
+        'grid-cols-2': withSecondary(),
+        'grid-cols-1': !withSecondary(),
+      }"
+    >
+      <!-- Primary -->
+      <section class="mat-bg-surface-container-lowest mat-corner-sm max-h-[90vh]">
+        <div class="overflow-y-auto h-full p-4">
+          <ng-content select="[primary]"></ng-content>
+        </div>
+      </section>
+
+      @if (withSecondary()) {
+        <!-- Secondary -->
+        <section class="mat-bg-surface-container-lowest mat-corner-sm max-h-[90vh]">
+          <div class="overflow-y-auto h-full p-4">
+            <ng-content select="[secondary]"></ng-content>
+          </div>
+        </section>
+      }
+    </div>
+  </div>
+</div>

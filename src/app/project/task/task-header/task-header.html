@@ -27,15 +27,20 @@
       </div>
 
       <!-- Priority badge -->
-      <div class="bg-green-500 w-fit px-2 py-1 mat-corner-full">
-        <p class="mat-font-label-sm">High</p>
+      @let pressure = this.deadlinePressure();
+      <div
+        class="w-fit px-2 py-1 mat-corner-full"
+        [ngClass]="{
+          'bg-gray-200': pressure === 'unknown',
+          'bg-green-200': pressure === 'healthy',
+          'bg-teal-200': pressure === 'stable',
+          'bg-amber-200': pressure === 'warning',
+          'bg-orange-200': pressure === 'critical',
+          'bg-red-200': pressure === 'overdue',
+        }"
+      >
+        <p class="mat-font-label-sm">{{ pressure | titlecase }}</p>
       </div>
-    </div>
-
-    <!-- Assigned to -->
-    <div class="flex gap-2">
-      <p>Assigned to:</p>
-      <p>Assignee name</p>
     </div>
   </div>
 </section>

@@ -1,19 +1,32 @@
 @let currentReviewData = this.currentReviewData();
 
-<section class="flex flex-col gap-8 p-4">
+<section class="flex flex-col gap-8">
   <app-review-hero
+    [reviewId]="currentReviewData?.id ?? null"
     [closeStatus]="currentReviewData?.closeStatus ?? null"
     [submittedBy]="submittedBy()"
     [reviewer]="reviewer()"
     (backEvent)="onBack()"
   />
   <app-review-resource [proofUrls]="currentReviewData?.proofUrls" />
-  <app-comment [closedDate]="currentReviewData?.closedDate ?? null" />
+
+  @if (isMobile()) {
+    <button matButton (click)="onShowDiscussion()">
+      <mat-icon fontIcon="chat"></mat-icon>
+      Show Discussion
+    </button>
+  }
 
   @if (!currentReviewData?.closedDate) {
     <div class="flex gap-2">
-      <button matButton="filled" (click)="onJudgement('APPROVE')">Approve</button>
-      <button matButton class="mat-error-state" (click)="onJudgement('REJECT')">Reject</button>
+      <button matButton="filled" class="w-full" (click)="onJudgement('APPROVE')">
+        <mat-icon fontIcon="check"></mat-icon>
+        Approve
+      </button>
+      <button matButton class="mat-error-state w-full" (click)="onJudgement('REJECT')">
+        <mat-icon fontIcon="close"></mat-icon>
+        Reject
+      </button>
     </div>
   }
 </section>

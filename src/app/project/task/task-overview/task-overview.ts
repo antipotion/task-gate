@@ -11,6 +11,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrl: './task-overview.scss',
 })
 export class TaskOverview {
+  readonly taskStartDate = input.required<Date | null>();
   readonly taskDeadline = input.required<Date | null>();
   readonly taskDescription = input.required<string | null>();
+  readonly creatorName = input.required<string | null>();
+  readonly assigneeName = input.required<string | null>();
 }

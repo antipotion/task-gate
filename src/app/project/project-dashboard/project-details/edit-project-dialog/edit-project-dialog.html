@@ -27,6 +27,6 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button matButton [mat-dialog-close]="projectForm.getRawValue()">Save</button>
-  <button matButton class="error-btn" (click)="onCancel()">Cancel</button>
+  <button matButton [mat-dialog-close]="projectForm.value">Save</button>
+  <button matButton class="mat-error-state" (click)="onCancel()">Cancel</button>
 </mat-dialog-actions>

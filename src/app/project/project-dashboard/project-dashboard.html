@@ -1,75 +1,86 @@
-@if (logoutLoading()) {
-  <div class="flex flex-col items-center justify-center h-full gap-4">
-    <mat-spinner></mat-spinner>
-    <p>Logging out...</p>
-  </div>
-}
-@else if (isLoading()) {
+@let projects = this.projects();
+
+@if (isLoading()) {
   <app-loading />
-}
-@else {
-  @let state = projectsState();
-  @switch (state.status) {
-    @case ('loading') {
-      <div class="flex flex-col items-center justify-center gap-4 h-full">
-        <mat-spinner></mat-spinner>
-        <p>Fetching your projects...</p>
-      </div>
-    }
-    @case ('error') {
-      <p>Failed to load projects.</p>
-    }
-    @case ('success') {
-      <div class="p-4 flex flex-col gap-4 w-full">
-        <div class="flex justify-between">
-          <!-- Buttons to be shown on medium screen -->
-          <div class="hidden md:flex gap-4">
-            <button matButton="filled" class="w-fit" (click)="onAddProject()">
-              <mat-icon fontIcon="add"></mat-icon>
-              Create Project
-            </button>
-
-            <button matButton class="w-fit" (click)="onViewTeams()">Teams</button>
-          </div>
-
-          <!-- Buttons to be shown on small screen -->
-          <div class="flex gap-4 md:hidden">
-            <button matIconButton (click)="onAddProject()">
-              <mat-icon fontIcon="add"></mat-icon>
-            </button>
-
-            <button matIconButton (click)="onViewTeams()">
-              <mat-icon fontIcon="group"></mat-icon>
-            </button>
-          </div>
-
-          <button matIconButton (click)="onLogout()" class="mat-error-state">
-            <mat-icon fontIcon="logout"></mat-icon>
-          </button>
-        </div>
-
-        <!-- Content -->
-        <div>
-          <!-- Empty state -->
-          @if (state.data.length === 0) {
-            <p>No projects found. Create a new project to get started or join a team!</p>
-          } @else {
-            <!-- Projects list -->
-            <ul class="flex flex-col gap-4">
-              @for (project of state.data; track project.id) {
-                <li>
-                  <div class="cursor-pointer" (click)="onClickProject(project.id)">
-                    <mat-card class="p-4">
-                      <mat-card-title>{{ project.name }}</mat-card-title>
-                      <mat-card-subtitle>{{ project.deadline | date }}</mat-card-subtitle>
-                    </mat-card>
+} @else {
+  <div class="flex flex-col gap-8 w-full">
+    <h1 class="mat-font-title-md">Project Dashboard</h1>
+    <!-- Content -->
+    <!-- Empty state -->
+    @if (projects?.length === 0) {
+      <p>No projects found. Create a new project to get started or join a team!</p>
+    } @else {
+      <!-- Projects list -->
+      <ul class="flex flex-col gap-4 md:grid md:grid-cols-2 2xl:grid-cols-3">
+        @for (project of projects; track project.id) {
+          <li>
+            <div class="cursor-pointer" (click)="onClickProject(project.id)">
+              <mat-card class="relative flex flex-col gap-4 pb-4 interactive-item" matRipple>
+                <mat-card-header>
+                  <div class="grid grid-cols-[1fr_var(--status-badge-space)] w-full">
+                    <!-- Project title -->
+                    <p class="mat-font-title-lg truncate">{{ project.name }}</p>
+                    <!-- Empty div to consume the space reserved for absolute badges -->
+                    <div></div>
                   </div>
-                </li>
-              }
-            </ul>
-          }
-        </div>
-      </div>
+                </mat-card-header>
+                <mat-card-content>
+                  <!-- Project team and dates -->
+                  <div class="flex gap-2 items-center">
+                    <p class="text-nowrap overflow-hidden mat-font-label-sm">
+                      {{ project.teamName | slice: 0 : 4 | uppercase }}
+                    </p>
+
+                    <p>|</p>
+
+                    <p class="mat-font-label-sm">
+                      {{ (project.deadline | date: 'MM/dd/yy') ?? 'No deadline' }}
+                    </p>
+                  </div>
+                </mat-card-content>
+
+                <!-- Project badges -->
+                <div class="absolute flex flex-col top-4 right-4 gap-1 items-end">
+                  <!-- Project status -->
+                  @let projectStatus = project.status;
+                  <div
+                    class="w-fit px-2 py-1 mat-corner-full"
+                    [ngClass]="{
+                      'bg-gray-200': projectStatus === 'not started' || !projectStatus,
+                      'bg-amber-200': projectStatus === 'in progress',
+                      'bg-green-200': projectStatus === 'completed',
+                    }"
+                  >
+                    @if (!projectStatus) {
+                      <mat-spinner diameter="16"></mat-spinner>
+                    }
+                    <p class="mat-font-label-sm">{{ projectStatus | titlecase }}</p>
+                  </div>
+
+                  @if (projectStatus !== 'completed') {
+                    <!-- Project deadline pressure -->
+                    @let projectDeadlinePressure =
+                      getProjectDeadlinePressure(project.startDate, project.deadline);
+                    <div
+                      class="px-2 py-1 mat-corner-full w-fit"
+                      [ngClass]="{
+                        'bg-gray-200': projectDeadlinePressure === 'unknown',
+                        'bg-green-200': projectDeadlinePressure === 'healthy',
+                        'bg-teal-200': projectDeadlinePressure === 'stable',
+                        'bg-amber-200': projectDeadlinePressure === 'warning',
+                        'bg-orange-200': projectDeadlinePressure === 'critical',
+                        'bg-red-200': projectDeadlinePressure === 'overdue',
+                      }"
+                    >
+                      <p class="mat-font-label-sm">{{ projectDeadlinePressure | titlecase }}</p>
+                    </div>
+                  }
+                </div>
+              </mat-card>
+            </div>
+          </li>
+        }
+      </ul>
     }
-  }
+  </div>
 }

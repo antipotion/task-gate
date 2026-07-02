@@ -1,0 +1,52 @@
+@let tasks = this.filteredTasks();
+@let category = this.category();
+
+<section class="flex flex-col gap-6">
+  <div class="flex gap-2 items-center">
+    @if (isMobile()) {
+      <button matIconButton (click)="onBack()">
+        <mat-icon fontIcon="arrow_back"></mat-icon>
+      </button>
+    }
+    <h2 class="mat-font-title-md">{{ category ?? 'TODO' | titlecase }}</h2>
+  </div>
+  <div class="flex flex-col gap-4">
+    @if (!tasks || tasks.length === 0) {
+      <p class="mat-text-on-surface-variant text-center">This list is empty.</p>
+    } @else {
+      @for (task of tasks; track task.id) {
+        <div
+          class="flex justify-between items-center mat-bg-surface-container-low p-4 mat-corner-sm mat-shadow-1 hover:cursor-pointer interactive-item"
+          (click)="onSelectTask(task.id)"
+          matRipple
+        >
+          <div class="flex flex-col gap-2">
+            <!-- Task info -->
+            <div class="flex gap-2 items-center">
+              <mat-icon fontIcon="assignment"></mat-icon>
+              <p class="mat-font-title-lg truncate w-42">{{ task.name }}</p>
+            </div>
+
+            <!-- Task status -->
+            <div
+              class="px-2 py-1 mat-corner-full w-fit"
+              [ngClass]="{
+                'bg-slate-200': task.status === 'TODO' || !task.status,
+                'bg-blue-200': task.status === 'IN-PROGRESS',
+                'bg-amber-200': task.status === 'REVIEWING',
+                'bg-emerald-200': task.status === 'APPROVED',
+                'bg-red-200': task.status === 'REJECTED',
+              }"
+            >
+              <p>{{ task.status | titlecase }}</p>
+            </div>
+          </div>
+
+          <div>
+            <mat-icon fontIcon="arrow_forward"></mat-icon>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</section>

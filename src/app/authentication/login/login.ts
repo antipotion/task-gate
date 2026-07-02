@@ -1,4 +1,12 @@
-import { AfterViewInit, Component, inject, OnDestroy, signal } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -8,8 +16,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ROUTES_PARAMS } from '../../app.routes';
 import { Disclaimer } from '../../disclaimer/disclaimer';
-import { AuthFacade } from '../auth-facade';
-import { AUTH_ROUTE_PARAMS } from '../auth.routes';
+import { AuthFacade } from '../auth-facade/auth-facade';
+import { AUTH_ROUTE_PARAMS } from '../auth-routes/auth.routes';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +39,7 @@ export class Login implements AfterViewInit, OnDestroy {
   private readonly _dialog = inject(MatDialog);
 
   readonly loggingInLoading = signal<boolean>(false);
+  readonly isAuthenticated = computed(() => this._authFacade.isAuthenticated());
 
   loginForm = new FormGroup({
     email: new FormControl('', {
@@ -50,14 +59,23 @@ export class Login implements AfterViewInit, OnDestroy {
     this.openDisclaimerDialog();
   }
 
+  constructor() {
+    effect(() => {
+      const isAuthenticated = this.isAuthenticated();
+      if (!isAuthenticated) return;
+
+      this._router.navigate([ROUTES_PARAMS.project]);
+    });
+  }
+
   async loginWithEmailAndPassword(): Promise<void> {
     const email: string = this.emailControl.getRawValue();
     const password: string = this.passwordControl.getRawValue();
 
+    if (!email || !password) return;
+
     this.loggingInLoading.set(true);
     await this._authFacade.loginWithEmailAndPassword(email, password);
-
-    this._router.navigate([ROUTES_PARAMS.project]);
   }
 
   loginWithGoogle(): void {

@@ -16,7 +16,7 @@ export class TaskDashboard {
   private readonly _router = inject(Router);
   private readonly _route = inject(ActivatedRoute);
 
-  readonly taskState = this._taskFacade.taskState;
+  readonly taskState = this._taskFacade.tasks;
 
   onClickTask(taskId: string): void {
     if (!taskId) return;

@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TeamFacade } from '../../team-facade/team-facade';
-import { TEAM_ROUTE_PARAMS } from '../../team.routes';
+import { Router } from '@angular/router';
+import { ROUTES_PARAMS } from '../../../app.routes';
+import { JoinTeam } from '../../join-team/join-team';
 
 @Component({
   selector: 'app-team-dashboard-header',
@@ -13,18 +14,13 @@ import { TEAM_ROUTE_PARAMS } from '../../team.routes';
 })
 export class TeamDashboardHeader {
   private readonly _router = inject(Router);
-  private readonly _route = inject(ActivatedRoute);
-  private readonly _teamFacade = inject(TeamFacade);
-
-  onAddTeam(): void {
-    this._router.navigate([TEAM_ROUTE_PARAMS.createTeam], { relativeTo: this._route?.parent });
-  }
+  private readonly _dialog = inject(MatDialog);
 
   onJoinTeam(): void {
-    this._router.navigate([TEAM_ROUTE_PARAMS.joinTeam], { relativeTo: this._route?.parent });
+    this._dialog.open(JoinTeam);
   }
 
   onBack(): void {
-    this._teamFacade.goBack();
+    this._router.navigate([ROUTES_PARAMS.project]);
   }
 }

@@ -4,9 +4,11 @@ import { guestGuard } from './application/guards/guest-guard';
 
 export const ROUTES_PARAMS = {
   auth: 'auth',
-  project: 'project',
+  project: 'projects',
   task: 'task',
   teams: 'teams',
+  review: 'review',
+  about: 'about',
 } as const;
 
 export const routes: Routes = [
@@ -17,12 +19,14 @@ export const routes: Routes = [
   },
   {
     path: ROUTES_PARAMS.auth,
-    loadChildren: () => import('./authentication/auth.routes').then((m) => m.AuthRoutes),
+    loadChildren: () =>
+      import('./authentication/auth-routes/auth.routes').then((m) => m.AuthRoutes),
     canMatch: [guestGuard],
   },
   {
     path: ROUTES_PARAMS.project,
-    loadChildren: () => import('./project/project.routes').then((m) => m.projectRoutes),
+    loadChildren: () =>
+      import('./project/project-route/project.routes').then((m) => m.projectRoutes),
     canMatch: [authGuard],
   },
   {
@@ -34,5 +38,14 @@ export const routes: Routes = [
     path: ROUTES_PARAMS.teams,
     loadChildren: () => import('./team/team.routes').then((m) => m.TeamRoutes),
     canMatch: [authGuard],
+  },
+  {
+    path: ROUTES_PARAMS.review,
+    loadChildren: () => import('./project/task/review/review.routes').then((m) => m.reviewRoutes),
+    canMatch: [authGuard],
+  },
+  {
+    path: ROUTES_PARAMS.about,
+    loadComponent: () => import('./about/about').then((m) => m.About),
   },
 ];

@@ -1,31 +1,56 @@
 @let activeTaskData = activeTask();
+@let userId = this.userId();
 
 @if (isLoading()) {
   <app-loading />
 } @else {
-  <div class="p-4 flex flex-col gap-4 w-full">
+  <div class="flex flex-col gap-8 w-full">
     <!-- Navigation and some functions -->
     <div class="flex justify-between">
-      <!-- Back button -->
-      <button matIconButton (click)="onBack()">
-        <mat-icon fontIcon="arrow_back"></mat-icon>
-      </button>
-
-      <div>
-        <!-- Task edit button -->
-        <button matButton="filled" (click)="openTaskEditDialog()">Edit</button>
-
-        <!-- Task delete button -->
-        <button matButton class="mat-error-state" (click)="openConfirmDeleteDialog()">
-          Delete
+      <div class="flex gap-2 items-center">
+        <!-- Back button -->
+        <button matIconButton (click)="onBack()">
+          <mat-icon fontIcon="arrow_back"></mat-icon>
         </button>
+
+        <p class="mat-font-title-md">Task Detail</p>
       </div>
+
+      @if (activeTaskData?.creatorId === userId) {
+        <div class="flex items-center">
+          <button matIconButton [matMenuTriggerFor]="moreMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+
+          <mat-menu #moreMenu="matMenu">
+            <!-- Task edit button -->
+            <button mat-menu-item (click)="openTaskEditDialog()">
+              <mat-icon fontIcon="edit"></mat-icon>
+              Edit
+            </button>
+
+            <!-- Task delete button -->
+            <button mat-menu-item class="mat-error-state" (click)="openConfirmDeleteDialog()">
+              <mat-icon fontIcon="delete"></mat-icon>
+              Delete
+            </button>
+          </mat-menu>
+        </div>
+      }
     </div>
 
-    <app-task-header [taskName]="activeTaskData?.name" [taskStatus]="activeTaskData?.status" />
+    <app-task-header
+      [taskName]="activeTaskData?.name"
+      [taskStatus]="activeTaskData?.status"
+      [taskStartDate]="activeTaskData?.startDate ?? null"
+      [taskDeadline]="activeTaskData?.deadline ?? null"
+    />
     <app-task-overview
+      [taskStartDate]="activeTaskData?.startDate ?? null"
       [taskDeadline]="activeTaskData?.deadline ?? null"
       [taskDescription]="activeTaskData?.description ?? null"
+      [creatorName]="creatorName()"
+      [assigneeName]="assigneeName()"
     />
     <app-task-action
       [taskId]="activeTaskData?.id"
@@ -34,11 +59,14 @@
       [reviews]="reviews()"
       (nextActionTriggered)="transitionTask($event)"
     />
-    <app-task-dependency />
-    <app-task-subtask />
-    <app-task-review-list [reviewList]="reviews()" />
-    <app-task-time />
-    <app-task-comment />
-    <app-task-history />
+
+    @if (isMobile()) {
+      <div class="w-full flex justify-center">
+        <button matButton (click)="onShowReviewList()">
+          <mat-icon fontIcon="list"></mat-icon>
+          Show Review List
+        </button>
+      </div>
+    }
   </div>
 }

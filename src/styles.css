@@ -2,6 +2,23 @@
 
 @import 'tailwindcss';
 
+:root {
+  --status-badge-space: 100px;
+}
+
 * {
   box-sizing: border-box;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.activeRoute {
+  background-color: var(--mat-sys-primary-container);
+}
+
+.svg-logo {
+  fill: var(--mat-sys-primary);
+  color: var(--mat-sys-primary);
 }

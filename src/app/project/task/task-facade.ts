@@ -1,19 +1,18 @@
 import { computed, effect, inject, Injectable, Signal, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { catchError, map, of, startWith } from 'rxjs';
 import { HistoryService } from '../../application/history/history-service';
 import { StoreService } from '../../application/store/store-service';
+import { UserModel } from '../../authentication/auth-model/auth.model';
+import { AuthStore } from '../../authentication/auth-store/auth-store';
+import { NavigationService } from '../../navigation/navigation-service';
+import { NotificationUsecase } from '../../notification/notification-usecase/notification-usecase';
+import { NotificationDTOModel } from '../../notification/notification.model';
+import { TeamFacade } from '../../team/team-facade/team-facade';
 import { ReviewStore } from './review/review-store/review-store';
 import { ReviewUsecase } from './review/review-usecase/review-usecase';
 import { ReviewModel } from './review/review.model';
 import { getAvailableActions, transitionTask } from './task-state-machine';
 import { TaskUseCase } from './task-use-case';
 import { Task, TaskActionModel } from './task.model';
-
-export type TaskState =
-  | { status: 'loading' }
-  | { status: 'success'; data: Task[] }
-  | { status: 'error'; error: string };
 
 @Injectable({ providedIn: 'root' })
 export class TaskFacade {
@@ -22,37 +21,41 @@ export class TaskFacade {
   private readonly _historyService = inject(HistoryService);
   private readonly _reviewUseCase = inject(ReviewUsecase);
   private readonly _reviewStore = inject(ReviewStore);
+  private readonly _navigationService = inject(NavigationService);
+  private readonly _teamFacade = inject(TeamFacade);
+  private readonly _authStore = inject(AuthStore);
+  private readonly _notificationUsecase = inject(NotificationUsecase);
 
-  readonly taskState = toSignal(
-    this._storeService.tasks$.pipe(
-      map(
-        (tasks): TaskState => ({
-          status: 'success',
-          data: tasks,
-        }),
-      ),
-      startWith({ status: 'loading' } as TaskState),
-      catchError((error) => of({ status: 'error', error: String(error) } as TaskState)),
-    ),
-    { initialValue: { status: 'loading' } },
-  );
+  readonly tasks = computed<Task[] | null>(() => this._storeService.tasks());
+  readonly isMobileScreen = computed<boolean>(() => this._navigationService.isMobileScreen());
 
   private readonly selectedTaskId = signal<string | null>(null);
 
   readonly activeTask = computed<Task | null>(() => {
-    const state = this.taskState();
-    const id = this.selectedTaskId();
+    const taskId = this.selectedTaskId();
+    if (!taskId) return null;
 
-    if (state.status !== 'success' || !id) return null;
-
-    return state.data.find((p) => p.id === id) ?? null;
+    return this._storeService.taskDataById();
   });
+  readonly userId = computed(() => this._authStore.userId());
+  readonly taskReviews = computed(() => this._reviewStore.taskReviews());
+  readonly taskDataById = computed(() => this._storeService.taskDataById());
+  readonly userData = computed(() => this._authStore.userData());
+
+  constructor() {
+    effect(() => {
+      const taskId = this.selectedTaskId();
+      if (!taskId) return;
+
+      this._storeService.setTaskId(taskId);
+    });
+  }
 
   selectTaskId(taskId: string): void {
     this.selectedTaskId.set(taskId);
   }
 
-  addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
+  async addTask(projectId: string, task: Omit<Task, 'id'>): Promise<string> {
     return this._taskUseCase.addTask(projectId, task);
   }
 
@@ -64,19 +67,28 @@ export class TaskFacade {
     return this._taskUseCase.deleteTask(taskId);
   }
 
-  nextTaskState(task: Task): TaskActionModel | undefined {
-    return getAvailableActions(task);
+  nextTaskState(task: Task): TaskActionModel[] | undefined {
+    const userRole = this.userData()?.role;
+    const userId = this.userId();
+    if (!userRole) {
+      throw new Error('userRole is not present');
+    }
+    if (!userId) {
+      throw new Error('userId is not present');
+    }
+
+    return getAvailableActions(task, userRole, userId);
   }
 
   advanceTaskState(task: Task, action: TaskActionModel): void {
     const taskId = task.id;
-    const advancedTask = transitionTask(task, action);
+    const context = this.userData();
+    if (!context) {
+      throw new Error('context is present');
+    }
+    const advancedTask = transitionTask(task, action, context);
 
     this.updatetask(taskId, task, advancedTask);
-  }
-
-  goBack(): void {
-    this._historyService.goBack();
   }
 
   historyPop(): void {
@@ -91,7 +103,19 @@ export class TaskFacade {
     return this._reviewStore.taskReviews;
   }
 
-  setTaskId(taskId: string): void {
+  setTaskIdData(taskId: string): void {
+    this._storeService.setTaskId(taskId);
+  }
+
+  setTaskIdForReviews(taskId: string): void {
     this._reviewStore.setTaskId(taskId);
+  }
+
+  async getUsersById(userIds: Set<string>): Promise<UserModel[] | null> {
+    return this._teamFacade.getUsersById(userIds);
+  }
+
+  async addNotification(data: Omit<NotificationDTOModel, 'createdAt'>): Promise<void> {
+    return this._notificationUsecase.addNotification(data);
   }
 }

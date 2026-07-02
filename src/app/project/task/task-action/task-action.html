@@ -4,8 +4,7 @@
 
 <section class="flex flex-col gap-4">
   <div class="flex justify-between">
-    <h2 class="mat-font-title-md">Task Action</h2>
-    <mat-icon fontIcon="expand_more"></mat-icon>
+    <h2 class="mat-font-title-md">Current Progress</h2>
   </div>
 
   <!-- Contents -->
@@ -60,27 +59,48 @@
           <button matButton class="mt-2" type="submit">Add</button>
         </form>
 
-        <button
-          matButton="filled"
-          (click)="onSubmitProgress()"
-          [disabled]="!urlLinkSubmitted || urlLinkSubmitted.length === 0"
-        >
-          {{ taskNextAction | titlecase }} progress
-        </button>
+        @if (taskNextAction && taskNextAction.length > 0) {
+          <button
+            matButton="filled"
+            (click)="onSubmitProgress()"
+            [disabled]="!urlLinkSubmitted || urlLinkSubmitted.length === 0"
+          >
+            {{ taskNextAction[0] | titlecase }} progress
+          </button>
+        }
+      }
+
+      <!-- Manager awaiting for task progress -->
+      @if (taskNextAction && taskNextAction.length === 0 && taskStatus && taskStatus === 'TODO') {
+        <p class="mat-text-on-surface-variant">Awaiting assignee to start the task.</p>
+      }
+
+      @if (
+        taskNextAction && taskNextAction.length === 0 && taskStatus && taskStatus === 'IN-PROGRESS'
+      ) {
+        <p class="mat-text-on-surface-variant">
+          Awaiting assignee to submit the output for review.
+        </p>
       }
 
       @if (
         taskNextAction &&
-        taskNextAction !== 'SUBMIT' &&
-        taskNextAction !== 'APPROVE' &&
-        taskNextAction !== 'REJECT'
+        taskNextAction.length > 0 &&
+        taskNextAction[0] !== 'SUBMIT' &&
+        taskNextAction[0] !== 'APPROVE' &&
+        taskNextAction[0] !== 'REJECT'
       ) {
         <button matButton="filled" (click)="onNextActionTrigger()">
-          {{ taskNextAction | titlecase }}
+          {{ taskNextAction[0] | titlecase }}
         </button>
       }
 
-      @if (taskNextAction && taskNextAction === 'APPROVE') {
+      <!-- Member waiting for review judgement -->
+      @if (taskNextAction && taskNextAction.length > 0 && taskNextAction[0] === 'APPROVE') {
+        <p class="mat-text-on-surface-variant">Awaiting reviewer's judgement</p>
+      }
+
+      @if (taskNextAction && taskNextAction.length > 0 && taskNextAction[0] === 'APPROVE') {
         <button matButton="filled" (click)="onViewCurrentReview()">View Current Review</button>
       }
     </div>
