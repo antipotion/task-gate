@@ -30,9 +30,9 @@ Built as a portfolio and engineering showcase project, Task Gate demonstrates mo
 
 [Live Website](https://taskgate.antipotion.com)
 
-## Case Study
+## Technical Writing
 
-[Case Study](https://antipotion.com/task-gate)
+[Technical Writing](https://antipotion.com/project-detail/task-gate)
 
 ## Why I Built TaskGate
 
@@ -183,8 +183,6 @@ The goal is not only functionality, but also coherence and maintainability as th
 ---
 
 # Current Limitations
-
-Some features and refinements are still in progress, including:
 
 - Built as a showcase project, with no production data-handling guarantee for commercial use
 
